@@ -22,7 +22,7 @@ public class TestController {
     @RequestMapping("/test")
     public String test() {
 //        System.out.println(restTemplate);
-//        return restTemplate.getForObject("http://test-service/abc", String.class);
+        restTemplate.getForObject("http://test-service/abc", String.class);
         System.out.println(testFeignService);
         return testFeignService.test();
     }
