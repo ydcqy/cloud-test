@@ -3,6 +3,7 @@ package com.ydcqy.cloud.services.talk.service;
 import com.ydcqy.cloud.services.talk.exception.TalkException;
 import com.ydcqy.cloud.services.talk.util.ImageUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,18 @@ import java.io.IOException;
 @Slf4j
 @RestController
 public class MeetServiceImpl implements MeetService {
+
+    private ImageService imageService;
+
+    @Autowired
+    public void setImageService(ImageService imageService) {
+        this.imageService = imageService;
+        log.info("MeetServiceImpl设置依赖imageService");
+    }
+
+    public MeetServiceImpl() {
+        log.info("MeetServiceImpl初始化");
+    }
 
     @Override
     public void sayHello(String talkerName, String targetName) throws TalkException {
