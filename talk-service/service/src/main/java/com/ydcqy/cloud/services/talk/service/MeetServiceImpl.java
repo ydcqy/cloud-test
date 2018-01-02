@@ -18,14 +18,14 @@ public class MeetServiceImpl implements MeetService {
 
     private ImageService imageService;
 
+    public MeetServiceImpl() {
+        log.info("MeetServiceImpl初始化");
+    }
+
     @Autowired
     public void setImageService(ImageService imageService) {
         this.imageService = imageService;
         log.info("MeetServiceImpl设置依赖imageService");
-    }
-
-    public MeetServiceImpl() {
-        log.info("MeetServiceImpl初始化");
     }
 
     @Override

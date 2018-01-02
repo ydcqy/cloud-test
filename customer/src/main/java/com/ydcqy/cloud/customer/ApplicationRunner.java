@@ -31,19 +31,7 @@ public class ApplicationRunner {
         System.out.println(meetService);
         System.out.println(imageService);
         try {
-            byte[] bytes = imageService.getHeadImage(imageService.getHeadImageUrl(""));
-            System.out.println(1);
-            FileCopyUtils.copy(bytes, new File("E:/abc.jpg"));
-            System.out.println(1);
-            bytes = imageService.getHeadImage(imageService.getHeadImageUrl(""));
-            System.out.println(1);
-            FileCopyUtils.copy(bytes, new File("E:/abc.jpg"));
-            bytes = imageService.getHeadImage(imageService.getHeadImageUrl(""));
-            System.out.println(1);
-            FileCopyUtils.copy(bytes, new File("E:/abc.jpg"));
-            bytes = imageService.getHeadImage(imageService.getHeadImageUrl(""));
-            System.out.println(1);
-            FileCopyUtils.copy(bytes, new File("E:/abc.jpg"));
+            meetService.sayHello("张三", "李四");
         } catch (Exception e) {
             e.printStackTrace();
         }

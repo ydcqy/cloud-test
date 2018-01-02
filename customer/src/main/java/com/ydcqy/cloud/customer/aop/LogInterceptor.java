@@ -9,7 +9,8 @@ import org.aspectj.lang.annotation.Aspect;
  * Created by xiaoyu on 2017/11/27.
  */
 @Aspect
-public class LogInterceptor implements MethodInterceptor {
+public class
+LogInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
