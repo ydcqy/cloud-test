@@ -18,6 +18,7 @@
     <modules>
         <module>cloud-registry</module>
         <module>talk-service</module>
+        <module>top-service</module>
         <module>customer</module>
     </modules>
 

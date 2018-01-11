@@ -13,5 +13,6 @@ public class ApplicationRunner {
     public static void main(String[] args) {
         SpringApplication.run(ApplicationRunner.class, args);
         log.info("==========Spring Boot cloud-registry启动成功！==========");
+        System.console();
     }
 }

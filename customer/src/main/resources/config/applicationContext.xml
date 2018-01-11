@@ -20,4 +20,7 @@
 		http://www.springframework.org/schema/jdbc
 		http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
 
+    <import resource="dubbo/dubbo-customer-client.xml"/>
+    <import resource="dubbo/dubbo-talk-service.xml"/>
+
 </beans>

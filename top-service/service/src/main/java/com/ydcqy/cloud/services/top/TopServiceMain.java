@@ -1,19 +1,19 @@
-package com.ydcqy.cloud.services.talk;
+package com.ydcqy.cloud.services.top;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.ImportResource;
 
 @Slf4j
-@EnableEurekaClient
+@ImportResource("classpath:config/applicationContext.xml")
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-public class ApplicationRunner {
+public class TopServiceMain {
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(ApplicationRunner.class, args);
-        log.info("==========Spring Boot talk.service启动成功！==========");
+        SpringApplication.run(TopServiceMain.class, args);
+        log.info("==========Spring Boot top.service启动成功！==========");
     }
 }
