@@ -20,6 +20,7 @@
         <module>talk-service</module>
         <module>top-service</module>
         <module>customer</module>
+        <module>kiter</module>
     </modules>
 
     <properties>

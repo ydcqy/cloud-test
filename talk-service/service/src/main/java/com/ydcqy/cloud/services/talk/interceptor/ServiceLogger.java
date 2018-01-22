@@ -1,7 +1,6 @@
 package com.ydcqy.cloud.services.talk.interceptor;
 
 import com.ydcqy.cloud.services.talk.exception.TalkException;
-import com.ydcqy.cloud.services.talk.service.MeetService;
 import com.ydcqy.cloud.services.talk.service.MeetServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -25,7 +24,8 @@ public class ServiceLogger implements MethodInterceptor {
         ProxyFactory proxyFactory = new ProxyFactory();
         proxyFactory.setTarget(new MeetServiceImpl());
         proxyFactory.addAdvice(new ServiceLogger());
-        MeetService meetService = (MeetService) proxyFactory.getProxy();
+        proxyFactory.setProxyTargetClass(true);
+        MeetServiceImpl meetService = (MeetServiceImpl) proxyFactory.getProxy();
         meetService.sayHello("张三", "李四");
     }
 }

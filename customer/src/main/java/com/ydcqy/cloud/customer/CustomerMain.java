@@ -8,12 +8,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.ImportResource;
 
 @Slf4j
 @EnableDiscoveryClient
 @EnableFeignClients(basePackages = "com.ydcqy")
 @SpringBootApplication(scanBasePackages = "com.ydcqy")
+@EnableAspectJAutoProxy(exposeProxy = true)
 @ImportResource("classpath:config/applicationContext.xml")
 public class CustomerMain {
 
