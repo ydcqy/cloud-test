@@ -8,10 +8,10 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 @Slf4j
 @EnableEurekaServer
 @SpringBootApplication
-public class ApplicationRunner {
+public class RegistryMain {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationRunner.class, args);
+        SpringApplication.run(RegistryMain.class, args);
         log.info("==========Spring Boot cloud-registry启动成功！==========");
         System.console();
     }

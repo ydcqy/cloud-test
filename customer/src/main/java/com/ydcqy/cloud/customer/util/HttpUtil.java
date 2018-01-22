@@ -76,10 +76,4 @@ public class HttpUtil {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-//        String cookie = loginAndReturnCookie("https://console.winxuan.com/employee/login", "POST", "name=xiaoyu&password=abcd1234");
-//        System.out.println(cookie);
-        String res = queryInfo("http://localhost:8101/dsg", "GET", "");
-        System.out.println(res);
-    }
 }

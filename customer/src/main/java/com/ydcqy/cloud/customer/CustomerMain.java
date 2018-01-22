@@ -15,10 +15,10 @@ import org.springframework.context.annotation.ImportResource;
 @EnableFeignClients(basePackages = "com.ydcqy")
 @SpringBootApplication(scanBasePackages = "com.ydcqy")
 @ImportResource("classpath:config/applicationContext.xml")
-public class ApplicationRunner {
+public class CustomerMain {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationRunner.class, args);
+        SpringApplication.run(CustomerMain.class, args);
         log.info("==========Spring Boot Customer启动成功!==========");
         MeetService meetService = SpringUtils.getCurrentApplicationContext().getBean(MeetService.class);
         ImageService imageService = SpringUtils.getBean(ImageService.class);

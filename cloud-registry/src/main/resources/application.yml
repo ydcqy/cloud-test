@@ -8,6 +8,9 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:${server.port}/eureka/
   server:
-    enable-self-preservation: false
-    eviction-interval-timer-in-ms: 1000
+    eviction-interval-timer-in-ms: 2000
+    response-cache-update-interval-ms: 2000
+    response-cache-auto-expiration-in-seconds: 2
+#    enable-self-preservation: false
+
 
