@@ -28,4 +28,9 @@ public class TalkController {
         log.info("talk.....");
     }
 
+    @RequestMapping("test")
+    public void test() {
+        log.info("test......");
+    }
+
 }

@@ -25,11 +25,4 @@
 
     <!--    <import resource="dubbo/dubbo-customer-client.xml"/>-->
 
-    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-        <property name="converters">
-            <set>
-                <bean class="com.ydcqy.cloud.customer.support.DateFormatConvert"/>
-            </set>
-        </property>
-    </bean>
 </beans>

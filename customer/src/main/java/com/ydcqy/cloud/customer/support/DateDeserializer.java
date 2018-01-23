@@ -1,23 +1,26 @@
 package com.ydcqy.cloud.customer.support;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.core.convert.converter.Converter;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by lenovo on 2018/1/23.
+ * Created by lenovo on 2018/1/24.
  */
 @Slf4j
-public class DateFormatConvert implements Converter<String, Date> {
+public class DateDeserializer extends JsonDeserializer<Date> {
     private SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
     private SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public Date convert(String s) {
-        log.info("转换时间:{}", s);
+    public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+        String s = jsonParser.getText();
         if (StringUtils.isBlank(s)) {
             return null;
         }
@@ -37,5 +40,4 @@ public class DateFormatConvert implements Converter<String, Date> {
         }
         throw new RuntimeException(String.format("无法转换时间：%s", s));
     }
-
 }

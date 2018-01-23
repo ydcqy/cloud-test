@@ -1,7 +1,8 @@
 package com.ydcqy.cloud.customer.controller;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.ydcqy.cloud.customer.support.DateDeserializer;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -12,5 +13,6 @@ import java.util.Date;
 public class TalkRequestForm {
     private String talkerName;
     private String targetName;
+    @JsonDeserialize(using = DateDeserializer.class)
     private Date time;
 }
