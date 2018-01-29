@@ -33,4 +33,8 @@ public class FileUtil {
         pw.println(text);
         pw.flush();
     }
+
+    public static void main(String[] args) {
+        System.out.println(System.getenv("NUMBER_OF_PROCESSORS"));
+    }
 }

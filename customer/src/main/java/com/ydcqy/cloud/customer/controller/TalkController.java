@@ -29,8 +29,10 @@ public class TalkController {
     }
 
     @RequestMapping("test")
-    public void test() {
-        log.info("test......");
+    public String test() {
+        System.out.println("dddddd");
+        log.info("testxxxxx......");
+        return "test结果";
     }
 
 }

@@ -13,6 +13,6 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public String getTop10() throws TopException {
         log.info("今天天气真的很好！");
-        return "今天天气真好！";
+        return "今天天气真好！" + Thread.currentThread();
     }
 }

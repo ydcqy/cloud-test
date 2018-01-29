@@ -10,6 +10,6 @@
         http://code.alibabatech.com/schema/dubbo
         http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
-    <dubbo:reference id="meetService1234" interface="com.ydcqy.cloud.services.talk.service.MeetService" retries="3"
+    <dubbo:reference id="recommendService" interface="com.ydcqy.cloud.services.top.service.RecommendService" retries="3"
                      timeout="30000"/>
 </beans>

@@ -16,6 +16,11 @@
             <artifactId>talk.interface</artifactId>
             <version>${cloud.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.ydcqy</groupId>
+            <artifactId>top.interface</artifactId>
+            <version>${cloud.version}</version>
+        </dependency>
         <!--服务注册-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -37,15 +42,15 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <!--AOP相关-->
-<!--        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>aspectjweaver</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>1.7.3</version>
-        </dependency>-->
+        <!--        <dependency>
+                    <groupId>org.aspectj</groupId>
+                    <artifactId>aspectjrt</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>aspectjweaver</groupId>
+                    <artifactId>aspectjweaver</artifactId>
+                    <version>1.7.3</version>
+                </dependency>-->
         <!--测试相关-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
