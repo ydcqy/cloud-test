@@ -25,12 +25,16 @@ public class NettyServer {
         bootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
+
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
+
                         ChannelPipeline pipeline = ch.pipeline();
+                        System.out.println("管道a" + pipeline.hashCode());
                         pipeline.addLast(new ChannelInboundHandlerAdapter() {
                             @Override
                             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                                System.out.println("管道b" + ctx.pipeline().hashCode());
                                 ByteBuf byteBuf = (ByteBuf) msg;
                                 System.out.println(Thread.currentThread().getName() + "----请求----");
                                 System.out.println(byteBuf.toString(CharsetUtil.UTF_8));
@@ -54,7 +58,7 @@ public class NettyServer {
                 });
         System.out.println("初始化");
         ChannelFuture channelFuture = bootstrap.bind(8111);
-        System.out.println("结束");
+        System.out.println("初始化完成");
 
 
     }
