@@ -9,10 +9,13 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
+import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +31,8 @@ public class NettyServer {
         NioEventLoopGroup workerGroup = new NioEventLoopGroup(50, new DefaultThreadFactory("kiter"));
         bootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
+                .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE)
+                .childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
 
                     @Override
