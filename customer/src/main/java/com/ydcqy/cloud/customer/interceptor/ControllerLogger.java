@@ -8,7 +8,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by lenovo on 2018/1/22.
+ * @author xiaoyu
  */
 @Slf4j
 @Aspect
@@ -16,9 +16,10 @@ import org.springframework.stereotype.Component;
 public class ControllerLogger {
     @Around("controllerPoincut()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
-        log.info("around11111111111");
+        Class withinType = pjp.getSourceLocation().getWithinType();
+
+        log.info("进入Logger\t{} ", withinType.getName());
         Object result = pjp.proceed();
-        log.info("around22222222222" + pjp.getTarget().getClass());
         return result;
     }
 
