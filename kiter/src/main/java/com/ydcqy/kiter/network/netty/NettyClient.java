@@ -59,7 +59,7 @@ public class NettyClient {
                 })
         ;
         System.out.println("初始化");
-        for (int i = 9; i < 1000; i++) {
+        for (int i = 0; i < 1; i++) {
             bootstrap.connect(new InetSocketAddress("127.0.0.1", 8111)).
                     addListeners(new ChannelFutureListener() {
                         @Override

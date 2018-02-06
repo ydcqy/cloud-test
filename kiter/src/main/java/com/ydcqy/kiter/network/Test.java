@@ -1,11 +1,17 @@
 package com.ydcqy.kiter.network;
 
 import lombok.Data;
-import org.springframework.beans.BeanUtils;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by lenovo on 2018/1/27.
  */
+@Slf4j
 public class Test {
     @Data
     static class Abc {
@@ -15,15 +21,6 @@ public class Test {
     }
 
     public static void main(String[] args) {
-        Abc abc = new Abc();
-        abc.setName("张三");
-        abc.setAge(12);
-        abc.setObj(new String[]{"a", "b", "c"});
-        System.out.println(abc + " " + System.identityHashCode(abc.getObj()));
-        Abc target = new Abc();
-        BeanUtils.copyProperties(abc, target);
-        System.out.println(target+" "+System.identityHashCode(target.getObj()));
-
 
     }
 }
