@@ -1,5 +1,9 @@
 package com.ydcqy.kiter.network.netty.handler;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.ByteBufHolder;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -21,7 +25,10 @@ public class HttpHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) throws Exception {
         log.info("----channelRead0----");
         log.info("####请求内容####");
-        System.out.println(request.toString());
+        ByteBufAllocator alloc = ctx.channel().alloc();
+
+        System.out.println(alloc.isDirectBufferPooled());
+        System.out.println(alloc.directBuffer(11111).toString(CharsetUtil.UTF_8));
         log.info("################");
         HttpHeaders headers = request.headers();
         boolean isWs = headers.contains("Upgrade", "websocket", Boolean.TRUE);
