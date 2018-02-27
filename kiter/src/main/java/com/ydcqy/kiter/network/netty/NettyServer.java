@@ -1,9 +1,12 @@
 package com.ydcqy.kiter.network.netty;
 
 
-import com.ydcqy.kiter.network.netty.handler.HttpHandler;
-import com.ydcqy.kiter.network.netty.handler.WsHandler;
+import com.ydcqy.kiter.network.AbstractServer;
+import com.ydcqy.kiter.network.RemoteException;
+import com.ydcqy.kiter.network.netty.codec.WebSocketCodec;
+import com.ydcqy.kiter.util.NamedThreadFactory;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
@@ -16,39 +19,58 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
-import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.InetSocketAddress;
+import java.util.Collection;
+import java.util.HashSet;
+
 @Slf4j
-public class NettyServer {
+public class NettyServer extends AbstractServer {
+    private Channel channel;
+    private Collection<NettyChannel> channels;
 
+    public NettyServer(InetSocketAddress bindAddress) throws RemoteException {
+        super(bindAddress);
+    }
 
-    public static void main(String[] args) {
-
+    @Override
+    protected void doOpen() throws Throwable {
         ServerBootstrap bootstrap = new ServerBootstrap();
-        NioEventLoopGroup bossGroup = new NioEventLoopGroup(3);
-        NioEventLoopGroup workerGroup = new NioEventLoopGroup(3, new DefaultThreadFactory("kiter"));
+        NioEventLoopGroup bossGroup = new NioEventLoopGroup(1, new NamedThreadFactory("NettyServerBoss"));
+        NioEventLoopGroup workerGroup = new NioEventLoopGroup(3, new NamedThreadFactory("NettyServerWorker"));
+        final NettyServerHandler nettyServerHandler = new NettyServerHandler();
+
+        channels = nettyServerHandler.getChannels();
         bootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .childOption(ChannelOption.TCP_NODELAY, Boolean.TRUE)
                 .childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel ch) throws Exception {
+                    private WebSocketCodec webSocketCodec = new WebSocketCodec();
+                    private WebSocketCodec.TextWebSocketFrameHandler textWebSocketFrameHandler = new WebSocketCodec.TextWebSocketFrameHandler();
+
+                    private void initWebSocket(Channel ch) throws Exception {
                         ChannelPipeline pipeline = ch.pipeline();
                         log.info("----initChannel----，管道：{}", pipeline.hashCode());
-                        pipeline
-                                .addLast(new HttpServerCodec())
-                                .addLast(new HttpObjectAggregator(64 * 1024))
+                        pipeline.addLast(new HttpServerCodec())
+                                .addLast(new HttpObjectAggregator(Integer.MAX_VALUE))
                                 .addLast(new ChunkedWriteHandler())
-                                .addLast(new HttpHandler())
+                                .addLast(webSocketCodec)
                                 .addLast(new WebSocketServerProtocolHandler("/"))
-                                .addLast(new WsHandler())
+                                .addLast(textWebSocketFrameHandler)
+//                                .addLast("handler", nettyServerHandler)
                         ;
+                    }
+
+                    @Override
+                    protected void initChannel(SocketChannel ch) throws Exception {
+                        initWebSocket(ch);
+
                     }
                 });
         log.info("初始化");
-        ChannelFuture channelFuture = bootstrap.bind(8111);
+        ChannelFuture channelFuture = bootstrap.bind(getBindAddress());
         channelFuture.addListeners(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
@@ -57,8 +79,30 @@ public class NettyServer {
                 }
             }
         });
+        this.channel = channelFuture.syncUninterruptibly().channel();
         log.info("初始化完成");
+    }
 
+    @Override
+    public boolean isBound() {
+        return channel.isActive();
+    }
 
+    @Override
+    public Collection<com.ydcqy.kiter.network.Channel> getChannels() {
+        Collection<com.ydcqy.kiter.network.Channel> rs = new HashSet<com.ydcqy.kiter.network.Channel>();
+        for (NettyChannel nettyChannel : channels) {
+            if (nettyChannel.isConnected()) {
+                rs.add(nettyChannel);
+            } else {
+                channels.remove(nettyChannel);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public com.ydcqy.kiter.network.Channel getChannel(InetSocketAddress remoteAddress) {
+        return null;
     }
 }

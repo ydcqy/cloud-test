@@ -21,6 +21,7 @@
         <module>top-service</module>
         <module>customer</module>
         <module>kiter</module>
+        <module>personal-web</module>
     </modules>
 
     <properties>

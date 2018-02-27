@@ -1,0 +1,3 @@
+FROM centos:7.4.1708
+ENV JAVA_HOME /opt/app/jdk-9.0.1
+ENV PATH $PATH:$JAVA_HOME/bin
