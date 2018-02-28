@@ -1,4 +1,4 @@
-package com.ydcqy.kiter.network.netty.codec;
+package com.ydcqy.kiter.network.netty.ws;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
@@ -28,6 +28,8 @@ public class WebSocketCodec extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        log.info("----channelRead---- {}", msg);
+        Thread.sleep(60000);
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest request = (FullHttpRequest) msg;
             boolean isWs = request.headers().contains("Upgrade", "websocket", Boolean.TRUE);

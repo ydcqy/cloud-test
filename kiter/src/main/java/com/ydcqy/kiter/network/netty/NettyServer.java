@@ -3,9 +3,10 @@ package com.ydcqy.kiter.network.netty;
 
 import com.ydcqy.kiter.network.AbstractServer;
 import com.ydcqy.kiter.network.RemoteException;
-import com.ydcqy.kiter.network.netty.codec.WebSocketCodec;
+import com.ydcqy.kiter.network.netty.ws.WebSocketCodec;
 import com.ydcqy.kiter.util.NamedThreadFactory;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -37,8 +38,10 @@ public class NettyServer extends AbstractServer {
     @Override
     protected void doOpen() throws Throwable {
         ServerBootstrap bootstrap = new ServerBootstrap();
-        NioEventLoopGroup bossGroup = new NioEventLoopGroup(1, new NamedThreadFactory("NettyServerBoss"));
-        NioEventLoopGroup workerGroup = new NioEventLoopGroup(3, new NamedThreadFactory("NettyServerWorker"));
+        NioEventLoopGroup bossGroup = new NioEventLoopGroup(1, new NamedThreadFactory("NettyServerBoss", true));
+        NioEventLoopGroup workerGroup = new NioEventLoopGroup(3, new NamedThreadFactory("NettyServerWorker", true));
+        final NioEventLoopGroup webSocketGroup = new NioEventLoopGroup(3, new NamedThreadFactory("WebSocket", true));
+        final NioEventLoopGroup webSocketGroup1 = new NioEventLoopGroup(3, new NamedThreadFactory("WebSocket1", true));
         final NettyServerHandler nettyServerHandler = new NettyServerHandler();
 
         channels = nettyServerHandler.getChannels();
@@ -56,9 +59,9 @@ public class NettyServer extends AbstractServer {
                         pipeline.addLast(new HttpServerCodec())
                                 .addLast(new HttpObjectAggregator(Integer.MAX_VALUE))
                                 .addLast(new ChunkedWriteHandler())
-                                .addLast(webSocketCodec)
+                                .addLast(webSocketGroup, webSocketCodec)
                                 .addLast(new WebSocketServerProtocolHandler("/"))
-                                .addLast(textWebSocketFrameHandler)
+                                .addLast(webSocketGroup1,textWebSocketFrameHandler)
 //                                .addLast("handler", nettyServerHandler)
                         ;
                     }
