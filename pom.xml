@@ -5,7 +5,7 @@
 
     <groupId>com.ydcqy</groupId>
     <artifactId>cloud-test</artifactId>
-    <version>${cloud.version}</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>cloud-test</name>
 
