@@ -210,24 +210,28 @@ Single slide style
 }
 .cd-hero-slider li:first-of-type {
   background-color: #2c343b;  
-  background-image: url("../img/bg-01.jpg");
+  background-image: url(../img/bg-01.jpg);
 }
 .cd-hero-slider li:nth-of-type(2) {
   background-color: #3d4952;
-  background-image: url("../img/bg-02.jpg");
+  background-image: url("../img/bg-04.jpg");
 }
 .cd-hero-slider li:nth-of-type(3) {
-  background-color: #cdcdcd;  
+  background-color: #cdcdcd;
+  background-image: url("../img/bg-03.jpg");
 }
 .cd-hero-slider li:nth-of-type(4) {
   background-color: #2c343b;
+  background-image: url("../img/bg-02.jpg");
   
 }
 .cd-hero-slider li:nth-of-type(5) {
-  background-color: #2c343b;  
+  background-color: #2c343b;
+  background-image: url("../img/bg-05.jpg");
 }
 .cd-hero-slider li:nth-of-type(6) {
-  background-color: #2c343b;  
+  background-color: #2c343b;
+  background-image: url("../img/bg-06.jpg");
 }
 .cd-hero-slider .cd-full-width,
 .cd-hero-slider .cd-half-width {
