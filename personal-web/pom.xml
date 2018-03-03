@@ -73,7 +73,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.4.14</version>
                 <configuration>
-                    <imageName>${docker.registry}/${project.artifactId}:${project.version}</imageName>
+                    <imageName>${docker.registry}/ydcqy/${project.artifactId}:${project.version}</imageName>
                     <dockerDirectory>${project.build.outputDirectory}</dockerDirectory>
                     <resources>
                         <resource>
