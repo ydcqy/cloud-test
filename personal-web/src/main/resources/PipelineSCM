@@ -3,7 +3,7 @@ node {
    stage('Get GitHub'){
       git 'https://github.com/ydcqy/cloud-test.git'
    }
-   mvnHome = tool 'M3'
+   mvnHome = tool 'maven-3.5.2'
    stage('Maven Build'){
       sh "${mvnHome}/bin/mvn} clean package"
    }
