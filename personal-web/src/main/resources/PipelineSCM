@@ -8,5 +8,5 @@ node {
    }
    echo 'xxxxx'
    sh 'ls -l /var/jenkins_home'
-   sh 'ssh g1.ydcqy.com'
+   sh 'ssh root@g1.ydcqy.com'
 }
