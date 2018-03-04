@@ -8,8 +8,8 @@ node {
    }
 
    stage('Docker Build'){
-      sh "scp -r ${WORKSPACE}/personal-web/target/*.jar root@g1.ydcqy.com:/opt/docker/build_dir"
-      echo '${WORKSPACE}'
-      echo "${WORKSPACE}"
+      file_dir = "${WORKSPACE}/personal-web/target";
+      sh "scp -r ${file_dir}/*.jar ${file_dir}/classes/Dockerfile  root@g1.ydcqy.com:/opt/docker/build_dir"
+      sh "ssh root@g1.ydcqy.com 'cd /opt/docker/build_dir && ls -l'"
    }
 }
