@@ -1,6 +1,6 @@
 node {
-   echo 'start build...'
+   echo 'start build'
    stage('get github'){
-        echo '哈哈哈哈'
+      git 'https://github.com/ydcqy/cloud-test.git'
    }
 }
