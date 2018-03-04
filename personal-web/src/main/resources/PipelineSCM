@@ -9,7 +9,8 @@ node {
 
    stage('Docker Build'){
       file_dir = "${WORKSPACE}/personal-web/target";
-      sh "scp -r ${file_dir}/*.jar ${file_dir}/classes/Dockerfile  root@g1.ydcqy.com:/opt/docker/build_dir"
-      sh "ssh root@g1.ydcqy.com 'cd /opt/docker/build_dir && ls -l'"
+      build_dir = "/opt/docker/build_dir/personal-web";
+      sh "scp -r ${file_dir}/*.jar ${file_dir}/classes/Dockerfile /usr/share/zoneinfo/Asia/Shanghai root@g1.ydcqy.com:${build_dir}"
+      sh "ssh root@g1.ydcqy.com \"cd ${build_dir} && ls -l\""
    }
 }
