@@ -8,5 +8,5 @@ node {
    }
    echo 'xxxxx'
    sh 'ls -l /var/jenkins_home'
-   sh '/usr/bin/ssh'
+   bash '/usr/bin/ssh'
 }
