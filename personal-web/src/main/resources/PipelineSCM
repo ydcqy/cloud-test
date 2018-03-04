@@ -1,3 +1,6 @@
 node {
-   echo 'Hello World!'
+   echo 'start build...'
+   stage('get github'){
+        echo '哈哈哈哈'
+   }
 }
