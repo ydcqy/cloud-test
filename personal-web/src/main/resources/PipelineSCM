@@ -4,7 +4,7 @@ node {
    }
    mvnHome = tool 'maven-3.5.2'
    stage('Maven Build'){
-      sh "'${mvnHome}/bin/mvn}' clean package"
+      sh "${mvnHome}/bin/mvn clean package"
    }
    stage('Finished')
       echo 'success!'
