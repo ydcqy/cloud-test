@@ -7,7 +7,7 @@ node {
       sh "${mvnHome}/bin/mvn -f personal-web/pom.xml clean package"
    }
    
-   dockerRemote = "root@g1.ydcqy.com"
+   dockerRemote = "root@ydcqy.com"
    build_dir = "/opt/docker/build_dir/personal-web";
    stage('Docker Build'){
       file_dir = "${WORKSPACE}/personal-web/target";
