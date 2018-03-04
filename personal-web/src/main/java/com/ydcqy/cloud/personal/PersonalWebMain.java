@@ -13,6 +13,8 @@ import org.springframework.context.annotation.ImportResource;
 @SpringBootApplication
 public class PersonalWebMain {
 
+
+
     public static void main(String[] args) throws Exception {
         SpringApplication.run(PersonalWebMain.class, args);
         log.info("==========Spring Boot personal-web启动成功！==========");
