@@ -7,5 +7,5 @@ node {
       sh "${mvnHome}/bin/mvn -f personal-web/pom.xml clean package"
    }
    echo 'xxxxx'
-   sh 'ls -l /opt'
+   sh ls -l /opt/docker
 }
