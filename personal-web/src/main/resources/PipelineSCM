@@ -1,11 +1,10 @@
 node {
-   echo 'start build'
    stage('Get GitHub'){
       git 'https://github.com/ydcqy/cloud-test.git'
    }
    mvnHome = tool 'maven-3.5.2'
    stage('Maven Build'){
-      sh "${mvnHome}/bin/mvn} clean package"
+      sh "'${mvnHome}/bin/mvn}' clean package"
    }
    stage('Finished')
       echo 'success!'
