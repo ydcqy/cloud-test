@@ -1,0 +1,15 @@
+version: "2.1"
+services:
+  jenkins:
+    container_name: personal-web
+    image: ydcqy/personal-web:1.0.0
+    networks:
+      static:
+        ipv4_address: 10.1.5.31
+    volumes:
+      - /opt/app/jdk-9.0.4:/opt/app/jdk
+    user: root
+
+networks:
+  static:
+    external: true

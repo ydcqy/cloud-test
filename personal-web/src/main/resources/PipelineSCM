@@ -6,15 +6,22 @@ node {
    stage('Maven Build'){
       sh "${mvnHome}/bin/mvn -f personal-web/pom.xml clean package"
    }
-
+   
+   dockerRemote = "root@g1.ydcqy.com"
+   build_dir = "/opt/docker/build_dir/personal-web";
    stage('Docker Build'){
       file_dir = "${WORKSPACE}/personal-web/target";
-      build_dir = "/opt/docker/build_dir/personal-web";
+
       imageName = 'ydcqy/personal-web:1.0.0'
-      sh "ssh root@g1.ydcqy.com \"mkdir -p ${build_dir}\""
-      sh "scp -r ${file_dir}/*.jar ${file_dir}/classes/Dockerfile /usr/share/zoneinfo/Asia/Shanghai root@g1.ydcqy.com:${build_dir}"
-      sh "ssh root@g1.ydcqy.com \"cd ${build_dir} && ls -l\""
+      // create docker remote dir
+      sh "ssh ${dockerRemote} \"mkdir -p ${build_dir}\""
+      // copy to docker remote dir
+      sh "scp -r ${file_dir}/*.jar ${file_dir}/classes/Dockerfile ${file_dir}/classes/docker-compose.yml /usr/share/zoneinfo/Asia/Shanghai ${dockerRemote}:${build_dir}"
+      sh "ssh ${dockerRemote} \"cd ${build_dir} && ls -l\""
       // build
-      sh "ssh root@g1.ydcqy.com \"cd ${build_dir} && docker build -t ${imageName} .\""
+      sh "ssh ${dockerRemote} \"cd ${build_dir} && docker build -t ${imageName} .\""
+   }
+   stage('Docker Run'){
+      sh "ssh ${dockerRemote} \"cd ${build_dir} && docker-compose up -d\""
    }
 }
