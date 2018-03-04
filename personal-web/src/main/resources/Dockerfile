@@ -4,5 +4,5 @@ EXPOSE 8500
 # set timezone
 COPY Shanghai /etc/localtime
 COPY @project.build.finalName@.jar @project.build.finalName@.jar
-ENV JAVA_HOME /opt/app/jdk-9.0.1
+ENV JAVA_HOME /opt/app/jdk
 ENV PATH $PATH:$JAVA_HOME/bin
