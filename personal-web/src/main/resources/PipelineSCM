@@ -7,6 +7,6 @@ node {
       sh "${mvnHome}/bin/mvn -f personal-web/pom.xml clean package"
    }
    echo 'xxxxx'
-   ssh root@g1.ydcqy.com
+   sh ssh root@g1.ydcqy.com
    sh ls -l /opt
 }
