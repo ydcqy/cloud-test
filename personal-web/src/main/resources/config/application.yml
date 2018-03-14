@@ -2,5 +2,5 @@ server:
   port: 8500
 spring:
   thymeleaf:
-    prefix: classpath:/static/
+    prefix: classpath:/static/view/
     mode: LEGACYHTML5
