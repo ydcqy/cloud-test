@@ -44,17 +44,10 @@ jQuery(document).ready(function ($) {
                             $(".cd-hero-slider").append(result)
                             adjustHeightOfPage(nextLi)
                             nextSlide(slidesWrapper.find('.selected'), slidesWrapper, nextLi);
-                            setTimeout(function () {
-                                adjustHeightOfPage(nextLi)
-                            }, 100);
-
                         } else {
                             $(".cd-hero-slider").prepend(result).find("li." + nextLi).addClass("move-left")
                             adjustHeightOfPage(nextLi)
                             prevSlide(slidesWrapper.find('.selected'), slidesWrapper, nextLi);
-                            setTimeout(function () {
-                                adjustHeightOfPage(nextLi)
-                            }, 100);
                         }
                         //this is used for the autoplay
                         visibleSlidePosition = selectedPosition;
