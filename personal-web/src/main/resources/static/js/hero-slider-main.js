@@ -22,34 +22,55 @@ jQuery(document).ready(function ($) {
             if ($(event.target).is('.cd-primary-nav')) $(this).children('ul').toggleClass('is-visible');
         });
 
+        var liMap = {
+            1: "sy",
+            2: "syjs",
+            3: "cygj",
+            4: "xmcy",
+            5: "lxfs",
+            6: "gy"
+        };
         //change visible slide
         sliderNav.on('click', 'li', function (event) {
             event.preventDefault();
             var selectedItem = $(this);
             if (!selectedItem.hasClass('selected')) {
-                $('.cd-hero-slider').load("/view/syjs.html");
-                // NProgress.start();
-                // NProgress.set(0.1);
-                // setTimeout(function () {
-                //     NProgress.done();
-                // }, 4000);
-                // if it's not already selected
-                var selectedPosition = selectedItem.index(),
-                    activePosition = slidesWrapper.find('li.selected').index();
+                $.ajax({
+                    url: "/view/syjs.html",
+                    type: "get",
+                    // async: false,
+                    success: function (result, status, xhr) {
+                        console.log("得到请求结果");
+                        // $(".cd-hero-slider").append(result);
 
-                if (activePosition < selectedPosition) {
-                    nextSlide(slidesWrapper.find('.selected'), slidesWrapper, sliderNav, selectedPosition);
-                } else {
-                    prevSlide(slidesWrapper.find('.selected'), slidesWrapper, sliderNav, selectedPosition);
-                }
+                        // $('.cd-hero-slider').load("/view/syjs.html");
+                        // NProgress.start();
+                        // NProgress.set(0.1);
+                        // setTimeout(function () {
+                        //     NProgress.done();
+                        // }, 4000);
+                        // if it's not already selected
+                        var selectedPosition = selectedItem.index(),
+                            activePosition = slidesWrapper.find('li.selected').index();
 
-                //this is used for the autoplay
-                visibleSlidePosition = selectedPosition;
+                        console.log("activePosition:" + activePosition, "selectedPosition:" + selectedPosition);
+                        if (activePosition < selectedPosition) {
+                            nextSlide(slidesWrapper.find('.selected'), slidesWrapper, sliderNav, selectedPosition);
+                        } else {
+                            prevSlide(slidesWrapper.find('.selected'), slidesWrapper, sliderNav, selectedPosition);
+                        }
 
-                updateSliderNavigation(sliderNav, selectedPosition);
-                updateNavigationMarker(navigationMarker, selectedPosition + 1);
-                //reset autoplay
-                setAutoplay(slidesWrapper, slidesNumber, autoPlayDelay);
+                        //this is used for the autoplay
+                        visibleSlidePosition = selectedPosition;
+                        updateSliderNavigation(sliderNav, selectedPosition);
+                        updateNavigationMarker(navigationMarker, selectedPosition + 1);
+                        //reset autoplay
+                        // setAutoplay(slidesWrapper, slidesNumber, autoPlayDelay);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("请求出错：" + error);
+                    }
+                });
             }
         });
     }
@@ -60,7 +81,7 @@ jQuery(document).ready(function ($) {
         });
 
         container.children('li').eq(n).addClass('selected from-right').prevAll().addClass('move-left');
-        checkVideo(visibleSlide, container, n);
+        // checkVideo(visibleSlide, container, n);
     }
 
     function prevSlide(visibleSlide, container, pagination, n) {
