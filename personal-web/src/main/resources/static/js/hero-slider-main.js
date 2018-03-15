@@ -42,7 +42,8 @@ jQuery(document).ready(function ($) {
                     type: "get",
                     // async: false,
                     success: function (result, status, xhr) {
-                        currClickCount != clickCount && alert("不等");
+                        currClickCount != clickCount && console.log("快速点击");
+                        currClickCount != clickCount && alert("快速点击");
                         NProgress.done();
                         if (activePosition < selectedPosition) {
                             $(".cd-hero-slider").append(result)
@@ -61,7 +62,6 @@ jQuery(document).ready(function ($) {
                         // setAutoplay(slidesWrapper, slidesNumber, autoPlayDelay);
                     },
                     error: function (xhr, status, error) {
-                        NProgress.done();
                     }
                 });
             }
