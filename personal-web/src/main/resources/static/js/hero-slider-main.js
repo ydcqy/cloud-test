@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
     var slidesWrapper = $('.cd-hero-slider');
-
+    var clickCount = 0;
     //check if a .cd-hero-slider exists in the DOM
     if (slidesWrapper.length > 0) {
         var primaryNav = $('.cd-primary-nav'),
@@ -22,44 +22,37 @@ jQuery(document).ready(function ($) {
             if ($(event.target).is('.cd-primary-nav')) $(this).children('ul').toggleClass('is-visible');
         });
 
-        var liMap = {
-            1: "sy",
-            2: "syjs",
-            3: "cygj",
-            4: "xmcy",
-            5: "lxfs",
-            6: "gy"
-        };
+
         //change visible slide
         sliderNav.on('click', 'li', function (event) {
             event.preventDefault();
+            clickCount++;
+            var currClickCount = clickCount;
             var selectedItem = $(this);
             if (!selectedItem.hasClass('selected')) {
+                slidesWrapper.find('li:not(.selected)').remove();
+                var selectedPosition = selectedItem.index(),
+                    activePosition = sliderNav.find('li.selected').index();
+                console.log("currPos:" + activePosition + " nextPos:" + selectedPosition);
+                var nextLi = liMap[selectedPosition];
+                NProgress.start();
+                NProgress.set(0.1);
                 $.ajax({
-                    url: "/view/syjs.html",
+                    url: "/view/" + nextLi + ".html",
                     type: "get",
                     // async: false,
                     success: function (result, status, xhr) {
-                        console.log("得到请求结果");
-                        // $(".cd-hero-slider").append(result);
-
-                        // $('.cd-hero-slider').load("/view/syjs.html");
-                        // NProgress.start();
-                        // NProgress.set(0.1);
-                        // setTimeout(function () {
-                        //     NProgress.done();
-                        // }, 4000);
-                        // if it's not already selected
-                        var selectedPosition = selectedItem.index(),
-                            activePosition = slidesWrapper.find('li.selected').index();
-
-                        console.log("activePosition:" + activePosition, "selectedPosition:" + selectedPosition);
+                        currClickCount != clickCount && alert("不等");
+                        NProgress.done();
                         if (activePosition < selectedPosition) {
-                            nextSlide(slidesWrapper.find('.selected'), slidesWrapper, sliderNav, selectedPosition);
+                            $(".cd-hero-slider").append(result)
+                            adjustHeightOfPage(nextLi)
+                            nextSlide(slidesWrapper.find('.selected'), slidesWrapper, nextLi);
                         } else {
-                            prevSlide(slidesWrapper.find('.selected'), slidesWrapper, sliderNav, selectedPosition);
+                            $(".cd-hero-slider").prepend(result).find("li." + nextLi).addClass("move-left")
+                            adjustHeightOfPage(nextLi)
+                            prevSlide(slidesWrapper.find('.selected'), slidesWrapper, nextLi);
                         }
-
                         //this is used for the autoplay
                         visibleSlidePosition = selectedPosition;
                         updateSliderNavigation(sliderNav, selectedPosition);
@@ -68,29 +61,27 @@ jQuery(document).ready(function ($) {
                         // setAutoplay(slidesWrapper, slidesNumber, autoPlayDelay);
                     },
                     error: function (xhr, status, error) {
-                        console.error("请求出错：" + error);
+                        NProgress.done();
                     }
                 });
             }
         });
     }
 
-    function nextSlide(visibleSlide, container, pagination, n) {
+    function nextSlide(visibleSlide, container, n) {
         visibleSlide.removeClass('selected from-left from-right').addClass('is-moving').one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function () {
             visibleSlide.removeClass('is-moving');
         });
-
-        container.children('li').eq(n).addClass('selected from-right').prevAll().addClass('move-left');
+        container.children('li.' + n).addClass('selected from-right').prevAll().addClass('move-left');
         // checkVideo(visibleSlide, container, n);
     }
 
-    function prevSlide(visibleSlide, container, pagination, n) {
+    function prevSlide(visibleSlide, container, n) {
         visibleSlide.removeClass('selected from-left from-right').addClass('is-moving').one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function () {
             visibleSlide.removeClass('is-moving');
         });
-
-        container.children('li').eq(n).addClass('selected from-left').removeClass('move-left').nextAll().removeClass('move-left');
-        checkVideo(visibleSlide, container, n);
+        container.children('li.' + n).addClass('selected from-left').removeClass('move-left').nextAll().removeClass('move-left');
+        // checkVideo(visibleSlide, container, n);
     }
 
     function updateSliderNavigation(pagination, n) {
