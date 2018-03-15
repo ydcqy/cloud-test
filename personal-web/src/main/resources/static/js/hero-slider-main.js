@@ -1,6 +1,5 @@
 jQuery(document).ready(function ($) {
     var slidesWrapper = $('.cd-hero-slider');
-    var clickCount = 0;
     //check if a .cd-hero-slider exists in the DOM
     if (slidesWrapper.length > 0) {
         var primaryNav = $('.cd-primary-nav'),
@@ -26,8 +25,6 @@ jQuery(document).ready(function ($) {
         //change visible slide
         sliderNav.on('click', 'li', function (event) {
             event.preventDefault();
-            clickCount++;
-            var currClickCount = clickCount;
             var selectedItem = $(this);
             if (!selectedItem.hasClass('selected')) {
                 slidesWrapper.find('li:not(.selected)').remove();
@@ -42,17 +39,22 @@ jQuery(document).ready(function ($) {
                     type: "get",
                     // async: false,
                     success: function (result, status, xhr) {
-                        currClickCount != clickCount && console.log("快速点击");
-                        currClickCount != clickCount && alert("快速点击");
                         NProgress.done();
                         if (activePosition < selectedPosition) {
                             $(".cd-hero-slider").append(result)
                             adjustHeightOfPage(nextLi)
                             nextSlide(slidesWrapper.find('.selected'), slidesWrapper, nextLi);
+                            setTimeout(function () {
+                                adjustHeightOfPage(nextLi)
+                            }, 100);
+
                         } else {
                             $(".cd-hero-slider").prepend(result).find("li." + nextLi).addClass("move-left")
                             adjustHeightOfPage(nextLi)
                             prevSlide(slidesWrapper.find('.selected'), slidesWrapper, nextLi);
+                            setTimeout(function () {
+                                adjustHeightOfPage(nextLi)
+                            }, 100);
                         }
                         //this is used for the autoplay
                         visibleSlidePosition = selectedPosition;
