@@ -30,7 +30,6 @@ jQuery(document).ready(function ($) {
                 slidesWrapper.find('li:not(.selected)').remove();
                 var selectedPosition = selectedItem.index(),
                     activePosition = sliderNav.find('li.selected').index();
-                console.log("currPos:" + activePosition + " nextPos:" + selectedPosition);
                 var nextLi = liMap[selectedPosition];
                 NProgress.start();
                 NProgress.set(0.1);
@@ -41,12 +40,22 @@ jQuery(document).ready(function ($) {
                     success: function (result, status, xhr) {
                         NProgress.done();
                         if (activePosition < selectedPosition) {
-                            $(".cd-hero-slider").append(result)
-                            adjustHeightOfPage(nextLi)
+                            $(".cd-hero-slider").append(result);
+
+                            adjustHeightOfPage(nextLi);
+                            setTimeout(function () {
+                                adjustHeightOfPage(nextLi);
+                            }, 500);
+
                             nextSlide(slidesWrapper.find('.selected'), slidesWrapper, nextLi);
                         } else {
-                            $(".cd-hero-slider").prepend(result).find("li." + nextLi).addClass("move-left")
-                            adjustHeightOfPage(nextLi)
+                            $(".cd-hero-slider").prepend(result).find("li." + nextLi).addClass("move-left");
+
+                            adjustHeightOfPage(nextLi);
+                            setTimeout(function () {
+                                adjustHeightOfPage(nextLi);
+                            }, 500);
+
                             prevSlide(slidesWrapper.find('.selected'), slidesWrapper, nextLi);
                         }
                         //this is used for the autoplay
@@ -55,6 +64,7 @@ jQuery(document).ready(function ($) {
                         updateNavigationMarker(navigationMarker, selectedPosition + 1);
                         //reset autoplay
                         // setAutoplay(slidesWrapper, slidesNumber, autoPlayDelay);
+
                     },
                     error: function (xhr, status, error) {
                     }

@@ -180,7 +180,6 @@
         var totalPageHeight = 15 + $('.cd-slider-nav').height()
             + pageContentHeight + offset
             + $('.tm-footer').height();
-        console.log("pageContentHeight:" + pageContentHeight + " offset:" + offset + " winHeight:" + $(window).height())
         // Adjust layout based on page height and window height
         var obj = '.cd-hero-slider li.' + a;
         if (totalPageHeight > $(window).height()) {
@@ -191,6 +190,7 @@
             $('.cd-hero-slider').removeClass('small-screen');
             $(obj).css("min-height", "100%");
         }
+        console.log("totalPageHeight:" + totalPageHeight + " winHeight:" + $(window).height());
     }
 
     /*
