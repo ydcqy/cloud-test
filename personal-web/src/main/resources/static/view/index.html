@@ -25,7 +25,8 @@
     <link rel="stylesheet" href="http://www.bootcss.com/p/buttons/css/buttons.css">
     <style type="text/css">
         .icon {
-            width: 1em; height: 1em;
+            width: 1em;
+            height: 1em;
             vertical-align: -0.15em;
             fill: currentColor;
             overflow: hidden;
@@ -133,14 +134,37 @@
     <footer class="tm-footer" style="text-align: center">
 
         <div class="tm-social-icons-container text-xs-center">
-            <a href="#" class="tm-social-link"><i class="fa fa-facebook"></i></a>
-            <a href="#" class="tm-social-link"><i class="fa fa-google-plus"></i></a>
-            <a href="#" class="tm-social-link"><i class="fa fa-twitter"></i></a>
-            <a href="#" class="tm-social-link"><i class="fa fa-behance"></i></a>
-            <a href="#" class="tm-social-link"><i class="fa fa-linkedin"></i></a>
+            <a class="tm-social-link" target="_blank"
+               href="javascript:openQQ();" title="点击这里给我发消息">
+                <svg class="icon" aria-hidden="true">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-QQ"></use>
+                </svg>
+            </a>
+            <a href="javascript:" class="tm-social-link wx">
+                <svg class="icon" aria-hidden="true">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-weixin2"></use>
+                </svg>
+            </a>
+            <a href="javascript:" class="tm-social-link ph">
+                <svg class="icon" aria-hidden="true">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-kefu"></use>
+                </svg>
+            </a>
+            <a href="javascript:" class="tm-social-link ph">
+                <svg class="icon" aria-hidden="true">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-dianhua"></use>
+                </svg>
+            </a>
+            <a href="javascript:" class="tm-social-link ph">
+                <svg class="icon" aria-hidden="true">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-youxiang2"></use>
+                </svg>
+            </a>
+
+
         </div>
 
-        <p class="tm-copyright-text">Copyright &copy; 2016 Ydcqy</p>
+        <p class="tm-copyright-text">Copyright &copy; 2018 Ydcqy</p>
 
     </footer>
 
@@ -167,8 +191,19 @@
 <!-- Magnific popup (http://dimsemenov.com/plugins/magnific-popup/) -->
 <!--进度条插件-->
 <script src="../plugin/nprogress.js"></script>
-<script src="//at.alicdn.com/t/font_594570_mu20xdro5qiio1or.js"></script>
+<script src="//at.alicdn.com/t/font_594570_a3kpg5utwz71ra4i.js"></script>
 <script>
+    function openQQ() {
+        if (!confirm("是否打开QQ聊天")) {
+            return;
+        }
+        if (navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|wOSBrowser|BrowserNG|WebOS)/i)) {
+            location.href = "mqqwpa://im/chat?chat_type=wpa&uin=742108726";
+        } else {
+            location.href = "tencent://message/?v=3&uin=742108726&site=qq&menu=yes";
+        }
+    }
+
     var liMap = {
         0: "sy",
         1: "syjs",
