@@ -38,7 +38,7 @@
 
 .tm-footer .tm-social-link.wx {
     background: url("../img/weixin.png");
-    background-size: 1px;
+    background-size: 0px;
     transition: transform 0s;
     -moz-transition: -moz-transform 0s;
     -webkit-transition: -webkit-transform 0s;
