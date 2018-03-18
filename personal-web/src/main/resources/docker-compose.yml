@@ -5,7 +5,7 @@ services:
     image: ydcqy/personal-web:1.0.0
     networks:
       static:
-        ipv4_address: 10.1.5.31
+        ipv4_address: 10.1.4.31
     volumes:
       - /opt/app/jdk-9.0.4:/opt/app/jdk
     user: root
