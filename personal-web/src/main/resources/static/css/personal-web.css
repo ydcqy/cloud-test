@@ -77,3 +77,25 @@
     -webkit-transform: scale(1.1, 1.1);
     -o-transform: scale(1.1, 1.1);;
 }
+
+@media (max-width: 768px) {
+    .cd-hero-slider .sy-bg {
+        background-position: center;
+        margin-left: 0px !important;
+        width: auto !important;
+    }
+
+    .sy-title {
+        text-align: center;
+    }
+
+    .cd-hero-slider .sy-bg-pt {
+        display: block;
+    }
+}
+
+@media (max-width: 991px) {
+    .col-xs-12.row-wt-per-100 {
+        padding-top: 10px;
+    }
+}
