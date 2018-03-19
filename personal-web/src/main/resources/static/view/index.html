@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -85,6 +85,16 @@
         </nav>
     </div>
 
+    <!--$.ajax({-->
+    <!--url: "/view/sy.html",-->
+    <!--type: "get",-->
+    <!--async: false,-->
+    <!--success: function (result) {-->
+    <!--$(".cd-hero-slider").append(result);-->
+    <!--}-->
+    <!--}-->
+    <!--);-->
+    <!--$('.cd-hero-slider').find(".sy").addClass("selected");-->
     <ul class="cd-hero-slider">  <!-- autoplay -->
         <li class="sy selected" id="sy">
             <div class="cd-full-width">
@@ -128,7 +138,6 @@
                 </div>
             </div>
         </li>
-
     </ul> <!-- .cd-hero-slider -->
 
     <footer class="tm-footer" style="text-align: center">
@@ -212,6 +221,8 @@
         4: "lxfs",
         5: "gy"
     };
+
+
     function adjustHeightOfPage(a) {
 
         var offset = 80;
