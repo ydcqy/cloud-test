@@ -9,6 +9,11 @@ mysqlPort=13106
 sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
 
 enableInstall=false;
+
+if [ x"`rpm -qa | grep -i mariadb`" != x ]
+then
+    rpm -ev --nodeps `rpm -qa | grep -i mariadb`
+fi
 if [ x"`rpm -qa | grep -i mysql`" != x ]
 then
     if [ ${isReinstall} == true ]
