@@ -6,12 +6,13 @@ spring:
     active:
   application:
     name: @parent.artifactId@
+  ########### 数据源配置 ###########
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://g1.ydcqy.com:13106/personal_item?useSSL=false
-    username: select_pit
-    password: 2gBc6zAQ22AG
+    url: jdbc:mysql://10.1.7.12:13106/personal_item?useSSL=false
+    username: pit_select
+    password: ahngei3Iebai
     initial-size: 10
     min-idle: 10
     max-active: 500
@@ -23,7 +24,7 @@ spring:
     test-while-idle: true
     test-on-borrow: true
     filters: stat,wall,log4j
-
+  #################################
 eureka:
   client:
     serviceUrl:
@@ -31,5 +32,13 @@ eureka:
   instance:
     lease-expiration-duration-in-seconds: 2
     lease-renewal-interval-in-seconds: 1
+
+########### MyBatis配置 ###########
 mybatis:
   mapper-locations: classpath:mapper/*.xml
+pagehelper:
+  helper-dialect: mysql
+
+#logging:
+#  level:
+#    com.ydcqy.cloud.services.talk.dao : debug

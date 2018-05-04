@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ydcqy.cloud.services.talk.dao.UserDao">
-    <resultMap id="UserPoResultMap" type="com.ydcqy.cloud.services.talk.model.UserPo">
-        <result column="id" property="id"/>
-        <result column="username" property="username"/>
+    <resultMap id="UserPoMap" type="com.ydcqy.cloud.services.talk.model.UserPo">
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
     </resultMap>
-    <select id="getUserById" resultMap="UserPoResultMap"
-            parameterType="java.lang.Integer">
+    <select id="getUserById" resultMap="UserPoMap">
         SELECT *
         FROM user
         WHERE id = #{id}
     </select>
+    <select id="findByPage" resultMap="UserPoMap">
+        SELECT *
+        FROM user
+    </select>
+
 </mapper>

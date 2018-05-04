@@ -12,7 +12,7 @@ CREATE TABLE `user` (
 
 -- ====创建用户并授权====
 CREATE USER select_pit IDENTIFIED BY 'abcdef';
-GRANT SELECT on personal_item.* to 'select_pit'@'%' IDENTIFIED by 'xxxx';-- 创建并授权
+GRANT SELECT on personal_item.* to 'pit_select'@'%' IDENTIFIED by 'xxxx';-- 创建并授权
 DROP user 'select_pit'@'%';-- 删除用户
 SHOW GRANTS for 'select_pit'@'%';-- 查看有哪些权限
 ALTER user 'select_pit'@'%' WITH MAX_USER_CONNECTIONS 100;-- 修改最大连接数
@@ -23,4 +23,9 @@ GRANT USAGE on personal_item.* to 'select_pit'@'%'  IDENTIFIED by 'xxxx';
 
 -- 修改密码策略
 SHOW VARIABLES LIKE 'validate_password%';
-set GLOBAL validate_password_special_char_count=0
+set GLOBAL validate_password_special_char_count=0;
+
+flush tables with read lock;-- 锁表
+mysqldump -uroot -p1234 dy_qqopen > dy_qqopen.sql -- 备份整个数据库
+unlock tables;-- 释放锁
+GRANT ALL PRIVILEGES
