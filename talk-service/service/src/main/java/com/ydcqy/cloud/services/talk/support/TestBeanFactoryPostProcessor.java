@@ -23,7 +23,7 @@ public class TestBeanFactoryPostProcessor implements BeanFactoryPostProcessor, E
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        log.info(JSON.toJSONString(beanFactory));
+//        log.info(JSON.toJSONString(beanFactory));
 //        BeanDefinition meetServiceImpl = beanFactory.getBeanDefinition("meetServiceImpl");
 //        System.out.println(meetServiceImpl);
         System.out.println("哈哈哈哈....");

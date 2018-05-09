@@ -6,24 +6,42 @@ spring:
     active:
   application:
     name: @parent.artifactId@
-  ########### 数据源配置 ###########
+  ########## 数据源配置 ###########
   datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://10.1.7.12:13106/personal_item?useSSL=false
-    username: pit_select
-    password: ahngei3Iebai
-    initial-size: 10
-    min-idle: 10
-    max-active: 500
-    max-wait: 30000
-    time-between-eviction-runs-millis: 60000
-    min-evictable-idle-time-millis: 30000
-    validation-query: select 1
-    test-on-return: false
-    test-while-idle: true
-    test-on-borrow: true
-    filters: stat,wall,log4j
+    personalItem:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driverClassName: com.mysql.jdbc.Driver
+      url: jdbc:mysql://10.1.7.11:13106/personal_item?useSSL=false&characterEncoding=UTF-8
+      username: pit_all
+      password: ieNgeiVaqua2
+      initialSize: 10
+      minIdle: 10
+      maxActive: 500
+      maxWait: 30000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 30000
+      validationQuery: select 1
+      testOnReturn: false
+      testWhileIdle: true
+      testOnBorrow: true
+      filters: stat,wall,log4j
+    g1:
+      type: com.alibaba.druid.pool.DruidDataSource
+      driverClassName: com.mysql.jdbc.Driver
+      url: jdbc:mysql://g1.ydcqy.com:13106/personal_item?useSSL=false&characterEncoding=UTF-8
+      username: root
+      password: zxnNbxS0KpWl
+      initialSize: 10
+      minIdle: 10
+      maxActive: 500
+      maxWait: 30000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 30000
+      validationQuery: select 1
+      testOnReturn: false
+      testWhileIdle: true
+      testOnBorrow: true
+      filters: stat,wall,log4j
   #################################
 eureka:
   client:
@@ -33,12 +51,14 @@ eureka:
     lease-expiration-duration-in-seconds: 2
     lease-renewal-interval-in-seconds: 1
 
-########### MyBatis配置 ###########
+  #
+  ########### MyBatis配置 ###########
 mybatis:
-  mapper-locations: classpath:mapper/*.xml
+  mapperLocations: classpath:/mapper/*.xml
 pagehelper:
   helper-dialect: mysql
 
-#logging:
-#  level:
+logging:
+  level:
+#    root: debug
 #    com.ydcqy.cloud.services.talk.dao : debug

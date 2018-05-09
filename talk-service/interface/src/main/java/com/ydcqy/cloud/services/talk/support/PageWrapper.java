@@ -14,5 +14,5 @@ public class PageWrapper<T> implements Serializable {
     private int pageNum;
     private int pageSize;
     private long total;
-    private List<T> results;
+    private List<T> result;
 }
