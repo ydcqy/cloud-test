@@ -11,7 +11,7 @@ spring:
     personalItem:
       type: com.alibaba.druid.pool.DruidDataSource
       driverClassName: com.mysql.jdbc.Driver
-      url: jdbc:mysql://10.1.7.11:13106/personal_item?useSSL=false&characterEncoding=UTF-8
+      url: jdbc:mysql://10.1.7.11:13106/personal_item?useSSL=false&useUnicode=true&characterEncoding=utf-8
       username: pit_all
       password: ieNgeiVaqua2
       initialSize: 10
