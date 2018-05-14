@@ -3,7 +3,7 @@
 <mapper namespace="com.ydcqy.cloud.services.talk.dao.personalItem.UserDao">
     <resultMap id="UserPoMap" type="com.ydcqy.cloud.services.talk.model.UserPo">
         <result property="id" column="id"/>
-        <result property="username" column="username"/>
+        <result property="username" column="user_name"/>
     </resultMap>
     <select id="getUserById" resultMap="UserPoMap">
         SELECT *

@@ -4,14 +4,14 @@ server:
 spring:
   profiles:
     active:
-  application:
-    name: @parent.artifactId@
+#  application:
+#    name: @parent.artifactId@
   ########## 数据源配置 ###########
   datasource:
     personalItem:
       type: com.alibaba.druid.pool.DruidDataSource
       driverClassName: com.mysql.jdbc.Driver
-      url: jdbc:mysql://10.1.7.11:13106/personal_item?useSSL=false&useUnicode=true&characterEncoding=utf-8
+      url: jdbc:mysql://10.1.7.11:13106/yuanda?useSSL=false&useUnicode=true&characterEncoding=utf-8
       username: pit_all
       password: ieNgeiVaqua2
       initialSize: 10
@@ -43,13 +43,13 @@ spring:
       testOnBorrow: true
       filters: stat,wall,log4j
   #################################
-eureka:
-  client:
-    serviceUrl:
-      defaultZone:  http://localhost:8100/eureka/
-  instance:
-    lease-expiration-duration-in-seconds: 2
-    lease-renewal-interval-in-seconds: 1
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone:  http://localhost:8100/eureka/
+#  instance:
+#    lease-expiration-duration-in-seconds: 2
+#    lease-renewal-interval-in-seconds: 1
 
   #
   ########### MyBatis配置 ###########
@@ -60,5 +60,15 @@ pagehelper:
 
 logging:
   level:
+endpoints:
+  autoconfig:
+    enabled: true
+  mappings:
+    enabled: true
+  metrics:
+    enabled: true
+management:
+  security:
+    enabled: false
 #    root: debug
 #    com.ydcqy.cloud.services.talk.dao : debug

@@ -36,6 +36,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+
         <!--数据库相关-->
         <!--        <dependency>
                     <groupId>org.springframework.boot</groupId>
