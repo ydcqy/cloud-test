@@ -22,6 +22,7 @@
         <module>customer</module>
         <module>kiter</module>
         <module>personal-web</module>
+        <module>cache-support</module>
     </modules>
 
     <properties>

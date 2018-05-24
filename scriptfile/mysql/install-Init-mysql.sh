@@ -64,6 +64,7 @@ sed -i '/port/d' /etc/my.cnf
 sed -i "/\[mysqld\]/a port=${mysqlPort}" /etc/my.cnf
 sed -i '/validate_password_special_char_count/d' /etc/my.cnf
 sed -i "/\[mysqld\]/a validate_password_special_char_count=0" /etc/my.cnf
+sed -i "/\[mysqld\]/a log_timestamps=SYSTEM" /etc/my.cnf
 echo "init finished!"
 echo ">>setup auto run..."
 systemctl enable mysqld
