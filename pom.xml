@@ -23,6 +23,7 @@
         <module>kiter</module>
         <module>personal-web</module>
         <module>cache-support</module>
+        <module>grpc-service</module>
     </modules>
 
     <properties>
