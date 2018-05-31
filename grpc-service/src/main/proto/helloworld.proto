@@ -12,6 +12,11 @@ service HelloWorldService {
     }
 }
 
+service UserService {
+
+    rpc get (stream HelloRequest) returns (stream HelloReply) {
+    }
+}
 
 message HelloRequest {
     string name = 1;

@@ -2,7 +2,7 @@ package com.ydcqy.grpc.service.impl;
 
 import com.ydcqy.grpc.rpc.HelloReply;
 import com.ydcqy.grpc.rpc.HelloRequest;
-import com.ydcqy.grpc.rpc.HelloWorldServiceGrpc;
+import com.ydcqy.grpc.rpc.UserServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,11 +10,11 @@ import lombok.extern.slf4j.Slf4j;
  * @author xiaoyu
  */
 @Slf4j
-public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServiceImplBase {
+public class UserServiceImpl extends UserServiceGrpc.UserServiceImplBase {
 
     @Override
-    public StreamObserver<HelloRequest> sayHello(StreamObserver<HelloReply> responseObserver) {
-        log.info("====sayHello====");
+    public StreamObserver<HelloRequest> get(StreamObserver<HelloReply> responseObserver) {
+        log.info("====get====");
         return new StreamObserver<HelloRequest>() {
             @Override
             public void onNext(HelloRequest helloRequest) {
