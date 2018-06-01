@@ -5,10 +5,8 @@ import com.ydcqy.grpc.rpc.HelloRequest;
 import com.ydcqy.grpc.rpc.HelloWorldServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -22,47 +20,99 @@ public class GrpcClientMain {
         CountDownLatch cdl = new CountDownLatch(1);
 
         ManagedChannel managedChannel = ManagedChannelBuilder.forAddress("127.0.0.1", 18100).usePlaintext().build();
-        HelloWorldServiceGrpc.HelloWorldServiceStub stub = HelloWorldServiceGrpc.newStub(managedChannel);
-//       UserServiceGrpc.newStub(managedChannel);
-        StreamObserver<HelloReply> responseObserver = new StreamObserver<HelloReply>() {
+
+        HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub = HelloWorldServiceGrpc.newBlockingStub(managedChannel);
+        new Thread(){
             @Override
-            public void onNext(HelloReply helloReply) {
+            public void run() {
+                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
                 log.info("receive msg 【{}】", helloReply.getMessage());
-
             }
-
+        }.start();
+        new Thread(){
             @Override
-            public void onError(Throwable throwable) {
-                log.error("error >>> {}", throwable);
+            public void run() {
+                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
+                log.info("receive msg 【{}】", helloReply.getMessage());
             }
-
+        }.start();
+        new Thread(){
             @Override
-            public void onCompleted() {
-                log.info("====onCompleted====");
-
-                managedChannel.shutdown();
-                cdl.countDown();
-
+            public void run() {
+                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
+                log.info("receive msg 【{}】", helloReply.getMessage());
             }
-        };
-
-        StreamObserver<HelloRequest> client = stub.sayHello(responseObserver);
-        new Thread(() -> {
-            while (true) {
-                String str = new Scanner(System.in).nextLine();
-                if ("EOF".equals(str)) {
-                    client.onCompleted();
-                    break;
-                }
-                log.info("begin to transport ...");
-                client.onNext(HelloRequest.newBuilder().setName(str).build());
-                client.onNext(HelloRequest.newBuilder().setName(str).build());
-                client.onNext(HelloRequest.newBuilder().setName(str).build());
-                client.onNext(HelloRequest.newBuilder().setName(str).build());
-                client.onNext(HelloRequest.newBuilder().setName(str).build());
-                client.onNext(HelloRequest.newBuilder().setName(str).build());
+        }.start();
+        new Thread(){
+            @Override
+            public void run() {
+                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
+                log.info("receive msg 【{}】", helloReply.getMessage());
             }
-        }).start();
+        }.start();
+        new Thread(){
+            @Override
+            public void run() {
+                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
+                log.info("receive msg 【{}】", helloReply.getMessage());
+            }
+        }.start();
+//        StreamObserver<HelloReply> responseObserver = new StreamObserver<HelloReply>() {
+//            @Override
+//            public void onNext(HelloReply helloReply) {
+//                log.info("receive msg 【{}】", helloReply.getMessage());
+////                try {
+////                    Thread.sleep(5000);
+////                } catch (InterruptedException e) {
+////                    e.printStackTrace();
+////                }
+//            }
+//
+//            @Override
+//            public void onError(Throwable throwable) {
+//                log.error("error >>> {}", throwable);
+//            }
+//
+//            @Override
+//            public void onCompleted() {
+//                log.info("====onCompleted====");
+//
+//                managedChannel.shutdown();
+//                cdl.countDown();
+//
+//            }
+//        };
+//
+//        StreamObserver<HelloRequest> client = HelloWorldServiceGrpc.newStub(managedChannel).sayHello(responseObserver);
+//        HelloWorldServiceGrpc.HelloWorldServiceStub stub = HelloWorldServiceGrpc.newStub(managedChannel);
+//        for (int i = 0; i < 100; i++) {
+//            HelloWorldServiceGrpc.newStub(ManagedChannelBuilder.forAddress("127.0.0.1", 18100).usePlaintext().build()).sayHello(responseObserver);
+//        }
+//        new Thread(() -> {
+//            while (true) {
+//                String str = new Scanner(System.in).nextLine();
+//                if ("EOF".equals(str)) {
+//                    HelloWorldServiceGrpc.newStub(managedChannel).sayHello(responseObserver).onCompleted();
+//                    break;
+//                }
+//                log.info("begin to transport ...");
+//
+//                new Thread(() -> {
+//                    new Thread(() -> {
+//                        log.info("begin to transport ...");
+//                        stub.sayHello(responseObserver).onNext(HelloRequest.newBuilder().setName("abc" + "R").build());
+//
+//                    }).start();
+//                    new Thread(() -> {
+//                        log.info("begin to transport ...");
+//                        stub.sayHello(responseObserver).onNext(HelloRequest.newBuilder().setName("abc" + "R").build());
+//
+//                    }).start();
+//
+//                }).start();
+//
+//            }
+//        }).start();
 
         cdl.await();
 

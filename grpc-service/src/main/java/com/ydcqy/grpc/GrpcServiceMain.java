@@ -4,6 +4,7 @@ import com.ydcqy.grpc.service.impl.HelloWorldServiceImpl;
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.netty.NettyServerBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,11 +31,11 @@ public class GrpcServiceMain {
     private GrpcServiceMain() {
     }
 
-    static class GrpcServer {
+    private static class GrpcServer {
         private Server server;
 
         public GrpcServer() {
-            ServerBuilder<?> serverBuilder = ServerBuilder.forPort(SERVER_PORT);
+            NettyServerBuilder serverBuilder = (NettyServerBuilder) ServerBuilder.forPort(SERVER_PORT);
             for (BindableService bindableService : SERVICE_IMPL_LIST) {
                 serverBuilder.addService(bindableService);
             }

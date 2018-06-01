@@ -12,5 +12,5 @@
 
     <dubbo:service ref="recommendServiceImpl" interface="com.ydcqy.cloud.services.top.service.RecommendService"
                    retries="3"
-                   timeout="30000" />
+                   timeout="30000"  />
 </beans>
