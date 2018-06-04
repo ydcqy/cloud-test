@@ -1,6 +1,7 @@
 package com.ydcqy.grpc;
 
 import com.ydcqy.grpc.service.impl.HelloWorldServiceImpl;
+import com.ydcqy.grpc.support.GrpcServiceWrapper;
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -24,7 +25,11 @@ public class GrpcServiceMain {
     private final static List<BindableService> SERVICE_IMPL_LIST = new ArrayList<>();
 
     static {
-        SERVICE_IMPL_LIST.add(new HelloWorldServiceImpl());
+        SERVICE_IMPL_LIST.add(GrpcServiceWrapper.wrap(new HelloWorldServiceImpl()));
+
+
+        boolean debugEnabled = log.isDebugEnabled();
+
     }
 
 
