@@ -21,12 +21,13 @@ import java.lang.annotation.Annotation;
  */
 @Slf4j
 @Configuration
-public class GrpcServiceAnnotationBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware, ApplicationListener {
+public class GrpcServiceAnnotationPostProcessor implements BeanPostProcessor, ApplicationContextAware, ApplicationListener {
     private ApplicationContext ac;
     private GrpcServiceContainer grpcServiceContainer = new GrpcServiceContainer();
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println(bean + ",哈哈哈");
         if (hasAnnotation(bean, GrpcService.class)) {
             if (!(bean instanceof BindableService)) {
                 throw new BeanNotOfRequiredTypeException(beanName, BindableService.class, bean.getClass());
@@ -48,6 +49,7 @@ public class GrpcServiceAnnotationBeanPostProcessor implements BeanPostProcessor
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        System.out.println(applicationContext+"啦啦啦");
         ac = applicationContext;
     }
 

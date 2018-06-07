@@ -16,19 +16,24 @@ import java.util.List;
  */
 @Slf4j
 public final class GrpcServiceContainer {
-    private final int SERVER_PORT = 18100;
-    private final List<BindableService> SERVICE_IMPL_LIST = new ArrayList<>();
+    private final List<BindableService> serviceImplList = new ArrayList<>();
+    private int serverPort = 18100;
     private Server server;
 
     public GrpcServiceContainer() {
+    }
+
+    public GrpcServiceContainer(int listenPort) {
+        this.serverPort = listenPort;
+
     }
 
     private void initServer() {
         if (server != null) {
             return;
         }
-        NettyServerBuilder serverBuilder = (NettyServerBuilder) ServerBuilder.forPort(SERVER_PORT);
-        for (BindableService bindableService : SERVICE_IMPL_LIST) {
+        NettyServerBuilder serverBuilder = (NettyServerBuilder) ServerBuilder.forPort(serverPort);
+        for (BindableService bindableService : serviceImplList) {
             serverBuilder.addService(bindableService);
         }
         server = serverBuilder.build();
@@ -37,7 +42,7 @@ public final class GrpcServiceContainer {
     public void start() throws IOException {
         initServer();
         server = server.start();
-        log.info("GrpcServer started, listening on " + SERVER_PORT);
+        log.info("GrpcServer started, listening on " + serverPort);
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -59,11 +64,11 @@ public final class GrpcServiceContainer {
     }
 
     public void append(BindableService service) {
-        SERVICE_IMPL_LIST.add(service);
+        serviceImplList.add(service);
     }
 
     public int size() {
-        return SERVICE_IMPL_LIST.size();
+        return serviceImplList.size();
     }
 
 }
