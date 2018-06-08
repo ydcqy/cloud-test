@@ -1,31 +1,41 @@
 package com.ydcqy.grpc.support;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.ServerInterceptor;
+import io.grpc.ServerInterceptors;
+import io.grpc.internal.GrpcUtil;
+import io.grpc.internal.SharedResourceHolder;
 import io.grpc.netty.NettyServerBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 /**
+ * 用于装Grpc服务端 {@link BindableService} 实现的容器
+ *
  * @author xiaoyu
  */
 @Slf4j
 public final class GrpcServiceContainer {
-    private final List<BindableService> serviceImplList = new ArrayList<>();
-    private int serverPort = 18100;
+    private final List<BindableService> serviceImplList = new LinkedList<>();
+    private Integer serverPort;
     private Server server;
-
-    public GrpcServiceContainer() {
-    }
+    private ServerInterceptor interceptor;
 
     public GrpcServiceContainer(int listenPort) {
         this.serverPort = listenPort;
-
     }
 
     private void initServer() {
@@ -34,6 +44,10 @@ public final class GrpcServiceContainer {
         }
         NettyServerBuilder serverBuilder = (NettyServerBuilder) ServerBuilder.forPort(serverPort);
         for (BindableService bindableService : serviceImplList) {
+            if (null != interceptor) {
+                serverBuilder.addService(ServerInterceptors.intercept(bindableService, this.interceptor));
+                continue;
+            }
             serverBuilder.addService(bindableService);
         }
         server = serverBuilder.build();
@@ -63,6 +77,36 @@ public final class GrpcServiceContainer {
         }
     }
 
+    public void handleThreadPool(Integer threadNum) throws Exception {
+        Class<GrpcUtil> grpcUtilClass = GrpcUtil.class;
+        Field field = grpcUtilClass.getDeclaredField("SHARED_CHANNEL_EXECUTOR");
+        field.setAccessible(true);
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(null, new SharedResourceHolder.Resource<ExecutorService>() {
+            private static final String NAME = "grpc-exec";
+
+            @Override
+            public ExecutorService create() {
+                return new ThreadPoolExecutor(threadNum, threadNum,
+                        0L, TimeUnit.MILLISECONDS,
+                        new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat(NAME + "-%d").build());
+            }
+
+            @Override
+            public void close(ExecutorService instance) {
+                instance.shutdown();
+            }
+
+            @Override
+            public String toString() {
+                return NAME;
+            }
+        });
+        modifiersField.setAccessible(false);
+    }
+
     public void append(BindableService service) {
         serviceImplList.add(service);
     }
@@ -70,5 +114,10 @@ public final class GrpcServiceContainer {
     public int size() {
         return serviceImplList.size();
     }
+
+    public void setInterceptor(ServerInterceptor interceptor) {
+        this.interceptor = interceptor;
+    }
+
 
 }

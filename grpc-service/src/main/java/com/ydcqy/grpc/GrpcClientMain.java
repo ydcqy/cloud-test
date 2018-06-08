@@ -7,6 +7,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -19,44 +20,47 @@ public class GrpcClientMain {
     public static void main(String[] args) throws InterruptedException {
         CountDownLatch cdl = new CountDownLatch(1);
 
-        ManagedChannel managedChannel = ManagedChannelBuilder.forAddress("127.0.0.1", 18100).usePlaintext().build();
+        ManagedChannel managedChannel = ManagedChannelBuilder.forAddress("127.0.0.1", 8111).usePlaintext().build();
 
         HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub = HelloWorldServiceGrpc.newBlockingStub(managedChannel);
-        new Thread(){
-            @Override
-            public void run() {
-                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
-                log.info("receive msg 【{}】", helloReply.getMessage());
-            }
-        }.start();
-        new Thread(){
-            @Override
-            public void run() {
-                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
-                log.info("receive msg 【{}】", helloReply.getMessage());
-            }
-        }.start();
-        new Thread(){
-            @Override
-            public void run() {
-                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
-                log.info("receive msg 【{}】", helloReply.getMessage());
-            }
-        }.start();
-        new Thread(){
-            @Override
-            public void run() {
-                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
-                log.info("receive msg 【{}】", helloReply.getMessage());
-            }
-        }.start();
-        new Thread(){
-            @Override
-            public void run() {
-                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
-                log.info("receive msg 【{}】", helloReply.getMessage());
-            }
-        }.start();
+        for (int i = 0; i < 1000; i++) {
+            new Thread() {
+                @Override
+                public void run() {
+                    HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
+                    log.info("receive msg 【{}】", helloReply.getMessage());
+                }
+            }.start();
+        }
+
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
+//                log.info("receive msg 【{}】", helloReply.getMessage());
+//            }
+//        }.start();
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
+//                log.info("receive msg 【{}】", helloReply.getMessage());
+//            }
+//        }.start();
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
+//                log.info("receive msg 【{}】", helloReply.getMessage());
+//            }
+//        }.start();
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
+//                log.info("receive msg 【{}】", helloReply.getMessage());
+//            }
+//        }.start();
 //        StreamObserver<HelloReply> responseObserver = new StreamObserver<HelloReply>() {
 //            @Override
 //            public void onNext(HelloReply helloReply) {
@@ -114,7 +118,8 @@ public class GrpcClientMain {
 //            }
 //        }).start();
 
-        cdl.await();
+        new Scanner(System.in).nextLine();
+        managedChannel.shutdown();
 
     }
 }

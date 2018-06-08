@@ -55,6 +55,7 @@ spring:
   ########### MyBatis配置 ###########
 mybatis:
   mapperLocations: classpath:/mapper/*.xml
+  configuration-properties:
 pagehelper:
   helper-dialect: mysql
 

@@ -4,6 +4,7 @@ import io.grpc.BindableService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -16,18 +17,19 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 
 /**
+ * GrpcService注解支持
+ *
  * @author xiaoyu
- * @date 2017-12-29
  */
 @Slf4j
 @Configuration
 public class GrpcServiceAnnotationPostProcessor implements BeanPostProcessor, ApplicationContextAware, ApplicationListener {
     private ApplicationContext ac;
-    private GrpcServiceContainer grpcServiceContainer = new GrpcServiceContainer();
+    @Autowired
+    private GrpcServiceContainer grpcServiceContainer;
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        System.out.println(bean + ",哈哈哈");
         if (hasAnnotation(bean, GrpcService.class)) {
             if (!(bean instanceof BindableService)) {
                 throw new BeanNotOfRequiredTypeException(beanName, BindableService.class, bean.getClass());
@@ -49,7 +51,6 @@ public class GrpcServiceAnnotationPostProcessor implements BeanPostProcessor, Ap
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        System.out.println(applicationContext+"啦啦啦");
         ac = applicationContext;
     }
 
