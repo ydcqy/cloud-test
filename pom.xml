@@ -15,16 +15,6 @@
         <version>1.5.6.RELEASE</version>
     </parent>
 
-    <modules>
-        <module>cloud-registry</module>
-        <module>talk-service</module>
-        <module>top-service</module>
-        <module>customer</module>
-        <module>kiter</module>
-        <module>personal-web</module>
-        <module>cache-support</module>
-        <module>grpc-service</module>
-    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

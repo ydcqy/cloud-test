@@ -6,6 +6,7 @@ import com.ydcqy.cloud.services.talk.service.ImageService;
 import com.ydcqy.cloud.services.talk.service.MeetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,10 +30,10 @@ public class TalkController {
     }
 
     @RequestMapping("test")
-    public String test() {
+    public ResponseEntity<String> test() {
         System.out.println("dddddd");
         log.info("testxxxxx......");
-        return "test结果";
+        return ResponseEntity.ok("test结果");
     }
 
 }
