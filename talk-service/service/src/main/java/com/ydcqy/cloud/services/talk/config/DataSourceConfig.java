@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 /**
  * @author xiaoyu
  * BeanFactory,FactoryBean,BeanPostProcessor,BeanFactoryPostProcessor
- * EnvironmentAware,InitializingBean,BeanClassLoaderAware,BeanNameAware,BeanFactoryAware
+ * EnvironmentAware,InitializingBean,BeanClassLoaderAware,ResourceLoaderAware,BeanNameAware,BeanFactoryAware
  * ApplicationContextInitializer,ApplicationListener,SpringApplicationRunListener
  */
 
