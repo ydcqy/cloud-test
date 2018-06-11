@@ -85,7 +85,7 @@ public final class GrpcServiceContainer {
         modifiersField.setAccessible(true);
         modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         field.set(null, new SharedResourceHolder.Resource<ExecutorService>() {
-            private static final String NAME = "grpc-exec";
+            private static final String NAME = "grpc-server";
 
             @Override
             public ExecutorService create() {

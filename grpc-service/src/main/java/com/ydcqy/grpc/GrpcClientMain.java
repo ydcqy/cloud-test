@@ -1,5 +1,6 @@
 package com.ydcqy.grpc;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.ydcqy.grpc.rpc.HelloReply;
 import com.ydcqy.grpc.rpc.HelloRequest;
 import com.ydcqy.grpc.rpc.HelloWorldServiceGrpc;
@@ -9,6 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiaoyu
@@ -23,14 +29,18 @@ public class GrpcClientMain {
         ManagedChannel managedChannel = ManagedChannelBuilder.forAddress("127.0.0.1", 8111).usePlaintext().build();
 
         HelloWorldServiceGrpc.HelloWorldServiceBlockingStub stub = HelloWorldServiceGrpc.newBlockingStub(managedChannel);
+        ExecutorService executorService =
+                new ThreadPoolExecutor(1000,
+                        1000, 0, TimeUnit.SECONDS,
+                        new LinkedBlockingQueue(), new ThreadFactoryBuilder().setNameFormat("grpc-client-%d").build());
+        CountDownLatch countDownLatch = new CountDownLatch(1000);
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(1000);
         for (int i = 0; i < 1000; i++) {
-            new Thread() {
-                @Override
-                public void run() {
-                    HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("abc" + "R").build());
-                    log.info("receive msg 【{}】", helloReply.getMessage());
-                }
-            }.start();
+            Thread.sleep(1);
+            executorService.execute(() -> {
+                HelloReply helloReply = stub.sayHello(HelloRequest.newBuilder().setName("你好,世界!").build());
+                log.info("receive msg 【{}】", helloReply.getMessage());
+            });
         }
 
 //        new Thread(){
