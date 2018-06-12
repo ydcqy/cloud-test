@@ -15,4 +15,3 @@ spring:
       host: 10.1.7.21
       port: 27017
       database: yuanda
-
