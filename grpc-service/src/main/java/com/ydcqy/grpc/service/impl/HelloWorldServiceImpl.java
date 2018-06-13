@@ -6,6 +6,7 @@ import com.ydcqy.grpc.rpc.HelloWorldServiceGrpc;
 import com.ydcqy.grpc.support.GrpcService;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,12 +26,17 @@ public class HelloWorldServiceImpl extends HelloWorldServiceGrpc.HelloWorldServi
     private StringRedisTemplate redisTemplate;
     @Autowired
     private MongoTemplate mongoTemplate;
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
 
     @PostConstruct
     public void init() {
         redisTemplate.opsForValue().set("user:user_session", UUID.randomUUID().toString());
         mongoTemplate.insert("{abdg:123,xxx:1234}", "user");
         List<Object> user = mongoTemplate.findAll(Object.class, "user");
+        rabbitTemplate.setQueue("talk.o2o.sayhello");
+//        rabbitTemplate.convertAndSend("grpc.xy.test", "talk.o2o.sayhello", "halo123");
         System.out.println(user);
         System.out.println(mongoTemplate + "哈哈哈2");
         System.out.println(redisTemplate + "哈哈哈l");

@@ -1,7 +1,6 @@
 server:
   port: 8101
 
-
 ydcqy:
   grpc:
     server:
@@ -15,3 +14,10 @@ spring:
       host: 10.1.7.21
       port: 27017
       database: yuanda
+  rabbitmq:
+    host: 10.1.7.22
+    port: 5672
+    username: xiaoyu
+    password: 123456
+    publisher-confirms: true
+    virtual-host: /
