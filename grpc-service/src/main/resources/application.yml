@@ -19,5 +19,5 @@ spring:
     port: 5672
     username: xiaoyu
     password: 123456
-    publisher-confirms: true
     virtual-host: /
+
