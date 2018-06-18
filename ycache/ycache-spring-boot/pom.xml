@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ydcqy</groupId>
-    <artifactId>cache-spring-boot</artifactId>
+    <artifactId>ycache-spring-boot</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
