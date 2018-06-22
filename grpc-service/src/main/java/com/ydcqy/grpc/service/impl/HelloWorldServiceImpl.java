@@ -1,5 +1,6 @@
 package com.ydcqy.grpc.service.impl;
 
+import com.google.common.collect.Lists;
 import com.ydcqy.grpc.rpc.HelloReply;
 import com.ydcqy.grpc.rpc.HelloRequest;
 import com.ydcqy.grpc.rpc.HelloWorldServiceGrpc;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.annotation.PostConstruct;
