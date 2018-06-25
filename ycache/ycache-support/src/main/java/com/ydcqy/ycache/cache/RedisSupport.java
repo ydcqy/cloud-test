@@ -29,19 +29,22 @@ public class RedisSupport {
     private void init() {
         checkConfig();
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMinIdle(10);
-        jedisPoolConfig.setMaxIdle(20);
-        jedisPoolConfig.setMinEvictableIdleTimeMillis(30000);
-        jedisPoolConfig.setMaxTotal(200);
-        jedisPoolConfig.setMaxWaitMillis(10000);
-        jedisPoolConfig.setTestWhileIdle(true);
-        jedisPoolConfig.setTestOnBorrow(true);
-        jedisPoolConfig.setTestOnReturn(false);
-        jedisPoolConfig.setTimeBetweenEvictionRunsMillis(30000);
+
+        if (redisConfig.getMinIdle() != null) jedisPoolConfig.setMinIdle(redisConfig.getMinIdle());
+        if (redisConfig.getMaxIdle() != null) jedisPoolConfig.setMaxIdle(redisConfig.getMaxIdle());
+        if (redisConfig.getMinEvictableIdleTimeMillis() != null)
+            jedisPoolConfig.setMinEvictableIdleTimeMillis(redisConfig.getMinEvictableIdleTimeMillis());
+        if (redisConfig.getMaxTotal() != null) jedisPoolConfig.setMaxTotal(redisConfig.getMaxTotal());
+        if (redisConfig.getMaxWaitMillis() != null) jedisPoolConfig.setMaxWaitMillis(redisConfig.getMaxWaitMillis());
+        if (redisConfig.getTestWhileIdle() != null) jedisPoolConfig.setTestWhileIdle(redisConfig.getTestWhileIdle());
+        if (redisConfig.getTestOnBorrow() != null) jedisPoolConfig.setTestOnBorrow(redisConfig.getTestOnBorrow());
+        if (redisConfig.getTestOnReturn() != null) jedisPoolConfig.setTestOnReturn(redisConfig.getTestOnReturn());
+        if (redisConfig.getTimeBetweenEvictionRunsMillis() != null)
+            jedisPoolConfig.setTimeBetweenEvictionRunsMillis(redisConfig.getTimeBetweenEvictionRunsMillis());
         if (StringUtils.isEmpty(redisConfig.getPassword()))
-            jedisPool = new JedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getTimeout());
+            jedisPool = new JedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis());
         else
-            jedisPool = new JedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getTimeout(), redisConfig.getPassword());
+            jedisPool = new JedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis(), redisConfig.getPassword());
     }
 
     private void checkConfig() {
@@ -68,7 +71,6 @@ public class RedisSupport {
             }
         }
     }
-
 
     public String get(String key) {
         Jedis jedis = null;

@@ -4,6 +4,8 @@ package com.ydcqy.ycache.cluster;
  * @author xiaoyu
  */
 public interface LoadBalance {
-    void select();
+    Node select();
+
+    void addNode(Node node);
 }
 
