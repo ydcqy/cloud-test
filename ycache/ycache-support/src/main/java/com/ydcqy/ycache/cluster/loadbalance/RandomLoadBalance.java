@@ -15,8 +15,6 @@ public class RandomLoadBalance extends AbstractLoadBalance {
 
     @Override
     protected Node analyze(List<Node> nodes) {
-        int size = nodes.size();
-        return nodes.get(random.nextInt(size));
+        return nodes.get(random.nextInt(nodes.size()));
     }
-
 }

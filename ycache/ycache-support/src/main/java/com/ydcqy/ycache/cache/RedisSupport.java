@@ -1,5 +1,6 @@
 package com.ydcqy.ycache.cache;
 
+import com.ydcqy.ycache.cluster.redis.ClusterJedisPool;
 import com.ydcqy.ycache.config.RedisConfig;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
@@ -42,9 +43,13 @@ public class RedisSupport {
         if (redisConfig.getTimeBetweenEvictionRunsMillis() != null)
             jedisPoolConfig.setTimeBetweenEvictionRunsMillis(redisConfig.getTimeBetweenEvictionRunsMillis());
         if (StringUtils.isEmpty(redisConfig.getPassword()))
-            jedisPool = new JedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis());
+            jedisPool = new ClusterJedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis());
         else
-            jedisPool = new JedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis(), redisConfig.getPassword());
+            jedisPool = new ClusterJedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis(), redisConfig.getPassword());
+    }
+
+    private void initCluster() {
+
     }
 
     private void checkConfig() {

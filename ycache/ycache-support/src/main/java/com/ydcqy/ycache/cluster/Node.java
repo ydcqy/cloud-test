@@ -8,12 +8,12 @@ import lombok.Data;
 @Data
 public class Node {
     private String host;
-    private int port;
+    private Integer port;
 
     public Node() {
     }
 
-    public Node(String host, int port) {
+    public Node(String host, Integer port) {
         this.host = host;
         this.port = port;
     }
