@@ -1,7 +1,10 @@
 package com.ydcqy.ycache.cache;
 
+import com.ydcqy.ycache.cluster.Node;
 import com.ydcqy.ycache.cluster.redis.ClusterJedisPool;
+import com.ydcqy.ycache.cluster.redis.ClusterType;
 import com.ydcqy.ycache.config.RedisConfig;
+import com.ydcqy.ycache.exception.CacheConfigException;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -29,32 +32,52 @@ public class RedisSupport {
 
     private void init() {
         checkConfig();
-        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        initPool(jedisPoolConfig);
+
+        if (null != redisConfig.getCluster()) {
+            initCluster(jedisPoolConfig);
+        } else {
+            if (StringUtils.isEmpty(redisConfig.getPassword()))
+                jedisPool = new JedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis());
+            else
+                jedisPool = new JedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis(), redisConfig.getPassword());
+        }
+    }
+
+    private void initPool(JedisPoolConfig jedisPoolConfig) {
         if (redisConfig.getMinIdle() != null) jedisPoolConfig.setMinIdle(redisConfig.getMinIdle());
         if (redisConfig.getMaxIdle() != null) jedisPoolConfig.setMaxIdle(redisConfig.getMaxIdle());
         if (redisConfig.getMinEvictableIdleTimeMillis() != null)
             jedisPoolConfig.setMinEvictableIdleTimeMillis(redisConfig.getMinEvictableIdleTimeMillis());
         if (redisConfig.getMaxTotal() != null) jedisPoolConfig.setMaxTotal(redisConfig.getMaxTotal());
-        if (redisConfig.getMaxWaitMillis() != null) jedisPoolConfig.setMaxWaitMillis(redisConfig.getMaxWaitMillis());
-        if (redisConfig.getTestWhileIdle() != null) jedisPoolConfig.setTestWhileIdle(redisConfig.getTestWhileIdle());
+        if (redisConfig.getMaxWaitMillis() != null)
+            jedisPoolConfig.setMaxWaitMillis(redisConfig.getMaxWaitMillis());
+        if (redisConfig.getTestWhileIdle() != null)
+            jedisPoolConfig.setTestWhileIdle(redisConfig.getTestWhileIdle());
         if (redisConfig.getTestOnBorrow() != null) jedisPoolConfig.setTestOnBorrow(redisConfig.getTestOnBorrow());
         if (redisConfig.getTestOnReturn() != null) jedisPoolConfig.setTestOnReturn(redisConfig.getTestOnReturn());
         if (redisConfig.getTimeBetweenEvictionRunsMillis() != null)
             jedisPoolConfig.setTimeBetweenEvictionRunsMillis(redisConfig.getTimeBetweenEvictionRunsMillis());
-        if (StringUtils.isEmpty(redisConfig.getPassword()))
-            jedisPool = new ClusterJedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis());
-        else
-            jedisPool = new ClusterJedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis(), redisConfig.getPassword());
     }
 
-    private void initCluster() {
-
+    private void initCluster(JedisPoolConfig jedisPoolConfig) {
+        ClusterType type = ClusterType.as(redisConfig.getCluster().getType());
+        List<Node> nodes = redisConfig.getCluster().getNodes();
+        this.jedisPool = new ClusterJedisPool(jedisPoolConfig, nodes, type, redisConfig);
     }
 
     private void checkConfig() {
-        if (StringUtils.isBlank(redisConfig.getHost())) {
-            throw new NullPointerException("Host must not be null");
+        RedisConfig.Cluster cluster = redisConfig.getCluster();
+        if (cluster == null) {
+            if (StringUtils.isBlank(redisConfig.getHost())) {
+                throw new NullPointerException("Host must not be null");
+            }
+        } else {
+            if (null == ClusterType.as(cluster.getType())) {
+                throw new CacheConfigException("Redis cluster type is not supported");
+            }
         }
     }
 
@@ -197,4 +220,5 @@ public class RedisSupport {
             }
         }
     }
+
 }

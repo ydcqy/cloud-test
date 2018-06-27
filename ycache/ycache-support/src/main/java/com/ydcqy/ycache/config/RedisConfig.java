@@ -38,7 +38,7 @@ public class RedisConfig {
         if (null == yaml) {
             Object yml = ConfigUtils.loadYaml("redis.yml");
             if (null == yml) {
-                throw new CacheConfigException("Redis config Resource file does not exist");
+                throw new CacheConfigException("Redis config Resource file doesn't exist");
             }
             yaml = yml;
         }
@@ -89,7 +89,7 @@ public class RedisConfig {
     }
 
     @Data
-    static class Cluster {
+    public static class Cluster {
         private String type;
         private List<Node> nodes = new ArrayList<>();
     }

@@ -3,6 +3,8 @@ cluster:
   nodes:
    - host: 10.1.7.11
      port: 6379
+#   - host: 10.1.7.11
+#     port: 6371
 #host: 10.1.7.11
 #port: 6379
 #password: 123456
