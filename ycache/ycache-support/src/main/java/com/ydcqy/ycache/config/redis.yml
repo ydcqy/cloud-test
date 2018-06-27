@@ -1,5 +1,5 @@
 cluster:
-  type: none
+  type: codis
   nodes:
    - host: 10.1.7.11
      port: 6379

@@ -5,6 +5,7 @@ import com.ydcqy.ycache.config.RedisConfig;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 /**
  * @author xiaoyu
@@ -23,6 +24,5 @@ public class Test {
                 }
             });
         }
-
     }
 }

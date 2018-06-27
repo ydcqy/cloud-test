@@ -35,9 +35,9 @@ public class ClusterJedisPool extends JedisPool {
                 break;
             case NONE:
                 if (StringUtils.isEmpty(redisConfig.getPassword()))
-                    jedisPoolMap.put(null, new JedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis()));
+                    jedisPoolMap.put(null, new JedisPool(jedisPoolConfig, clusterNodes.get(0).getHost(), clusterNodes.get(0).getPort(), redisConfig.getMaxWaitMillis()));
                 else
-                    jedisPoolMap.put(null, new JedisPool(jedisPoolConfig, redisConfig.getHost(), redisConfig.getPort(), redisConfig.getMaxWaitMillis(), redisConfig.getPassword()));
+                    jedisPoolMap.put(null, new JedisPool(jedisPoolConfig, clusterNodes.get(0).getHost(), clusterNodes.get(0).getPort(), redisConfig.getMaxWaitMillis(), ((RedisNode) clusterNodes.get(0)).getPassword()));
                 break;
         }
     }
