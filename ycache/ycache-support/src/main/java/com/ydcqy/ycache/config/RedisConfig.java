@@ -94,7 +94,4 @@ public class RedisConfig {
         private List<Node> nodes = new ArrayList<>();
     }
 
-    public static void main(String[] args) {
-        loadByResource();
-    }
 }

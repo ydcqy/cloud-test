@@ -1,6 +1,5 @@
 package com.ydcqy.ycache.cluster.redis;
 
-import com.alibaba.fastjson.JSON;
 import com.ydcqy.ycache.cluster.LoadBalance;
 import com.ydcqy.ycache.cluster.Node;
 import com.ydcqy.ycache.cluster.loadbalance.RandomLoadBalance;
@@ -87,7 +86,4 @@ public class ClusterJedisPool extends JedisPool {
         super.returnResource(resource);
     }
 
-    static class MeJedis {
-
-    }
 }

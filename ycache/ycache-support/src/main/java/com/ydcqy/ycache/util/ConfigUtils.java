@@ -51,8 +51,4 @@ public class ConfigUtils {
         return ClassLoader.getSystemResourceAsStream(fileName);
     }
 
-    public static void main(String[] args) {
-        Node node = loadYaml("redis.yml", Node.class);
-        System.out.println(node);
-    }
 }
