@@ -221,4 +221,67 @@ public class RedisSupport {
         }
     }
 
+    public String set(String key, String value, String nxxx, String expx, long time) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).set(key, value, nxxx, expx, time);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public String set(byte[] key, byte[] value, byte[] nxxx, byte[] expx, long time) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).set(key, value, nxxx, expx, time);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public Boolean setbit(String key, long offset, boolean value) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).setbit(key, offset, value);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public Boolean getbit(String key, long offset) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).getbit(key, offset);
+        } finally {
+            if (null != jedis) jedis.close();
+        }
+    }
+
+
+    public String select(int index) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).select(index);
+        } finally {
+            if (null != jedis) jedis.close();
+        }
+    }
+
+    public Long setnx(String key, String value) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).setnx(key, value);
+        } finally {
+            if (null != jedis) jedis.close();
+        }
+    }
+
+    private Jedis jedis;
+
 }

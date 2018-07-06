@@ -40,6 +40,7 @@ public class NettyClient {
                                 System.out.println("----channelActive----");
                                 ctx.writeAndFlush(Unpooled.copiedBuffer("Hi server,I'm client!",
                                         CharsetUtil.UTF_8));
+
                             }
 
                             @Override

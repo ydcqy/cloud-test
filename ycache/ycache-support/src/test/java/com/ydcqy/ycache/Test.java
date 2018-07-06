@@ -14,13 +14,13 @@ public class Test {
     public static void main(String[] args) {
         RedisSupport redisSupport = new RedisSupport(RedisConfig.loadByResource());
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 1; i++) {
             int finalI = i;
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
-                    String abc1 = redisSupport.get("abc");
-                    System.out.println(abc1 + " " + finalI);
+                    long set = redisSupport.setnx("abc1212", "111");
+                    System.out.println(set + " " + finalI);
                 }
             });
         }

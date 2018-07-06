@@ -19,9 +19,9 @@ spring:
       port: 27017
       database: yuanda
   rabbitmq:
+
     host: 10.1.7.22
     port: 5672
     username: xiaoyu
     password: 123456
     virtual-host: /
-

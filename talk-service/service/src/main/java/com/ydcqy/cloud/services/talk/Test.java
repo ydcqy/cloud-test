@@ -1,49 +1,26 @@
 package com.ydcqy.cloud.services.talk;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.ydcqy.cloud.services.talk.support.PageWrapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.util.ClassUtils;
+import org.apache.commons.configuration.DefaultConfigurationBuilder;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.io.InputStream;
+import java.net.URL;
 
 /**
  * @author xiaoyu
  */
 @Slf4j
 public class Test {
-    public static void main(String[] args) throws  Exception {
+
+    public static void main(String[] args) throws Exception {
 //        ResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
 //        System.out.println(Arrays.asList(resourceResolver.getResources("mapper/*")).get(0).getURL());
-Object obj=new Object();
-new Thread(){
-    @Override
-    public void run() {
+//        \org\springframework\boot\logging\logback\defaults.xml
+        InputStream systemResourceAsStream = ClassLoader.getSystemResourceAsStream("/");
 
-        System.out.println(1111);
-        try {
-            synchronized (obj) {
-
-                Thread.sleep(2000);
-                System.out.println(1111);
-            }
-            } catch(InterruptedException e){
-                e.printStackTrace();
-            }
+        System.out.println( ClassLoader.getSystemResource("org/springframework/boot/logging/logback/defaults.xml"));
+        System.out.println(Thread.currentThread().getContextClassLoader());
 
     }
-}.start();
-    }
-public void abc(boolean b){
 
-}public void abc(Boolean b){
-
-}
 }

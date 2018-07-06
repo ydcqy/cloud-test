@@ -56,13 +56,13 @@ public class NettyServer extends AbstractServer {
                     private void initWebSocket(Channel ch) throws Exception {
                         ChannelPipeline pipeline = ch.pipeline();
                         log.info("----initChannel----，管道：{}", pipeline.hashCode());
-                        pipeline.addLast(new HttpServerCodec())
+                        pipeline/*.addLast(new HttpServerCodec())
                                 .addLast(new HttpObjectAggregator(Integer.MAX_VALUE))
                                 .addLast(new ChunkedWriteHandler())
                                 .addLast(webSocketGroup, webSocketCodec)
                                 .addLast(new WebSocketServerProtocolHandler("/"))
-                                .addLast(webSocketGroup1,textWebSocketFrameHandler)
-//                                .addLast("handler", nettyServerHandler)
+                                .addLast(webSocketGroup1,textWebSocketFrameHandler)*/
+                                .addLast("handler", nettyServerHandler)
                         ;
                     }
 
