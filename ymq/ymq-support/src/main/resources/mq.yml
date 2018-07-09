@@ -1,0 +1,4 @@
+activemq:
+  maxThreadPoolSize: 12
+  user:
+    name: abc
