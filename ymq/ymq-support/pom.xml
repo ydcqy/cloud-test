@@ -11,6 +11,9 @@
 
     <properties>
         <rabbitmq.version>5.3.0</rabbitmq.version>
+        <activemq.version>5.15.4</activemq.version>
+        <kafka.version>1.1.0</kafka.version>
+        <zeromq.version>0.4.3</zeromq.version>
     </properties>
 
     <dependencies>
@@ -48,6 +51,33 @@
             <groupId>com.rabbitmq</groupId>
             <artifactId>amqp-client</artifactId>
             <version>${rabbitmq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>${activemq.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.12</artifactId>
+            <version>${kafka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${kafka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zeromq</groupId>
+            <artifactId>jeromq</artifactId>
+            <version>${zeromq.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.ydcqy</groupId>
+            <artifactId>ycache-support</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
     <build>
