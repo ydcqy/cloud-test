@@ -1,14 +1,14 @@
 package com.ydcqy.ymq;
 
-import com.ydcqy.ymq.configuration.AmqConfiguration;
+import com.ydcqy.ymq.configuration.ActiveMqConfiguration;
 import com.ydcqy.ymq.configuration.Configuration;
 
 /**
  * @author xiaoyu
  */
-public class AmqConfigurationFactory extends AbstractConfigurationFactory {
+public class ActiveMqConfigurationFactory extends AbstractConfigurationFactory {
     private static final String CONFIG_PREFIX = "activemq";
-    private static final Class<? extends Configuration> CONFIG_CLASS = AmqConfiguration.class;
+    private static final Class<? extends Configuration> CONFIG_CLASS = ActiveMqConfiguration.class;
 
     @Override
     protected String getConfigPrefix() {
