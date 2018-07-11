@@ -1,4 +1,4 @@
 activemq:
-  maxThreadPoolSize: 12
-  user:
-    name: abc
+  brokerUrl: failover:(tcp://primary:61616)?timeout=5000
+  user: admin
+  password: admin
