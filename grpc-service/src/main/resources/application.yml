@@ -19,7 +19,7 @@ spring:
       port: 27017
       database: yuanda
   rabbitmq:
-  activemq:
+
 
 
     host: 10.1.7.22
@@ -27,7 +27,7 @@ spring:
     username: xiaoyu
     password: 123456
     virtual-host: /
-    user:
+
     password
   activemq:
     broker-url:

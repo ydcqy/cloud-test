@@ -9,12 +9,13 @@ public abstract class AbstractProducer implements Producer {
     private ConnectionFactory connectionFactory;
 
     public AbstractProducer() {
+
     }
 
     public AbstractProducer(ConnectionFactory connectionFactory) {
-        this();
         this.connectionFactory = connectionFactory;
     }
+
 
     public ConnectionFactory getConnectionFactory() {
         return connectionFactory;

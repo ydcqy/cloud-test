@@ -1,5 +1,8 @@
 package com.ydcqy.ymq;
 
+import com.ydcqy.ymq.connection.ActiveMqConnectionFactory;
+import com.ydcqy.ymq.producer.ActiveMqProducer;
+import com.ydcqy.ymq.producer.Producer;
 import com.ydcqy.ymq.util.UnsafeUtil;
 import sun.misc.Unsafe;
 
@@ -25,16 +28,8 @@ public class Main {
     private volatile Object value = new Object();
 
     public static void main(String[] args) throws NoSuchFieldException {
-//        ConnectionFactory cf = new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration());
-//        Producer producer = new ActiveMqProducer(cf);
+        Producer producer = new ActiveMqProducer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration()));
 
-        Main obj = new Main();
-//        System.out.println(unsafe.getAndAddInt(obj, valueOffset, 1));
-        System.out.println(obj.value);
-        System.out.println(unsafe.getObjectVolatile(obj, valueOffset));
-        boolean b = unsafe.compareAndSwapObject(obj, valueOffset, obj.value, new Object());
-        System.out.println(b);
-        System.out.println(obj.value);
 
     }
 }

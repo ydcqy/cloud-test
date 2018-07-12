@@ -1,4 +1,4 @@
 activemq:
-  brokerUrl: failover:(tcp://primary:61616)?timeout=5000
-  user: admin
+  brokerUrl: failover:(tcp://localhost:61616)?timeout=5000
+  username: admin
   password: admin
