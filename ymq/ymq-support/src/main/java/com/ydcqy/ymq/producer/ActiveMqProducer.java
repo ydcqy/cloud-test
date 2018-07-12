@@ -1,30 +1,22 @@
 package com.ydcqy.ymq.producer;
 
-import com.ydcqy.ymq.ActiveMqConfigurationFactory;
-import com.ydcqy.ymq.configuration.ActiveMqConfiguration;
+import com.ydcqy.ymq.connection.ConnectionFactory;
 import com.ydcqy.ymq.message.Message;
-import org.apache.activemq.ActiveMQConnection;
-import org.apache.activemq.ActiveMQConnectionFactory;
+import com.ydcqy.ymq.message.Queue;
 
 /**
  * @author xiaoyu
  */
 public class ActiveMqProducer extends AbstractProducer {
-    private ActiveMqConfiguration configuration;
-
     public ActiveMqProducer() {
-        configuration = (ActiveMqConfiguration) new ActiveMqConfigurationFactory().getConfiguration();
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER, ActiveMQConnection.DEFAULT_PASSWORD, ActiveMQConnection.DEFAULT_BROKER_URL);
+    }
 
+    public ActiveMqProducer(ConnectionFactory connectionFactory) {
+        super(connectionFactory);
     }
 
     @Override
-    public void send(Message msg) {
-
+    public void send(Queue queue, Message msg) {
     }
 
-    public static void main(String[] args) {
-        System.out.println(Thread.interrupted());
-
-    }
 }
