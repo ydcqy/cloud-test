@@ -33,9 +33,18 @@ public class ActiveMqConnectionFactory implements ConnectionFactory {
         ActiveMQPrefetchPolicy policy = new ActiveMQPrefetchPolicy();
         policy.setQueuePrefetch(1);
         cf.setPrefetchPolicy(policy);
-        if (null == pooledCf) {
+        initPool();
+    }
+
+    private void initPool() {
+        if (null == pooledCf && null != cfg.getPool()) {
             pooledCf = new PooledConnectionFactory(cf);
-            pooledCf.setMaxConnections(1);
+            Object value;
+            if ((value = cfg.getPool().getMaxConnections()) != null) pooledCf.setMaxConnections((Integer) value);
+            if ((value = cfg.getPool().getIdleTimeout()) != null) pooledCf.setIdleTimeout((Integer) value);
+            if ((value = cfg.getPool().getExpiryTimeout()) != null) pooledCf.setExpiryTimeout((Integer) value);
+            if ((value = cfg.getPool().getTimeBetweenExpirationCheckMillis()) != null)
+                pooledCf.setTimeBetweenExpirationCheckMillis((Integer) value);
         }
     }
 

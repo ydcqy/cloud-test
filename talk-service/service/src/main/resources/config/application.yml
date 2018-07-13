@@ -42,6 +42,8 @@ spring:
       testWhileIdle: true
       testOnBorrow: true
       filters: stat,wall,log4j
+
+
   #################################
 #eureka:
 #  client:

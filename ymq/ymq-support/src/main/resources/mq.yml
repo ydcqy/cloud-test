@@ -1,4 +1,9 @@
 activemq:
-  brokerUrl: failover:(tcp://localhost:61616)?timeout=5000
+  brokerUrl: failover:(tcp://10.1.7.22:61616)?timeout=5000
   username: admin
   password: admin
+  pool:
+    maxConnections: 20
+    idleTimeout: 30000
+    expiryTimeout: 30000
+    timeBetweenExpirationCheckMillis: 30000

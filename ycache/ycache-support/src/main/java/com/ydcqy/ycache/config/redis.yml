@@ -8,7 +8,7 @@ maxIdle: 20
 maxTotal: 500
 maxWaitMillis: 5000
 minEvictableIdleTimeMillis: 30000
-timeBetweenEvictionRunsMillis: 30000
+timeBetweenEvictionRunsMillis: 100000
 testWhileIdle: true
-testOnBorrow: true
+testOnBorrow: false
 testOnReturn: false
