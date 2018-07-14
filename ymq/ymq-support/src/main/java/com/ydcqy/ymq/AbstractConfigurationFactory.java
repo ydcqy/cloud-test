@@ -1,6 +1,7 @@
 package com.ydcqy.ymq;
 
 import com.ydcqy.ymq.configuration.Configuration;
+import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
@@ -9,6 +10,7 @@ import java.util.Map;
 /**
  * @author xiaoyu
  */
+@Slf4j
 public abstract class AbstractConfigurationFactory implements ConfigurationFactory {
     private static final String CONFIG_FILE = "mq.yml";
 
@@ -36,7 +38,7 @@ public abstract class AbstractConfigurationFactory implements ConfigurationFacto
     public Configuration getConfiguration() {
 
         init();
-        System.out.println(configuration);
+        log.info(configuration.toString());
         return this.configuration;
     }
 }

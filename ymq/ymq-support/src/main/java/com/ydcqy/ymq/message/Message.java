@@ -4,7 +4,9 @@ package com.ydcqy.ymq.message;
  * @author xiaoyu
  */
 public interface Message {
-    byte[] getContent();
+    byte[] getEncodeContent();
+
+    Object getDecodeObject();
 
     Long getDelayMillis();
 

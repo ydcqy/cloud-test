@@ -97,8 +97,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>1.7</source>
+                    <target>1.7</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -109,7 +109,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix></classpathPrefix>
-                            <mainClass>com.ydcqy.ymq.Main</mainClass>
+                            <mainClass>com.ydcqy.ymq.ProducerMain</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

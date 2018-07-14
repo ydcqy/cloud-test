@@ -34,16 +34,18 @@ public class ActiveMqConnectionFactory implements ConnectionFactory {
         policy.setQueuePrefetch(1);
         cf.setPrefetchPolicy(policy);
         initPool();
+
     }
 
     private void initPool() {
-        if (null == pooledCf && null != cfg.getPool()) {
+        if (null == pooledCf && null != cfg.getProducerPool()) {
             pooledCf = new PooledConnectionFactory(cf);
             Object value;
-            if ((value = cfg.getPool().getMaxConnections()) != null) pooledCf.setMaxConnections((Integer) value);
-            if ((value = cfg.getPool().getIdleTimeout()) != null) pooledCf.setIdleTimeout((Integer) value);
-            if ((value = cfg.getPool().getExpiryTimeout()) != null) pooledCf.setExpiryTimeout((Integer) value);
-            if ((value = cfg.getPool().getTimeBetweenExpirationCheckMillis()) != null)
+            if ((value = cfg.getProducerPool().getMaxConnections()) != null)
+                pooledCf.setMaxConnections((Integer) value);
+            if ((value = cfg.getProducerPool().getIdleTimeout()) != null) pooledCf.setIdleTimeout((Integer) value);
+            if ((value = cfg.getProducerPool().getExpiryTimeout()) != null) pooledCf.setExpiryTimeout((Integer) value);
+            if ((value = cfg.getProducerPool().getTimeBetweenExpirationCheckMillis()) != null)
                 pooledCf.setTimeBetweenExpirationCheckMillis((Integer) value);
         }
     }
@@ -51,8 +53,27 @@ public class ActiveMqConnectionFactory implements ConnectionFactory {
     @Override
     public Connection getConnection() throws ConnectionException {
         try {
-            ActiveMqConnection connection = new ActiveMqConnection(pooledCf.createConnection());
+            ActiveMqConnection connection = new ActiveMqConnection((pooledCf != null ? pooledCf : cf).createConnection());
             return connection;
+        } catch (JMSException e) {
+            throw new ConnectionException(e);
+        }
+    }
+
+    @Override
+    public Connection getConnection(boolean isPooledConn) throws ConnectionException {
+        if (isPooledConn) {
+            if (pooledCf == null) {
+                throw new ConnectionException("Connection pools are not configured");
+            }
+            try {
+                return new ActiveMqConnection(pooledCf.createConnection());
+            } catch (JMSException e) {
+                throw new ConnectionException(e);
+            }
+        }
+        try {
+            return new ActiveMqConnection(cf.createConnection());
         } catch (JMSException e) {
             throw new ConnectionException(e);
         }

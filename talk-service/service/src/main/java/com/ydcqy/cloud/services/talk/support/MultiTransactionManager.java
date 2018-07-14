@@ -185,7 +185,7 @@ public class MultiTransactionManager extends AbstractPlatformTransactionManager
 
             // Switch to manual commit if necessary. This is very expensive in some JDBC drivers,
             // so we don't want to do it unnecessarily (for example if we've explicitly
-            // configured the connection pool to set it already).
+            // configured the connection producerPool to set it already).
             if (con.getAutoCommit()) {
                 txObject.setMustRestoreAutoCommit(true);
                 if (logger.isDebugEnabled()) {

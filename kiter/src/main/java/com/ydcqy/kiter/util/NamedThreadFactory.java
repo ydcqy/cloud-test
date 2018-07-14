@@ -34,7 +34,7 @@ public class NamedThreadFactory implements ThreadFactory {
     private final ThreadGroup mGroup;
 
     public NamedThreadFactory() {
-        this("pool-" + POOL_SEQ.getAndIncrement(), false);
+        this("producerPool-" + POOL_SEQ.getAndIncrement(), false);
     }
 
     public NamedThreadFactory(String poolName) {

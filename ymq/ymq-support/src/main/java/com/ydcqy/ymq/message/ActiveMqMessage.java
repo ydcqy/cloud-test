@@ -9,35 +9,45 @@ import java.nio.charset.Charset;
  */
 public class ActiveMqMessage implements Message {
     private Object obj;
+    private byte[] bytes;
     private Long delayMillis;
     private Long periodMillis;
     private Integer repeatNum;
 
-    public ActiveMqMessage(Object obj) {
-        this.obj = obj;
+    public ActiveMqMessage(Object encodeObj) {
+        this.obj = encodeObj;
     }
 
-    public ActiveMqMessage(Object obj, String queueName, ActiveMqQueue.Type type, Long delayMillis) {
-        this.obj = obj;
+    public ActiveMqMessage(byte[] decodeBytes) {
+        this.bytes = decodeBytes;
+    }
+
+    public ActiveMqMessage(Object encodeObj, Long delayMillis) {
+        this.obj = encodeObj;
         this.delayMillis = delayMillis;
     }
 
-    public ActiveMqMessage(Object obj, String queueName, ActiveMqQueue.Type type, Long delayMillis, Long periodMillis) {
-        this.obj = obj;
+    public ActiveMqMessage(Object encodeObj, Long delayMillis, Long periodMillis) {
+        this.obj = encodeObj;
         this.delayMillis = delayMillis;
         this.periodMillis = periodMillis;
     }
 
-    public ActiveMqMessage(Object obj, String queueName, ActiveMqQueue.Type type, Long delayMillis, Long periodMillis, Integer repeatNum) {
-        this.obj = obj;
+    public ActiveMqMessage(Object encodeObj, Long delayMillis, Long periodMillis, Integer repeatNum) {
+        this.obj = encodeObj;
         this.delayMillis = delayMillis;
         this.periodMillis = periodMillis;
         this.repeatNum = repeatNum;
     }
 
     @Override
-    public byte[] getContent() {
-        return JSON.toJSONString(obj).getBytes(Charset.forName("utf-8"));
+    public byte[] getEncodeContent() {
+        return JSON.toJSONBytes(obj);
+    }
+
+    @Override
+    public Object getDecodeObject() {
+        return JSON.parse(bytes);
     }
 
     @Override

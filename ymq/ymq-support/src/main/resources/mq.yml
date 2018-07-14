@@ -1,9 +1,11 @@
 activemq:
   brokerUrl: failover:(tcp://10.1.7.22:61616)?timeout=5000
   username: admin
-  password: admin
-  pool:
+  password: ${activemq.username}
+  producerPool:
     maxConnections: 20
     idleTimeout: 30000
     expiryTimeout: 30000
     timeBetweenExpirationCheckMillis: 30000
+  consumerListener:
+    concurrency: 5

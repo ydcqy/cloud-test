@@ -9,6 +9,8 @@ import com.ydcqy.ymq.exception.ConnectionException;
 public interface ConnectionFactory {
     Connection getConnection() throws ConnectionException;
 
+    Connection getConnection(boolean isPooledConn) throws ConnectionException;
+
     Configuration getConfiguration();
 
 }

@@ -1,5 +1,6 @@
 package com.ydcqy.ymq;
 
+import com.ydcqy.ymq.configuration.ActiveMqConfiguration;
 import com.ydcqy.ymq.connection.ActiveMqConnectionFactory;
 import com.ydcqy.ymq.exception.MqException;
 import com.ydcqy.ymq.message.ActiveMqMessage;
@@ -16,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author xiaoyu
  */
-public class Main {
+public class ProducerMain {
     private static final Unsafe unsafe = UnsafeUtil.getUnsafe();
 
     private static final long valueOffset;
@@ -33,17 +34,20 @@ public class Main {
     private volatile Object value = new Object();
 
     public static void main(String[] args) throws Exception {
-        Producer producer = new ActiveMqProducer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration()));
-        AtomicInteger n = new AtomicInteger();
+        final Producer producer = new ActiveMqProducer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration()));
+        final AtomicInteger n = new AtomicInteger();
         ExecutorService executorService = Executors.newFixedThreadPool(100);
 
-        for (int i = 0; i < 10000; i++) {
+        for (int i = 0; i < 100000; i++) {
 
             executorService.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        producer.send(new ActiveMqQueue("com.test", ActiveMqQueue.Type.QUEUE), new ActiveMqMessage("哇卡卡卡"));
+                        ActiveMqConfiguration cfg = new ActiveMqConfiguration();
+                        cfg.setUsername("张三");
+                        cfg.setPassword("123abc");
+                        producer.send(new ActiveMqQueue("com.test", ActiveMqQueue.Type.QUEUE), new ActiveMqMessage(cfg));
                     } catch (MqException e) {
                         e.printStackTrace();
                     }
