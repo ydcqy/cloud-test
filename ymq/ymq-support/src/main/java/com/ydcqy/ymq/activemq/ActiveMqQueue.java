@@ -1,4 +1,6 @@
-package com.ydcqy.ymq.message;
+package com.ydcqy.ymq.activemq;
+
+import com.ydcqy.ymq.message.Queue;
 
 /**
  * @author xiaoyu

@@ -1,11 +1,12 @@
 package com.ydcqy.ymq;
 
-import com.ydcqy.ymq.configuration.ActiveMqConfiguration;
-import com.ydcqy.ymq.connection.ActiveMqConnectionFactory;
+import com.ydcqy.ymq.activemq.ActiveMqConfigurationFactory;
+import com.ydcqy.ymq.activemq.ActiveMqConfiguration;
+import com.ydcqy.ymq.activemq.ActiveMqConnectionFactory;
 import com.ydcqy.ymq.exception.MqException;
-import com.ydcqy.ymq.message.ActiveMqMessage;
-import com.ydcqy.ymq.message.ActiveMqQueue;
-import com.ydcqy.ymq.producer.ActiveMqProducer;
+import com.ydcqy.ymq.activemq.ActiveMqMessage;
+import com.ydcqy.ymq.activemq.ActiveMqQueue;
+import com.ydcqy.ymq.activemq.ActiveMqProducer;
 import com.ydcqy.ymq.producer.Producer;
 import com.ydcqy.ymq.util.UnsafeUtil;
 import sun.misc.Unsafe;

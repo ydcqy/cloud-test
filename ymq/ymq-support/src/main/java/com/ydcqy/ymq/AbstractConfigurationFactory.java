@@ -25,7 +25,7 @@ public abstract class AbstractConfigurationFactory implements ConfigurationFacto
     private void init() {
         InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE);
         if (null == is) {
-            is = this.getClass().getResourceAsStream(CONFIG_FILE);
+            is = AbstractConfigurationFactory.class.getResourceAsStream(CONFIG_FILE);
         }
         if (null == is) {
             throw new NullPointerException("The configuration file mq.yml does not exist");

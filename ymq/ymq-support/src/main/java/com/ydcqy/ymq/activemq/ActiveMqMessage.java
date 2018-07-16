@@ -1,6 +1,7 @@
-package com.ydcqy.ymq.message;
+package com.ydcqy.ymq.activemq;
 
 import com.alibaba.fastjson.JSON;
+import com.ydcqy.ymq.message.Message;
 
 import java.nio.charset.Charset;
 

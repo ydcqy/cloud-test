@@ -1,7 +1,8 @@
-package com.ydcqy.ymq.connection;
+package com.ydcqy.ymq.activemq;
 
-import com.ydcqy.ymq.configuration.ActiveMqConfiguration;
 import com.ydcqy.ymq.configuration.Configuration;
+import com.ydcqy.ymq.connection.Connection;
+import com.ydcqy.ymq.connection.ConnectionFactory;
 import com.ydcqy.ymq.exception.ConnectionException;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQPrefetchPolicy;

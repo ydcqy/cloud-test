@@ -1,6 +1,6 @@
-package com.ydcqy.ymq;
+package com.ydcqy.ymq.activemq;
 
-import com.ydcqy.ymq.configuration.ActiveMqConfiguration;
+import com.ydcqy.ymq.AbstractConfigurationFactory;
 import com.ydcqy.ymq.configuration.Configuration;
 
 /**

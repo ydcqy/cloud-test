@@ -1,6 +1,6 @@
 package com.ydcqy.ymq.consumer;
 
-import com.ydcqy.ymq.configuration.ActiveMqConfiguration;
+import com.ydcqy.ymq.activemq.ActiveMqConfiguration;
 import com.ydcqy.ymq.connection.ConnectionFactory;
 import com.ydcqy.ymq.message.MessageListener;
 import com.ydcqy.ymq.message.Queue;

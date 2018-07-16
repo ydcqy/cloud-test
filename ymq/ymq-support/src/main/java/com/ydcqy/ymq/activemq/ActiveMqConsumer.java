@@ -1,9 +1,10 @@
-package com.ydcqy.ymq.consumer;
+package com.ydcqy.ymq.activemq;
 
 import com.ydcqy.ymq.connection.ConnectionFactory;
+import com.ydcqy.ymq.consumer.AbstractConsumer;
 import com.ydcqy.ymq.exception.MqException;
-import com.ydcqy.ymq.message.ActiveMqMessage;
-import com.ydcqy.ymq.message.ActiveMqQueue;
+import com.ydcqy.ymq.activemq.ActiveMqMessage;
+import com.ydcqy.ymq.activemq.ActiveMqQueue;
 import com.ydcqy.ymq.message.MessageExecutor;
 import com.ydcqy.ymq.message.MessageListener;
 import com.ydcqy.ymq.message.Queue;

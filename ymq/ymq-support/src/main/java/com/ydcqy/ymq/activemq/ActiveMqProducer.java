@@ -1,10 +1,10 @@
-package com.ydcqy.ymq.producer;
+package com.ydcqy.ymq.activemq;
 
 import com.ydcqy.ymq.connection.ConnectionFactory;
 import com.ydcqy.ymq.exception.MqException;
-import com.ydcqy.ymq.message.ActiveMqQueue;
 import com.ydcqy.ymq.message.Message;
 import com.ydcqy.ymq.message.Queue;
+import com.ydcqy.ymq.producer.AbstractProducer;
 import org.apache.activemq.ScheduledMessage;
 
 import javax.jms.BytesMessage;

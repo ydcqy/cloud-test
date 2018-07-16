@@ -1,19 +1,12 @@
 package com.ydcqy.ymq;
 
-import com.alibaba.fastjson.JSON;
-import com.ydcqy.ymq.connection.ActiveMqConnectionFactory;
-import com.ydcqy.ymq.consumer.ActiveMqConsumer;
+import com.ydcqy.ymq.activemq.ActiveMqConfigurationFactory;
+import com.ydcqy.ymq.activemq.ActiveMqConnectionFactory;
+import com.ydcqy.ymq.activemq.ActiveMqConsumer;
 import com.ydcqy.ymq.consumer.Consumer;
-import com.ydcqy.ymq.message.ActiveMqQueue;
+import com.ydcqy.ymq.activemq.ActiveMqQueue;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.ActiveMQPrefetchPolicy;
 
-import javax.jms.Connection;
-import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.Queue;
-import javax.jms.Session;
 import java.util.concurrent.CountDownLatch;
 
 /**

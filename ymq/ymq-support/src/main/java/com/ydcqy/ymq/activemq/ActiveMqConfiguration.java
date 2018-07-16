@@ -1,5 +1,6 @@
-package com.ydcqy.ymq.configuration;
+package com.ydcqy.ymq.activemq;
 
+import com.ydcqy.ymq.configuration.Configuration;
 import lombok.Data;
 
 /**
