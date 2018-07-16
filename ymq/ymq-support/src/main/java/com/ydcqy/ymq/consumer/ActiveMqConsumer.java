@@ -4,6 +4,7 @@ import com.ydcqy.ymq.connection.ConnectionFactory;
 import com.ydcqy.ymq.exception.MqException;
 import com.ydcqy.ymq.message.ActiveMqMessage;
 import com.ydcqy.ymq.message.ActiveMqQueue;
+import com.ydcqy.ymq.message.MessageExecutor;
 import com.ydcqy.ymq.message.MessageListener;
 import com.ydcqy.ymq.message.Queue;
 import com.ydcqy.ymq.util.UnsafeUtil;
@@ -12,7 +13,6 @@ import org.apache.activemq.util.ByteSequence;
 import sun.misc.Unsafe;
 
 import javax.jms.Destination;
-import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import java.util.List;
@@ -44,9 +44,12 @@ public class ActiveMqConsumer extends AbstractConsumer {
                 Queue q = entry.getKey();
                 ActiveMqQueue activeMqQueue = (ActiveMqQueue) q;
                 List<MessageListener> mls = entry.getValue();
+                MessageExecutor executor = new MessageExecutor("activemq", mls.size());
                 for (final MessageListener ml : mls) {
+                    if (null == executor.getMessageListener()) {
+                        executor.setMessageListener(ml);
+                    }
                     Session session = connection.createSession(Boolean.FALSE, Session.CLIENT_ACKNOWLEDGE);
-
                     Destination dest = null;
                     switch (activeMqQueue.getType()) {
                         case QUEUE:
@@ -57,17 +60,14 @@ public class ActiveMqConsumer extends AbstractConsumer {
                             break;
                     }
                     MessageConsumer consumer = session.createConsumer(dest);
-                    consumer.setMessageListener(new javax.jms.MessageListener() {
-                        @Override
-                        public void onMessage(Message message) {
-                            ActiveMQBytesMessage msg = (ActiveMQBytesMessage) message;
-                            try {
-                                msg.acknowledge();
-                                ByteSequence dataIn = (ByteSequence) unsafe.getObject(msg, unsafe.objectFieldOffset(org.apache.activemq.command.Message.class.getDeclaredField("content")));
-                                ml.onMessage(new ActiveMqMessage(dataIn.getData()));
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
+                    consumer.setMessageListener(message -> {
+                        ActiveMQBytesMessage msg = (ActiveMQBytesMessage) message;
+                        try {
+                            msg.acknowledge();
+                            ByteSequence dataIn = (ByteSequence) unsafe.getObject(msg, unsafe.objectFieldOffset(org.apache.activemq.command.Message.class.getDeclaredField("content")));
+                            executor.onMessage(new ActiveMqMessage(dataIn.getData()));
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
                         }
                     });
                 }
