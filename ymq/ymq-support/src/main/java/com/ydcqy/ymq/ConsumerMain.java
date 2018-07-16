@@ -3,8 +3,8 @@ package com.ydcqy.ymq;
 import com.ydcqy.ymq.activemq.ActiveMqConfigurationFactory;
 import com.ydcqy.ymq.activemq.ActiveMqConnectionFactory;
 import com.ydcqy.ymq.activemq.ActiveMqConsumer;
-import com.ydcqy.ymq.consumer.Consumer;
 import com.ydcqy.ymq.activemq.ActiveMqQueue;
+import com.ydcqy.ymq.consumer.Consumer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CountDownLatch;

@@ -39,11 +39,11 @@ public class ProducerMain {
         final AtomicInteger n = new AtomicInteger();
         ExecutorService executorService = Executors.newFixedThreadPool(100);
 
-        for (int i = 0; i < 1000000; i++) {
+        for (int i = 0; i < 1; i++) {
 
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
+//            executorService.execute(new Runnable() {
+//                @Override
+//                public void run() {
                     try {
                         ActiveMqConfiguration cfg = new ActiveMqConfiguration();
                         cfg.setUsername("张三");
@@ -53,8 +53,8 @@ public class ProducerMain {
                         e.printStackTrace();
                     }
                     System.out.println(n.incrementAndGet());
-                }
-            });
+//                }
+//            });
         }
 
 

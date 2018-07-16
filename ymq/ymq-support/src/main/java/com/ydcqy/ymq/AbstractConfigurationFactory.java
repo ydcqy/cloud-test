@@ -38,7 +38,6 @@ public abstract class AbstractConfigurationFactory implements ConfigurationFacto
     public Configuration getConfiguration() {
 
         init();
-        log.info(configuration.toString());
         return this.configuration;
     }
 }

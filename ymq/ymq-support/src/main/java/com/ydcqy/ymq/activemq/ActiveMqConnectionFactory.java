@@ -34,7 +34,6 @@ public class ActiveMqConnectionFactory implements ConnectionFactory {
         ActiveMQPrefetchPolicy policy = new ActiveMQPrefetchPolicy();
         policy.setQueuePrefetch(1);
         cf.setPrefetchPolicy(policy);
-        initPool();
 
     }
 
@@ -53,17 +52,13 @@ public class ActiveMqConnectionFactory implements ConnectionFactory {
 
     @Override
     public Connection getConnection() throws ConnectionException {
-        try {
-            ActiveMqConnection connection = new ActiveMqConnection((pooledCf != null ? pooledCf : cf).createConnection());
-            return connection;
-        } catch (JMSException e) {
-            throw new ConnectionException(e);
-        }
+        return getConnection(cfg.getProducerPool() != null);
     }
 
     @Override
     public Connection getConnection(boolean isPooledConn) throws ConnectionException {
         if (isPooledConn) {
+            initPool();
             if (pooledCf == null) {
                 throw new ConnectionException("Connection pools are not configured");
             }
