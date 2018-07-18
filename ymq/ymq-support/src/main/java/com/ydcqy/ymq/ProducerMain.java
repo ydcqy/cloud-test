@@ -39,7 +39,7 @@ public class ProducerMain {
         final AtomicInteger n = new AtomicInteger();
         ExecutorService executorService = Executors.newFixedThreadPool(100);
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 1000; i++) {
 
 //            executorService.execute(new Runnable() {
 //                @Override

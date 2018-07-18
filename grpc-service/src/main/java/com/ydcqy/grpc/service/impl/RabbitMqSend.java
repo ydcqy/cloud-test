@@ -24,11 +24,10 @@ public class RabbitMqSend {
         connectionFactory.setHost("10.1.7.22");
         connectionFactory.setPort(5672);
         connectionFactory.setUsername("xiaoyu");
-        connectionFactory.setPassword("123456");
 
         Connection conn = connectionFactory.newConnection();
         Channel channel1 = conn.createChannel();
-
+        conn.close();
         String exchange = "test.product";
         String queue = "product.stock2";
         channel1.exchangeDeclare(exchange, "topic", true);

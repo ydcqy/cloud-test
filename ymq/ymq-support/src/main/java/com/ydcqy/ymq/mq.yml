@@ -3,7 +3,7 @@ activemq:
   username: admin
   password: ${activemq.username}
   producerPool:
-    maxConnections: 20
+    maxConnections: 2
     idleTimeout: 30000
     expiryTimeout: 30000
     timeBetweenExpirationCheckMillis: 30000
