@@ -9,6 +9,7 @@ import com.ydcqy.ymq.activemq.ActiveMqQueue;
 import com.ydcqy.ymq.activemq.ActiveMqProducer;
 import com.ydcqy.ymq.producer.Producer;
 import com.ydcqy.ymq.util.UnsafeUtil;
+import lombok.extern.slf4j.Slf4j;
 import sun.misc.Unsafe;
 
 import java.util.concurrent.ExecutorService;
@@ -18,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author xiaoyu
  */
+@Slf4j
 public class ProducerMain {
     private static final Unsafe unsafe = UnsafeUtil.getUnsafe();
 
@@ -38,7 +40,7 @@ public class ProducerMain {
         final Producer producer = new ActiveMqProducer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration()));
         final AtomicInteger n = new AtomicInteger();
         ExecutorService executorService = Executors.newFixedThreadPool(100);
-
+log.trace("哇卡卡卡");
         for (int i = 0; i < 1000; i++) {
 
 //            executorService.execute(new Runnable() {
