@@ -19,23 +19,28 @@ public class Test {
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         Abc abc = new Abc();
 
-        for (int i = 0; i < 10000000; i++) {
+        for (int i = 0; i < 30; i++) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             executorService.execute(abc);
-//            System.out.println(i);
+
         }
-        System.out.println("666666666");
+
 
     }
 
     static class Abc implements Runnable {
         AtomicInteger n = new AtomicInteger(1);
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(10);
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(5);
 
         @Override
         public void run() {
             try {
-                cyclicBarrier.await();
 
+                cyclicBarrier.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (BrokenBarrierException e) {

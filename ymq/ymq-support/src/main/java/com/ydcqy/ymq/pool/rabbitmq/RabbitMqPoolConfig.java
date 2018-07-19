@@ -1,4 +1,4 @@
-package com.ydcqy.ymq.pool;
+package com.ydcqy.ymq.pool.rabbitmq;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 

@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
  */
 public class UnsafeUtil {
     private static final Unsafe theUnsafe;
-    protected transient String name;
+
     static {
         try {
             Field field = Unsafe.class.getDeclaredField("theUnsafe");
@@ -35,6 +35,6 @@ public class UnsafeUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(getValueOffset(Message.class,"content"));
+        System.out.println(getValueOffset(Message.class, "content"));
     }
 }
