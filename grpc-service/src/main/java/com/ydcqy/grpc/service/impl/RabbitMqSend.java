@@ -24,21 +24,22 @@ public class RabbitMqSend {
         connectionFactory.setHost("10.1.7.22");
         connectionFactory.setPort(5672);
         connectionFactory.setUsername("xiaoyu");
+        connectionFactory.setPassword("123456");
 
         Connection conn = connectionFactory.newConnection();
         Channel channel1 = conn.createChannel();
-        conn.close();
+
         String exchange = "test.product";
-        String queue = "product.stock2";
+        String queue = "a.b.c";
         channel1.exchangeDeclare(exchange, "topic", true);
         channel1.queueDeclare(queue, true, false, false, null);
-        channel1.queueBind(queue, exchange, BindingKey.PRODUCT_STOCK_KEY, null);
+        channel1.queueBind(queue, exchange, queue, null);
         System.out.println("设置..");
         for (int i = 0; i < 2; i++) {
 //            String str = new Scanner(System.in).nextLine();
             String str = "好咯" + i;
             if (!StringUtils.isEmpty(str)) {
-                channel1.basicPublish(exchange, "product.stock.abc", MessageProperties.MINIMAL_PERSISTENT_BASIC, str.getBytes());
+                channel1.basicPublish(exchange, "a.b.c", MessageProperties.MINIMAL_PERSISTENT_BASIC, str.getBytes());
             }
         }
         System.out.println("设置11..");

@@ -1,19 +1,13 @@
 package com.ydcqy.ymq;
 
-import com.ydcqy.ymq.activemq.ActiveMqConfiguration;
 import com.ydcqy.ymq.activemq.ActiveMqConfigurationFactory;
 import com.ydcqy.ymq.activemq.ActiveMqConnectionFactory;
-import com.ydcqy.ymq.activemq.ActiveMqMessage;
 import com.ydcqy.ymq.activemq.ActiveMqProducer;
-import com.ydcqy.ymq.activemq.ActiveMqQueue;
 import com.ydcqy.ymq.producer.Producer;
-import com.ydcqy.ymq.util.UnsafeUtil;
+import com.ydcqy.ymq.util.UnsafeUtils;
 import lombok.extern.slf4j.Slf4j;
 import sun.misc.Unsafe;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -21,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public class ProducerMain {
-    private static final Unsafe unsafe = UnsafeUtil.getUnsafe();
+    private static final Unsafe unsafe = UnsafeUtils.getUnsafe();
 
     private static final long valueOffset;
 
@@ -52,7 +46,7 @@ public class ProducerMain {
 //                        ActiveMqConfiguration cfg = new ActiveMqConfiguration();
 //                        cfg.setUsername("张三");
 //                        cfg.setPassword("123abc");
-//                        producer.send(new ActiveMqQueue("com.test", ActiveMqQueue.Type.QUEUE), new ActiveMqMessage(cfg));
+//                        producer.send(new RabbitMqQueue("com.test", RabbitMqQueue.Type.QUEUE), new RabbitMqMessage(cfg));
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
 //                    }

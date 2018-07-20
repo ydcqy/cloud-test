@@ -5,5 +5,4 @@ package com.ydcqy.ymq.message;
  */
 public interface Queue {
     String getQueueName();
-
 }

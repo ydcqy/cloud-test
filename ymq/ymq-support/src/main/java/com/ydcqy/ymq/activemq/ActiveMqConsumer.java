@@ -3,12 +3,10 @@ package com.ydcqy.ymq.activemq;
 import com.ydcqy.ymq.connection.ConnectionFactory;
 import com.ydcqy.ymq.consumer.AbstractConsumer;
 import com.ydcqy.ymq.exception.MqException;
-import com.ydcqy.ymq.activemq.ActiveMqMessage;
-import com.ydcqy.ymq.activemq.ActiveMqQueue;
 import com.ydcqy.ymq.message.MessageExecutor;
 import com.ydcqy.ymq.message.MessageListener;
 import com.ydcqy.ymq.message.Queue;
-import com.ydcqy.ymq.util.UnsafeUtil;
+import com.ydcqy.ymq.util.UnsafeUtils;
 import org.apache.activemq.command.ActiveMQBytesMessage;
 import org.apache.activemq.util.ByteSequence;
 import sun.misc.Unsafe;
@@ -26,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ActiveMqConsumer extends AbstractConsumer {
     private javax.jms.Connection connection;
-    private Unsafe unsafe = UnsafeUtil.getUnsafe();
+    private Unsafe unsafe = UnsafeUtils.getUnsafe();
 
     public ActiveMqConsumer(ConnectionFactory connectionFactory) {
         super(connectionFactory);

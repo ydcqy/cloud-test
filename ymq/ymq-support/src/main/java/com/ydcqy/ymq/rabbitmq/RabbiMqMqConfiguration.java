@@ -9,22 +9,27 @@ import lombok.Data;
 
 @Data
 public class RabbiMqMqConfiguration implements Configuration {
-    private String brokerUrl;
+    private String host;
+    private String port;
     private String username;
     private String password;
-    private ProducerPool producerPool;
-    private ConsumerListener consumerListener;
 
     @Data
     public static class ProducerPool {
-        private Integer maxConnections;
-        private Integer idleTimeout;
-        private Integer expiryTimeout;
-        private Integer timeBetweenExpirationCheckMillis;
+        private Integer maxTotal;
+        private Integer maxIdle;
+        private Integer minIdle;
+        private Integer maxWaitMillis;
+        private Integer minEvictableIdleTimeMillis;
+        private Integer timeBetweenEvictionRunsMillis;
+        private Boolean testOnBorrow;
+        private Boolean testOnReturn;
+        private Boolean testWhileIdle;
     }
 
     @Data
     public static class ConsumerListener {
         private Integer concurrency = 1;
     }
+
 }

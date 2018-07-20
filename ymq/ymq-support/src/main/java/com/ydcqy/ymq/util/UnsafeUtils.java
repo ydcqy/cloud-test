@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 /**
  * @author xiaoyu
  */
-public class UnsafeUtil {
+public class UnsafeUtils {
     private static final Unsafe theUnsafe;
 
     static {
