@@ -7,8 +7,8 @@ import com.ydcqy.ymq.configuration.Configuration;
  * @author xiaoyu
  */
 public class RabbitMqConfigurationFactory extends AbstractConfigurationFactory {
-    private static final String CONFIG_PREFIX = "rabbitmq";
-    private static final Class<? extends Configuration> CONFIG_CLASS = RabbiMqMqConfiguration.class;
+    private static final String                         CONFIG_PREFIX = "rabbitmq";
+    private static final Class<? extends Configuration> CONFIG_CLASS  = RabbitMqConfiguration.class;
 
     @Override
     protected String getConfigPrefix() {

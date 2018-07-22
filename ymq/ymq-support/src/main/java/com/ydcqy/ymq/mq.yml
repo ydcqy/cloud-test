@@ -9,3 +9,20 @@ activemq:
     timeBetweenExpirationCheckMillis: 30000
   consumerListener:
     concurrency: 5
+rabbitmq:
+  host: 10.1.7.22
+  port: 5672
+  username: xiaoyu
+  password: 123456
+  producerPool: 
+    maxTotal: 5
+    maxIdle: 5
+    minIdle: 5
+    maxWaitMillis: 5000
+    minEvictableIdleTimeMillis: 60000
+    timeBetweenEvictionRunsMillis: 30000
+    testOnBorrow: false
+    testOnReturn: fasle
+    testWhileIdle: true
+  consumerListener:
+    concurrency: 5

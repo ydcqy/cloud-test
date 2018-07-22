@@ -33,7 +33,7 @@ public class RabbitMqReceive {
         Channel channel1 = conn.createChannel();
 
         String exchange = "test.product";
-        String queue = "product.stock";
+        String queue = "a.b.c";
 
 //        channel1.exchangeDeclare(exchange, "topic", true);
 //        channel1.queueDeclare(queue, true, false, false, null);

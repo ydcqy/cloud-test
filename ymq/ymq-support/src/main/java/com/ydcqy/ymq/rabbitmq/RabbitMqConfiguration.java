@@ -8,11 +8,13 @@ import lombok.Data;
  */
 
 @Data
-public class RabbiMqMqConfiguration implements Configuration {
-    private String host;
-    private String port;
-    private String username;
-    private String password;
+public class RabbitMqConfiguration implements Configuration {
+    private String           host;
+    private Integer          port;
+    private String           username;
+    private String           password;
+    private ProducerPool     producerPool;
+    private ConsumerListener consumerListener;
 
     @Data
     public static class ProducerPool {

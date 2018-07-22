@@ -49,9 +49,9 @@ public class RabbitMqFactory implements PooledObjectFactory<PooledConnection> {
     @Override
     public void destroyObject(PooledObject<PooledConnection> p) throws Exception {
         try {
-            Connection connection = p.getObject();
+            PooledConnection connection = p.getObject();
             if (connection.isOpen()) {
-                connection.close();
+                connection.disconnect();
             }
         } catch (IOException e) {
         }

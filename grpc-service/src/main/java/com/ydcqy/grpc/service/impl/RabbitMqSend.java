@@ -20,6 +20,8 @@ public class RabbitMqSend {
 
     @PostConstruct
     public void send() throws Exception {
+
+
         ConnectionFactory connectionFactory = new ConnectionFactory();
         connectionFactory.setHost("10.1.7.22");
         connectionFactory.setPort(5672);
@@ -34,15 +36,18 @@ public class RabbitMqSend {
         channel1.exchangeDeclare(exchange, "topic", true);
         channel1.queueDeclare(queue, true, false, false, null);
         channel1.queueBind(queue, exchange, queue, null);
-        System.out.println("设置..");
-        for (int i = 0; i < 2; i++) {
+        long s = System.currentTimeMillis();
+
+        for (int i = 0; i < 10000; i++) {
 //            String str = new Scanner(System.in).nextLine();
             String str = "好咯" + i;
             if (!StringUtils.isEmpty(str)) {
-                channel1.basicPublish(exchange, "a.b.c", MessageProperties.MINIMAL_PERSISTENT_BASIC, str.getBytes());
+                long ss = System.currentTimeMillis();
+                channel1.basicPublish(exchange, queue, MessageProperties.MINIMAL_PERSISTENT_BASIC, str.getBytes());
+                System.out.println(System.currentTimeMillis() - ss);
             }
         }
-        System.out.println("设置11..");
+        System.out.println("时间：" + (System.currentTimeMillis() - s));
 
     }
 

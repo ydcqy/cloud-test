@@ -18,11 +18,15 @@ import java.util.Map;
  * @author xiaoyu
  */
 public class PooledConnection implements Connection {
-    private Connection connection;
+    private Connection                          connection;
     private GenericObjectPool<PooledConnection> connectionsPool;
 
     public PooledConnection(Connection connection) {
         this.connection = connection;
+    }
+
+    public void disconnect() throws IOException {
+        connection.close();
     }
 
     public void setConnectionsPool(GenericObjectPool<PooledConnection> connectionsPool) {

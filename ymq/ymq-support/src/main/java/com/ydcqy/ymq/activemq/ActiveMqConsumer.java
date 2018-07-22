@@ -11,6 +11,7 @@ import org.apache.activemq.command.ActiveMQBytesMessage;
 import org.apache.activemq.util.ByteSequence;
 import sun.misc.Unsafe;
 
+import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
@@ -23,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author xiaoyu
  */
 public class ActiveMqConsumer extends AbstractConsumer {
-    private javax.jms.Connection connection;
+    private Connection connection;
     private Unsafe unsafe = UnsafeUtils.getUnsafe();
 
     public ActiveMqConsumer(ConnectionFactory connectionFactory) {
@@ -34,7 +35,7 @@ public class ActiveMqConsumer extends AbstractConsumer {
     public void listen() throws MqException {
         try {
             if (null == connection) {
-                connection = ((javax.jms.Connection) getConnectionFactory().getConnection(false).getTargetConnection());
+                connection = (Connection) getConnectionFactory().getConnection(false).getTargetConnection();
                 connection.start();
             }
             ConcurrentHashMap<Queue, List<MessageListener>> queueListener = getQueueListener();

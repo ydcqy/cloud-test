@@ -8,6 +8,7 @@ import com.ydcqy.ymq.producer.AbstractProducer;
 import org.apache.activemq.ScheduledMessage;
 
 import javax.jms.BytesMessage;
+import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
@@ -22,12 +23,13 @@ public class ActiveMqProducer extends AbstractProducer {
     }
 
     @Override
-    public void send(Queue queue, Message msg) throws MqException {
-        javax.jms.Connection connection = null;
+    protected void doSend(Queue queue, Message msg) throws MqException {
+        Connection connection = null;
+        Session session = null;
         try {
-            connection = ((javax.jms.Connection) getConnectionFactory().getConnection().getTargetConnection());
+            connection = (Connection) getConnectionFactory().getConnection().getTargetConnection();
             connection.start();
-            Session session = connection.createSession(Boolean.TRUE, Session.SESSION_TRANSACTED);
+            session = connection.createSession(Boolean.TRUE, Session.SESSION_TRANSACTED);
             ActiveMqQueue activeMqQueue = (ActiveMqQueue) queue;
             Destination dest = null;
             switch (activeMqQueue.getType()) {
@@ -53,6 +55,9 @@ public class ActiveMqProducer extends AbstractProducer {
             throw new MqException(e);
         } finally {
             try {
+                if (null != session) {
+                    session.close();
+                }
                 if (null != connection) {
                     connection.close();
                 }
@@ -61,5 +66,4 @@ public class ActiveMqProducer extends AbstractProducer {
             }
         }
     }
-
 }

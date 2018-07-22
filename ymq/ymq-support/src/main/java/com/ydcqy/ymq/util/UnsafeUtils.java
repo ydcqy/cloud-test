@@ -34,7 +34,12 @@ public class UnsafeUtils {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(getValueOffset(Message.class, "content"));
+    public static void main(String[] args) throws InstantiationException {
+        System.out.println(getUnsafe().addressSize());
+        System.out.println(getUnsafe().pageSize());
+        String str=new String();
+        System.out.println(getUnsafe().allocateInstance(String.class).getClass());
+
+
     }
 }

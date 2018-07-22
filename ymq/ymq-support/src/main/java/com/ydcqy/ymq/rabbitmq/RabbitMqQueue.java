@@ -6,13 +6,17 @@ import com.ydcqy.ymq.message.Queue;
  * @author xiaoyu
  */
 public class RabbitMqQueue implements Queue {
-    private Type   type;
+    private static final String DEFAULT_EXCHANGE_NAME = "ymq.default";
+    private String messageRoutingKey;
+    private String exchangeName;
+    private String queueBindingKey;
     private String queueName;
 
-
-    public RabbitMqQueue(String queueName, Type type) {
+    public RabbitMqQueue(String queueName) {
+        this.messageRoutingKey = queueName;
+        this.queueBindingKey = queueName;
         this.queueName = queueName;
-        this.type = type;
+        this.exchangeName = DEFAULT_EXCHANGE_NAME;
     }
 
 
@@ -21,13 +25,24 @@ public class RabbitMqQueue implements Queue {
         return queueName;
     }
 
-    public Type getType() {
-        return type;
+    public String getMessageRoutingKey() {
+        return messageRoutingKey;
+    }
+
+    public String getExchangeName() {
+        return exchangeName;
+    }
+
+    public String getQueueBindingKey() {
+        return queueBindingKey;
     }
 
     public int hashCode() {
         int h;
-        return (h = queueName.hashCode()) ^ (h >> 16) ^ type.hashCode();
+        return ((h = messageRoutingKey.hashCode()) ^ (h >> 16)) ^
+                ((h = exchangeName.hashCode()) ^ (h >> 16)) ^
+                ((h = queueBindingKey.hashCode()) ^ (h >> 16)) ^
+                ((h = queueName.hashCode()) ^ (h >> 16));
     }
 
     public boolean equals(Object obj) {
@@ -35,11 +50,11 @@ public class RabbitMqQueue implements Queue {
         if (this == obj) return true;
         if (this.getClass() != obj.getClass()) return false;
         RabbitMqQueue n = (RabbitMqQueue) obj;
-        return type.equals(n.getType()) && queueName.equals(n.queueName);
+        return messageRoutingKey.equals(n.messageRoutingKey) &&
+                exchangeName.equals(n.exchangeName) &&
+                queueBindingKey.equals(n.queueBindingKey) &&
+                queueName.equals(n.queueName);
     }
 
-    public enum Type {
-        QUEUE,
-        TOPIC
-    }
+
 }
