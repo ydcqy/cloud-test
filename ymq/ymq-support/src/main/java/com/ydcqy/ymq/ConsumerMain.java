@@ -25,7 +25,7 @@ public class ConsumerMain {
         long ss = System.currentTimeMillis();
         consumer.bindMessageListener(
 //                new ActiveMqQueue("x.y.z", ActiveMqQueue.Type.QUEUE),
-                new RabbitMqQueue("x.y.z"),
+                new RabbitMqQueue("x.y.zabc"),
 //                5,
                 message -> {
                     log.info(String.valueOf(message.getDecodeObject()) + "," + message.getDecodeObject().getClass());

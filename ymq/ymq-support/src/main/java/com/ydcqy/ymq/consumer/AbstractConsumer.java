@@ -9,14 +9,12 @@ import com.ydcqy.ymq.rabbitmq.RabbitMqConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author xiaoyu
  */
 public abstract class AbstractConsumer implements Consumer {
     private ConnectionFactory connectionFactory;
-    private ConcurrentMap<Queue, Boolean>                   queues        = new ConcurrentHashMap<>();
     private ConcurrentHashMap<Queue, List<MessageListener>> queueListener = new ConcurrentHashMap<Queue, List<MessageListener>>();
 
     public AbstractConsumer() {
@@ -54,7 +52,6 @@ public abstract class AbstractConsumer implements Consumer {
         if (queueListener.containsKey(queue)) {
             throw new RuntimeException("Please do not repeat the binding messageListener");
         }
-        queues.putIfAbsent(queue, Boolean.TRUE);
         List<MessageListener> listeners = new ArrayList<>();
         for (; consumerConcurrency-- > 0; ) {
             listeners.add(listener);
@@ -71,9 +68,6 @@ public abstract class AbstractConsumer implements Consumer {
         return (listeners = queueListener.get(queue)) != null ? listeners.get(0) : null;
     }
 
-    protected boolean isQueueInitialized(Queue queue) {
-        return queues.containsKey(queue);
-    }
 
     protected ConcurrentHashMap<Queue, List<MessageListener>> getQueueListener() {
         return queueListener;
