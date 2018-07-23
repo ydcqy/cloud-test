@@ -40,8 +40,8 @@ public class ProducerMain {
     private volatile Object value = new Object();
 
     public static void main(String[] args) throws Exception {
-//        final Producer producer = new ActiveMqProducer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration()));
-        final Producer producer = new RabbitMqProducer(new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration()));
+        final Producer producer = new ActiveMqProducer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration()));
+//        final Producer producer = new RabbitMqProducer(new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration()));
         final AtomicInteger n = new AtomicInteger();
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         log.trace("哇卡卡卡");
@@ -56,8 +56,8 @@ public class ProducerMain {
                     try {
                         ss = System.currentTimeMillis();
 
-//                        producer.send(new ActiveMqQueue("x.y.z", ActiveMqQueue.Type.QUEUE), new RabbitMqMessage("哇卡卡卡"));
-                        producer.send(new RabbitMqQueue("x.y.z"), new RabbitMqMessage("哇卡卡卡"));
+                        producer.send(new ActiveMqQueue("x.y.z", ActiveMqQueue.Type.QUEUE), new RabbitMqMessage(12332432));
+//                        producer.send(new RabbitMqQueue("x.y.z"), new RabbitMqMessage("String"));
 
                     } catch (Exception e) {
                         e.printStackTrace();

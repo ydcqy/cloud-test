@@ -1,7 +1,7 @@
 package com.ydcqy.ymq.rabbitmq;
 
-import com.alibaba.fastjson.JSON;
 import com.ydcqy.ymq.message.Message;
+import com.ydcqy.ymq.util.ProtobufUtils;
 
 /**
  * @author xiaoyu
@@ -41,12 +41,12 @@ public class RabbitMqMessage implements Message {
 
     @Override
     public byte[] getEncodeContent() {
-        return JSON.toJSONBytes(obj);
+        return ProtobufUtils.serialize(obj);
     }
 
     @Override
-    public Object getDecodeObject() {
-        return JSON.parse(bytes);
+    public <T> T getDecodeObject(Class<T> type) {
+        return ProtobufUtils.deserialize(bytes, type);
     }
 
     @Override
@@ -63,4 +63,5 @@ public class RabbitMqMessage implements Message {
     public Integer getRepeatNum() {
         return repeatNum;
     }
+
 }

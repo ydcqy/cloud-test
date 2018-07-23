@@ -1,6 +1,5 @@
 package com.ydcqy.ymq.util;
 
-import org.apache.activemq.command.Message;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Field;
@@ -34,12 +33,4 @@ public class UnsafeUtils {
         }
     }
 
-    public static void main(String[] args) throws InstantiationException {
-        System.out.println(getUnsafe().addressSize());
-        System.out.println(getUnsafe().pageSize());
-        String str=new String();
-        System.out.println(getUnsafe().allocateInstance(String.class).getClass());
-
-
-    }
 }

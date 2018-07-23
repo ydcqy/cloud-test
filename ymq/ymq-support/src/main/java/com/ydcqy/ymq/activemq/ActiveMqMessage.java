@@ -2,6 +2,7 @@ package com.ydcqy.ymq.activemq;
 
 import com.alibaba.fastjson.JSON;
 import com.ydcqy.ymq.message.Message;
+import com.ydcqy.ymq.util.ProtobufUtils;
 
 import java.nio.charset.Charset;
 
@@ -9,10 +10,10 @@ import java.nio.charset.Charset;
  * @author xiaoyu
  */
 public class ActiveMqMessage implements Message {
-    private Object obj;
-    private byte[] bytes;
-    private Long delayMillis;
-    private Long periodMillis;
+    private Object  obj;
+    private byte[]  bytes;
+    private Long    delayMillis;
+    private Long    periodMillis;
     private Integer repeatNum;
 
     public ActiveMqMessage(Object encodeObj) {
@@ -43,12 +44,12 @@ public class ActiveMqMessage implements Message {
 
     @Override
     public byte[] getEncodeContent() {
-        return JSON.toJSONBytes(obj);
+        return ProtobufUtils.serialize(obj);
     }
 
     @Override
-    public Object getDecodeObject() {
-        return JSON.parse(bytes);
+    public <T> T getDecodeObject(Class<T> type) {
+        return ProtobufUtils.deserialize(bytes, type);
     }
 
     @Override
