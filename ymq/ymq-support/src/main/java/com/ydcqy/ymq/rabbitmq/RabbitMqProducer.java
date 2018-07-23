@@ -1,6 +1,7 @@
 package com.ydcqy.ymq.rabbitmq;
 
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConfirmListener;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.MessageProperties;
 import com.ydcqy.ymq.connection.ConnectionFactory;
@@ -8,6 +9,8 @@ import com.ydcqy.ymq.exception.MqException;
 import com.ydcqy.ymq.message.Message;
 import com.ydcqy.ymq.message.Queue;
 import com.ydcqy.ymq.producer.AbstractProducer;
+
+import java.io.IOException;
 
 /**
  * @author xiaoyu
@@ -34,7 +37,19 @@ public class RabbitMqProducer extends AbstractProducer {
                 channel.queueBind(rabbitMqQueue.getQueueName(), rabbitMqQueue.getExchangeName(), rabbitMqQueue.getQueueBindingKey(), null);
             }
             //发送
+//            channel.confirmSelect();
             channel.basicPublish(rabbitMqQueue.getExchangeName(), rabbitMqQueue.getMessageRoutingKey(), MessageProperties.MINIMAL_PERSISTENT_BASIC, msg.getEncodeContent());
+            channel.addConfirmListener(new ConfirmListener() {
+                @Override
+                public void handleAck(long deliveryTag, boolean multiple) throws IOException {
+
+                }
+
+                @Override
+                public void handleNack(long deliveryTag, boolean multiple) throws IOException {
+
+                }
+            });
         } catch (Exception e) {
             throw new MqException(e);
         } finally {

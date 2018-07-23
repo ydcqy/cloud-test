@@ -20,18 +20,20 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class ConsumerMain implements Serializable {
     public static void main(String[] args) throws Exception {
-        Consumer consumer = new ActiveMqConsumer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration(), false));
-//        Consumer consumer = new RabbitMqConsumer(new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration(), false));
+//        Consumer consumer = new ActiveMqConsumer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration(), false));
+        Consumer consumer = new RabbitMqConsumer(new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration(), false));
         CountDownLatch countDownLatch = new CountDownLatch(Integer.MAX_VALUE);
         long ss = System.currentTimeMillis();
         consumer.bindMessageListener(
-                new ActiveMqQueue("x.y.z", ActiveMqQueue.Type.QUEUE),
-//                new RabbitMqQueue("x.y.z"),
+//                new ActiveMqQueue("x.y.z", ActiveMqQueue.Type.QUEUE),
+                new RabbitMqQueue("x.y.z"),
                 message -> {
-                    log.info(String.valueOf(message.getDecodeObject(Integer.class)));
+                    log.info(String.valueOf(message.getDecodeObject(String.class)));
                     countDownLatch.countDown();
                 }
-        ).listen();
+        )
+
+                .listen();
         countDownLatch.await();
         System.out.println("耗时：" + (System.currentTimeMillis() - ss));
         System.exit(0);

@@ -10,6 +10,7 @@ import org.apache.activemq.ScheduledMessage;
 import javax.jms.BytesMessage;
 import javax.jms.Connection;
 import javax.jms.Destination;
+import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
@@ -52,6 +53,12 @@ public class ActiveMqProducer extends AbstractProducer {
             producer.send(message);
             session.commit();
         } catch (Exception e) {
+            if (null != session) {
+                try {
+                    session.rollback();
+                } catch (JMSException e1) {
+                }
+            }
             throw new MqException(e);
         } finally {
             try {

@@ -19,6 +19,11 @@ public class RabbitMqQueue implements Queue {
         this.exchangeName = DEFAULT_EXCHANGE_NAME;
     }
 
+    public RabbitMqQueue(String messageRoutingKey, String queueBindingKey, String queueName) {
+        this.messageRoutingKey = messageRoutingKey;
+        this.queueBindingKey = queueBindingKey;
+        this.queueName = queueName;
+    }
 
     @Override
     public String getQueueName() {

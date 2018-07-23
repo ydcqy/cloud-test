@@ -1,6 +1,7 @@
 package com.ydcqy.ymq.rabbitmq;
 
 
+import com.alibaba.fastjson.JSON;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -12,6 +13,7 @@ import com.ydcqy.ymq.exception.MqException;
 import com.ydcqy.ymq.message.MessageExecutor;
 import com.ydcqy.ymq.message.MessageListener;
 import com.ydcqy.ymq.message.Queue;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author xiaoyu
  */
+@Slf4j
 public class RabbitMqConsumer extends AbstractConsumer {
     private final String  exchangeType = "topic";
     private final boolean autoAck      = false;
@@ -53,15 +56,16 @@ public class RabbitMqConsumer extends AbstractConsumer {
                     channel.basicQos(1);
                     //初始化交换器和队列
 
-                    channel.exchangeDeclare(rabbitMqQueue.getExchangeName(), exchangeType, true);
-                    channel.queueDeclare(rabbitMqQueue.getQueueName(), true, false, false, null);
-                    channel.queueBind(rabbitMqQueue.getQueueName(), rabbitMqQueue.getExchangeName(), rabbitMqQueue.getQueueBindingKey(), null);
+//                    channel.exchangeDeclare(rabbitMqQueue.getExchangeName(), exchangeType, true);
+//                    channel.queueDeclare(rabbitMqQueue.getQueueName(), true, false, false, null);
+//                    channel.queueBind(rabbitMqQueue.getQueueName(), rabbitMqQueue.getExchangeName(), rabbitMqQueue.getQueueBindingKey(), null);
 
                     channel.basicConsume(rabbitMqQueue.getQueueName(), autoAck, new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                             getChannel().basicAck(envelope.getDeliveryTag(), false);
-                            executor.onMessage(new RabbitMqMessage(body));
+                            log.info(JSON.toJSONString(body));
+//                            executor.onMessage(new RabbitMqMessage(body));
                         }
                     });
                 }

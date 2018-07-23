@@ -45,7 +45,7 @@ public class RabbitMqReceive {
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 log.info("11{} {} {}", consumerTag, JSON.toJSONString(envelope), JSON.toJSONString(properties));
                 log.info("11poll msg：{}", new String(body));
-                channel1.basicAck(envelope.getDeliveryTag(), false);
+//                channel1.basicAck(envelope.getDeliveryTag(), false);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -54,7 +54,21 @@ public class RabbitMqReceive {
             }
         });
 
+        Channel channel2 = conn.createChannel();
+        channel2.basicConsume(queue, false, new DefaultConsumer(null) {
+            @Override
 
+            public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                log.info("11{} {} {}", consumerTag, JSON.toJSONString(envelope), JSON.toJSONString(properties));
+                log.info("11poll msg：{}", new String(body));
+//                channel2.basicAck(envelope.getDeliveryTag(), false);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 //        for (int i = 0; i < 100000; i++) {
 ////            String str = new Scanner(System.in).nextLine();
 //            String str = "好咯" + i;
