@@ -1,8 +1,8 @@
 package com.ydcqy.ymq.activemq;
 
 import com.ydcqy.ymq.configuration.Configuration;
+import com.ydcqy.ymq.connection.AbstractConnectionFactory;
 import com.ydcqy.ymq.connection.Connection;
-import com.ydcqy.ymq.connection.ConnectionFactory;
 import com.ydcqy.ymq.exception.ConnectionException;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.ActiveMQPrefetchPolicy;
@@ -13,17 +13,22 @@ import javax.jms.JMSException;
 /**
  * @author xiaoyu
  */
-public class ActiveMqConnectionFactory implements ConnectionFactory {
-    private PooledConnectionFactory pooledCf;
+public class ActiveMqConnectionFactory extends AbstractConnectionFactory {
+    private PooledConnectionFactory   pooledCf;
     private ActiveMQConnectionFactory cf;
-    private ActiveMqConfiguration cfg;
+    private ActiveMqConfiguration     cfg;
 
     public ActiveMqConnectionFactory(Configuration configuration) {
-        cfg = (ActiveMqConfiguration) configuration;
-        init();
+        super(configuration);
     }
 
-    private void init() {
+    public ActiveMqConnectionFactory(Configuration configuration, boolean isUsePool) {
+        super(configuration, isUsePool);
+    }
+
+    @Override
+    protected void init() {
+        cfg = (ActiveMqConfiguration) getConfiguration();
         if (null == cf) {
             cf = new ActiveMQConnectionFactory();
         }
@@ -37,7 +42,8 @@ public class ActiveMqConnectionFactory implements ConnectionFactory {
         initPool();
     }
 
-    private void initPool() {
+    @Override
+    protected void initPool() {
         if (null == pooledCf && null != cfg.getProducerPool()) {
             pooledCf = new PooledConnectionFactory(cf);
             Object value;
@@ -51,17 +57,10 @@ public class ActiveMqConnectionFactory implements ConnectionFactory {
         }
     }
 
-    @Override
-    public Connection getConnection() throws ConnectionException {
-        return getConnection(cfg.getProducerPool() != null);
-    }
 
     @Override
-    public Connection getConnection(boolean isPooledConn) throws ConnectionException {
-        if (isPooledConn) {
-            if (pooledCf == null) {
-                throw new ConnectionException("Connection pools are not configured");
-            }
+    public Connection getConnection() throws ConnectionException {
+        if (pooledCf != null) {
             try {
                 return new ActiveMqConnection(pooledCf.createConnection());
             } catch (JMSException e) {
@@ -75,9 +74,5 @@ public class ActiveMqConnectionFactory implements ConnectionFactory {
         }
     }
 
-    @Override
-    public Configuration getConfiguration() {
-        return cfg;
-    }
 
 }

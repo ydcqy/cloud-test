@@ -36,7 +36,7 @@ public class RabbitMqConsumer extends AbstractConsumer {
     public void listen() throws MqException {
         try {
             if (null == connection) {
-                connection = (Connection) getConnectionFactory().getConnection(false).getTargetConnection();
+                connection = (Connection) getConnectionFactory().getConnection().getTargetConnection();
             }
             ConcurrentHashMap<Queue, List<MessageListener>> queueListener = getQueueListener();
             Set<Map.Entry<Queue, List<MessageListener>>> entries = queueListener.entrySet();

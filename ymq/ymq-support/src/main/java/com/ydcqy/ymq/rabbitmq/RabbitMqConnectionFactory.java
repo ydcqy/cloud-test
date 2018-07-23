@@ -1,8 +1,8 @@
 package com.ydcqy.ymq.rabbitmq;
 
 import com.ydcqy.ymq.configuration.Configuration;
+import com.ydcqy.ymq.connection.AbstractConnectionFactory;
 import com.ydcqy.ymq.connection.Connection;
-import com.ydcqy.ymq.connection.ConnectionFactory;
 import com.ydcqy.ymq.exception.ConnectionException;
 import com.ydcqy.ymq.pool.rabbitmq.PooledConnectionFactory;
 import com.ydcqy.ymq.pool.rabbitmq.RabbitMqPoolConfig;
@@ -11,17 +11,22 @@ import com.ydcqy.ymq.pool.rabbitmq.RabbitMqPoolConfig;
 /**
  * @author xiaoyu
  */
-public class RabbitMqConnectionFactory implements ConnectionFactory {
+public class RabbitMqConnectionFactory extends AbstractConnectionFactory {
     private PooledConnectionFactory               pooledCf;
     private com.rabbitmq.client.ConnectionFactory cf;
     private RabbitMqConfiguration                 cfg;
 
     public RabbitMqConnectionFactory(Configuration configuration) {
-        cfg = (RabbitMqConfiguration) configuration;
-        init();
+        super(configuration);
     }
 
-    private void init() {
+    public RabbitMqConnectionFactory(Configuration configuration, boolean isUsePool) {
+        super(configuration, isUsePool);
+    }
+
+    @Override
+    protected void init() {
+        cfg = (RabbitMqConfiguration) getConfiguration();
         if (null == cf) {
             cf = new com.rabbitmq.client.ConnectionFactory();
         }
@@ -30,10 +35,10 @@ public class RabbitMqConnectionFactory implements ConnectionFactory {
         if ((value = cfg.getPort()) != null) cf.setPort((Integer) value);
         if ((value = cfg.getUsername()) != null) cf.setUsername(String.valueOf(value));
         if ((value = cfg.getPassword()) != null) cf.setPassword(String.valueOf(value));
-        initPool();
     }
 
-    private void initPool() {
+    @Override
+    protected void initPool() {
         if (null == pooledCf && null != cfg.getProducerPool()) {
             RabbitMqPoolConfig poolConfig = new RabbitMqPoolConfig();
             Object value;
@@ -45,7 +50,7 @@ public class RabbitMqConnectionFactory implements ConnectionFactory {
             if ((value = cfg.getProducerPool().getMinEvictableIdleTimeMillis()) != null)
                 poolConfig.setMinEvictableIdleTimeMillis((Integer) value);
             if ((value = cfg.getProducerPool().getTimeBetweenEvictionRunsMillis()) != null)
-                poolConfig.setMinIdle((Integer) value);
+                poolConfig.setTimeBetweenEvictionRunsMillis((Integer) value);
             if ((value = cfg.getProducerPool().getTestOnBorrow()) != null) poolConfig.setTestOnBorrow((Boolean) value);
             if ((value = cfg.getProducerPool().getTestOnReturn()) != null) poolConfig.setTestOnReturn((Boolean) value);
             if ((value = cfg.getProducerPool().getTestWhileIdle()) != null)
@@ -56,15 +61,7 @@ public class RabbitMqConnectionFactory implements ConnectionFactory {
 
     @Override
     public Connection getConnection() throws ConnectionException {
-        return getConnection(cfg.getProducerPool() != null);
-    }
-
-    @Override
-    public Connection getConnection(boolean isPooledConn) throws ConnectionException {
-        if (isPooledConn) {
-            if (pooledCf == null) {
-                throw new ConnectionException("Connection pools are not configured");
-            }
+        if (pooledCf != null) {
             try {
                 return new RabbitMqConnection(pooledCf.newConnection());
             } catch (Exception e) {
@@ -76,11 +73,6 @@ public class RabbitMqConnectionFactory implements ConnectionFactory {
         } catch (Exception e) {
             throw new ConnectionException(e);
         }
-    }
-
-    @Override
-    public Configuration getConfiguration() {
-        return cfg;
     }
 
 }

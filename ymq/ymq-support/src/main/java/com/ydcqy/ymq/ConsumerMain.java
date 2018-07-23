@@ -1,9 +1,5 @@
 package com.ydcqy.ymq;
 
-import com.ydcqy.ymq.activemq.ActiveMqConfigurationFactory;
-import com.ydcqy.ymq.activemq.ActiveMqConnectionFactory;
-import com.ydcqy.ymq.activemq.ActiveMqConsumer;
-import com.ydcqy.ymq.activemq.ActiveMqQueue;
 import com.ydcqy.ymq.consumer.Consumer;
 import com.ydcqy.ymq.rabbitmq.RabbitMqConfigurationFactory;
 import com.ydcqy.ymq.rabbitmq.RabbitMqConnectionFactory;
@@ -19,13 +15,13 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class ConsumerMain {
     public static void main(String[] args) throws Exception {
-//        Consumer consumer = new ActiveMqConsumer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration()));
-        Consumer consumer = new RabbitMqConsumer(new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration()));
+//        Consumer consumer = new ActiveMqConsumer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration(), false));
+        Consumer consumer = new RabbitMqConsumer(new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration(), false));
         CountDownLatch countDownLatch = new CountDownLatch(Integer.MAX_VALUE);
         long ss = System.currentTimeMillis();
         consumer.bindMessageListener(
 //                new ActiveMqQueue("x.y.z", ActiveMqQueue.Type.QUEUE),
-                new RabbitMqQueue("x.y.zabc"),
+                new RabbitMqQueue("x.y.z"),
 //                5,
                 message -> {
                     log.info(String.valueOf(message.getDecodeObject()) + "," + message.getDecodeObject().getClass());

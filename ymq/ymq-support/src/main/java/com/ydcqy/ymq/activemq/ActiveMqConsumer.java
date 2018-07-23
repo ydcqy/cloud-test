@@ -35,7 +35,7 @@ public class ActiveMqConsumer extends AbstractConsumer {
     public void listen() throws MqException {
         try {
             if (null == connection) {
-                connection = (Connection) getConnectionFactory().getConnection(false).getTargetConnection();
+                connection = (Connection) getConnectionFactory().getConnection().getTargetConnection();
                 connection.start();
             }
             ConcurrentHashMap<Queue, List<MessageListener>> queueListener = getQueueListener();
