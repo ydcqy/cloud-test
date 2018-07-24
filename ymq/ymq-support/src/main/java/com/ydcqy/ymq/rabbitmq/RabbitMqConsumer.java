@@ -1,7 +1,6 @@
 package com.ydcqy.ymq.rabbitmq;
 
 
-import com.alibaba.fastjson.JSON;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -55,17 +54,15 @@ public class RabbitMqConsumer extends AbstractConsumer {
                     Channel channel = connection.createChannel();
                     channel.basicQos(1);
                     //初始化交换器和队列
-
-//                    channel.exchangeDeclare(rabbitMqQueue.getExchangeName(), exchangeType, true);
-//                    channel.queueDeclare(rabbitMqQueue.getQueueName(), true, false, false, null);
-//                    channel.queueBind(rabbitMqQueue.getQueueName(), rabbitMqQueue.getExchangeName(), rabbitMqQueue.getQueueBindingKey(), null);
+                    channel.exchangeDeclare(rabbitMqQueue.getExchangeName(), exchangeType, true);
+                    channel.queueDeclare(rabbitMqQueue.getQueueName(), true, false, false, null);
+                    channel.queueBind(rabbitMqQueue.getQueueName(), rabbitMqQueue.getExchangeName(), rabbitMqQueue.getQueueBindingKey(), null);
 
                     channel.basicConsume(rabbitMqQueue.getQueueName(), autoAck, new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                             getChannel().basicAck(envelope.getDeliveryTag(), false);
-                            log.info(JSON.toJSONString(body));
-//                            executor.onMessage(new RabbitMqMessage(body));
+                            executor.onMessage(new RabbitMqMessage(body));
                         }
                     });
                 }

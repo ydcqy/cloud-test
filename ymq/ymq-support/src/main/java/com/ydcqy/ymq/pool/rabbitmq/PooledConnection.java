@@ -8,25 +8,39 @@ import com.rabbitmq.client.ExceptionHandler;
 import com.rabbitmq.client.ShutdownListener;
 import com.rabbitmq.client.ShutdownSignalException;
 import com.rabbitmq.client.UnblockedCallback;
+import com.ydcqy.ymq.exception.PooledException;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author xiaoyu
  */
 public class PooledConnection implements Connection {
     private Connection                          connection;
+    private Channel                             channel;
     private GenericObjectPool<PooledConnection> connectionsPool;
 
     public PooledConnection(Connection connection) {
         this.connection = connection;
+        try {
+            channel = connection.createChannel();
+        } catch (IOException e) {
+            throw new PooledException(e);
+        }
     }
 
     public void disconnect() throws IOException {
-        connection.close();
+        try {
+            channel.close();
+        } catch (TimeoutException e) {
+            throw new IOException(e);
+        } finally {
+            connection.close();
+        }
     }
 
     public void setConnectionsPool(GenericObjectPool<PooledConnection> connectionsPool) {
@@ -75,7 +89,7 @@ public class PooledConnection implements Connection {
 
     @Override
     public Channel createChannel() throws IOException {
-        return connection.createChannel();
+        return channel;
     }
 
     @Override
@@ -185,4 +199,5 @@ public class PooledConnection implements Connection {
     public boolean isOpen() {
         return connection.isOpen();
     }
+
 }

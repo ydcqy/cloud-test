@@ -9,14 +9,17 @@ import com.ydcqy.ymq.exception.MqException;
 import com.ydcqy.ymq.message.Message;
 import com.ydcqy.ymq.message.Queue;
 import com.ydcqy.ymq.producer.AbstractProducer;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
 /**
  * @author xiaoyu
  */
+@Slf4j
 public class RabbitMqProducer extends AbstractProducer {
-    private final String exchangeType = "topic";
+    private final        String          exchangeType     = "topic";
+    private static final ConfirmListener CONFIRM_LISTENER = new DefaultConfirmListener();
 
     public RabbitMqProducer(ConnectionFactory connectionFactory) {
         super(connectionFactory);
@@ -37,32 +40,31 @@ public class RabbitMqProducer extends AbstractProducer {
                 channel.queueBind(rabbitMqQueue.getQueueName(), rabbitMqQueue.getExchangeName(), rabbitMqQueue.getQueueBindingKey(), null);
             }
             //发送
-//            channel.confirmSelect();
+            channel.confirmSelect();
             channel.basicPublish(rabbitMqQueue.getExchangeName(), rabbitMqQueue.getMessageRoutingKey(), MessageProperties.MINIMAL_PERSISTENT_BASIC, msg.getEncodeContent());
-            channel.addConfirmListener(new ConfirmListener() {
-                @Override
-                public void handleAck(long deliveryTag, boolean multiple) throws IOException {
-
-                }
-
-                @Override
-                public void handleNack(long deliveryTag, boolean multiple) throws IOException {
-
-                }
-            });
+            channel.addConfirmListener(CONFIRM_LISTENER);
         } catch (Exception e) {
             throw new MqException(e);
         } finally {
             try {
-                if (null != channel) {
-                    channel.close();
-                }
                 if (null != connection) {
                     connection.close();
                 }
             } catch (Exception e) {
                 throw new MqException(e);
             }
+        }
+    }
+
+    @Slf4j
+    static class DefaultConfirmListener implements ConfirmListener {
+        @Override
+        public void handleAck(long deliveryTag, boolean multiple) throws IOException {
+        }
+
+        @Override
+        public void handleNack(long deliveryTag, boolean multiple) throws IOException {
+            log.error("confirm nack：{} {}", deliveryTag, multiple);
         }
     }
 }
