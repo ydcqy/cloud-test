@@ -47,9 +47,13 @@ systemctl disable firewalld.service
 yum install -y iptables-services
 systemctl enable iptables.service
 systemctl restart iptables.service
+yum install -y ntp
+systemctl enable ntpd
+systemctl restart ntpd
 yum install -y wget
 yum install -y bash-completion
 yum install -y net-tools
 yum install -y vim-enhanced
+
 
 #免密登录
