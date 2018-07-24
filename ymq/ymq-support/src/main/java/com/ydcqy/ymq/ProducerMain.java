@@ -41,7 +41,7 @@ public class ProducerMain {
         final AtomicInteger n = new AtomicInteger();
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         log.trace("哇卡卡卡");
-        int count = 10000;
+        int count = 10;
         CountDownLatch countDownLatch = new CountDownLatch(count);
         long l = System.currentTimeMillis();
         for (int i = 0; i < count; i++) {
@@ -53,7 +53,7 @@ public class ProducerMain {
                         ss = System.currentTimeMillis();
 
 //                        producer.send(new ActiveMqQueue("x.y.z", ActiveMqQueue.Type.QUEUE), new RabbitMqMessage("哈喽大圣归来"));
-                        producer.send(new RabbitMqQueue("x.y.z"), new RabbitMqMessage("哈喽大圣归来"));
+                        producer.send(new RabbitMqQueue("x.y.z"), new RabbitMqMessage("哈喽大圣归来", 5000L));
 
                     } catch (Exception e) {
                         e.printStackTrace();

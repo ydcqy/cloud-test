@@ -1,5 +1,6 @@
 package com.ydcqy.ymq.rabbitmq;
 
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConfirmListener;
 import com.rabbitmq.client.Connection;
@@ -12,6 +13,8 @@ import com.ydcqy.ymq.producer.AbstractProducer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author xiaoyu
@@ -34,15 +37,29 @@ public class RabbitMqProducer extends AbstractProducer {
             channel = connection.createChannel();
             RabbitMqQueue rabbitMqQueue = (RabbitMqQueue) queue;
             //初始化交换器和队列
+            AMQP.BasicProperties.Builder builder = MessageProperties.MINIMAL_PERSISTENT_BASIC.builder();
+            String messageRoutingKey = rabbitMqQueue.getMessageRoutingKey();
             if (!isQueueInitialized(queue)) {
                 channel.exchangeDeclare(rabbitMqQueue.getExchangeName(), exchangeType, true);
                 channel.queueDeclare(rabbitMqQueue.getQueueName(), true, false, false, null);
                 channel.queueBind(rabbitMqQueue.getQueueName(), rabbitMqQueue.getExchangeName(), rabbitMqQueue.getQueueBindingKey(), null);
             }
+            //通过死信模拟延迟消息功能
+            if (null != msg.getDelayMillis() && msg.getDelayMillis() > 0) {
+                log.info("发送延迟消息 delayMillis：{}ms", msg.getDelayMillis());
+                Map<String, Object> map = new HashMap<>();
+                map.put("x-dead-letter-exchange", rabbitMqQueue.getExchangeName());
+                map.put("x-dead-letter-routing-key", messageRoutingKey);
+                messageRoutingKey = messageRoutingKey + ".delay.temp";
+                channel.queueDeclare(messageRoutingKey, true, false, false, map);
+                channel.queueBind(messageRoutingKey, rabbitMqQueue.getExchangeName(), messageRoutingKey, null);
+                builder.expiration(String.valueOf(msg.getDelayMillis()));
+            }
             //发送
             channel.confirmSelect();
-            channel.basicPublish(rabbitMqQueue.getExchangeName(), rabbitMqQueue.getMessageRoutingKey(), MessageProperties.MINIMAL_PERSISTENT_BASIC, msg.getEncodeContent());
+            channel.basicPublish(rabbitMqQueue.getExchangeName(), messageRoutingKey, builder.build(), msg.getEncodeContent());
             channel.addConfirmListener(CONFIRM_LISTENER);
+
         } catch (Exception e) {
             throw new MqException(e);
         } finally {

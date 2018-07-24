@@ -1,20 +1,16 @@
 package com.ydcqy.ymq.activemq;
 
-import com.alibaba.fastjson.JSON;
 import com.ydcqy.ymq.message.Message;
 import com.ydcqy.ymq.util.ProtobufUtils;
-
-import java.nio.charset.Charset;
 
 /**
  * @author xiaoyu
  */
 public class ActiveMqMessage implements Message {
-    private Object  obj;
-    private byte[]  bytes;
-    private Long    delayMillis;
-    private Long    periodMillis;
-    private Integer repeatNum;
+    private Object obj;
+    private byte[] bytes;
+    private Long   delayMillis;
+
 
     public ActiveMqMessage(Object encodeObj) {
         this.obj = encodeObj;
@@ -29,18 +25,6 @@ public class ActiveMqMessage implements Message {
         this.delayMillis = delayMillis;
     }
 
-    public ActiveMqMessage(Object encodeObj, Long delayMillis, Long periodMillis) {
-        this.obj = encodeObj;
-        this.delayMillis = delayMillis;
-        this.periodMillis = periodMillis;
-    }
-
-    public ActiveMqMessage(Object encodeObj, Long delayMillis, Long periodMillis, Integer repeatNum) {
-        this.obj = encodeObj;
-        this.delayMillis = delayMillis;
-        this.periodMillis = periodMillis;
-        this.repeatNum = repeatNum;
-    }
 
     @Override
     public byte[] getEncodeContent() {
@@ -57,13 +41,4 @@ public class ActiveMqMessage implements Message {
         return delayMillis;
     }
 
-    @Override
-    public Long getPeriodMillis() {
-        return periodMillis;
-    }
-
-    @Override
-    public Integer getRepeatNum() {
-        return repeatNum;
-    }
 }

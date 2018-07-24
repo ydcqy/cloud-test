@@ -9,8 +9,4 @@ public interface Message {
     <T> T getDecodeObject(Class<T> type);
 
     Long getDelayMillis();
-
-    Long getPeriodMillis();
-
-    Integer getRepeatNum();
 }

@@ -44,10 +44,6 @@ public class ActiveMqProducer extends AbstractProducer {
             BytesMessage message = session.createBytesMessage();
             if (null != msg.getDelayMillis())
                 message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, msg.getDelayMillis());
-            if (null != msg.getPeriodMillis())
-                message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_PERIOD, msg.getPeriodMillis());
-            if (null != msg.getRepeatNum())
-                message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_REPEAT, msg.getRepeatNum());
             message.writeBytes(msg.getEncodeContent());
             MessageProducer producer = session.createProducer(dest);
             producer.send(message);
