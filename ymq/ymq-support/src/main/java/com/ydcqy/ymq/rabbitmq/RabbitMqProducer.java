@@ -50,7 +50,7 @@ public class RabbitMqProducer extends AbstractProducer {
                 Map<String, Object> map = new HashMap<>();
                 map.put("x-dead-letter-exchange", rabbitMqQueue.getExchangeName());
                 map.put("x-dead-letter-routing-key", messageRoutingKey);
-                messageRoutingKey = messageRoutingKey + ".delay.temp";
+                messageRoutingKey = messageRoutingKey + ".DLQ";
                 channel.queueDeclare(messageRoutingKey, true, false, false, map);
                 channel.queueBind(messageRoutingKey, rabbitMqQueue.getExchangeName(), messageRoutingKey, null);
                 builder.expiration(String.valueOf(msg.getDelayMillis()));
