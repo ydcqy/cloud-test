@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 
 /**
  * @author xiaoyu
@@ -63,9 +64,13 @@ public class ActiveMqConsumer extends AbstractConsumer {
                     consumer.setMessageListener(message -> {
                         ActiveMQBytesMessage msg = (ActiveMQBytesMessage) message;
                         try {
-                            msg.acknowledge();
                             ByteSequence dataIn = (ByteSequence) unsafe.getObject(msg, unsafe.objectFieldOffset(org.apache.activemq.command.Message.class.getDeclaredField("content")));
-                            executor.onMessage(new ActiveMqMessage(dataIn.getData()));
+                            Future<?> future = executor.onMessage(new ActiveMqMessage(dataIn.getData()));
+                            try {
+                                future.get();
+                            } catch (Exception e) {
+                            }
+                            msg.acknowledge();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }

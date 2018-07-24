@@ -11,6 +11,10 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  * @author xiaoyu
@@ -18,29 +22,20 @@ import javax.jms.Session;
 @Slf4j
 public class Test {
     public static void main(String[] args) throws Exception {
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("failover:(tcp://10.1.7.22:61616)?timeout=5000");
-        ActiveMQPrefetchPolicy policy = new ActiveMQPrefetchPolicy();
-
-        policy.setQueuePrefetch(1);
-        connectionFactory.setPrefetchPolicy(policy);
-        Connection connection = connectionFactory.createConnection();
-        connection.start();
-        Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-        Queue queue = session.createQueue("com.test");
-
-        MessageProducer producer = session.createProducer(queue);
-        long s = System.currentTimeMillis();
-
-        for (int i = 0; i < 10000; i++) {
-            long ss = System.currentTimeMillis();
-            BytesMessage bytesMessage = session.createBytesMessage();
-
-            producer.send(bytesMessage);
-//            session.commit();
-            System.out.println(System.currentTimeMillis() - ss);
-        }
-        System.out.println("时间：" + (System.currentTimeMillis() - s));
-
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        Future<?> future = executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        System.out.println(future.getClass());
+        Object o = future.get();
+        System.out.println(o);
     }
 
 }

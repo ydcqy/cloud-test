@@ -2,7 +2,8 @@ package com.ydcqy.ymq.message;
 
 import com.ydcqy.ymq.util.NamedThreadFactory;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -14,17 +15,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class MessageExecutor {
     private static final AtomicInteger QUEUE_NUM = new AtomicInteger(1);
-    private Executor executor;
+    private ExecutorService executor;
     private MessageListener messageListener;
-    private ThreadFactory threadFactory;
+    private ThreadFactory   threadFactory;
 
     public MessageExecutor(String executorName, int threads) {
         threadFactory = new NamedThreadFactory(executorName + "-" + QUEUE_NUM.getAndIncrement());
         this.executor = new ThreadPoolExecutor(threads, threads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), threadFactory);
     }
 
-    public void onMessage(Message message) {
-        executor.execute(() -> messageListener.onMessage(message));
+    public Future<?> onMessage(Message message) {
+        return executor.submit(() -> messageListener.onMessage(message));
     }
 
     public void setMessageListener(MessageListener messageListener) {

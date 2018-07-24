@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Future;
 
 /**
  * @author xiaoyu
@@ -61,8 +62,12 @@ public class RabbitMqConsumer extends AbstractConsumer {
                     channel.basicConsume(rabbitMqQueue.getQueueName(), autoAck, new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
+                            Future<?> future = executor.onMessage(new RabbitMqMessage(body));
+                            try {
+                                future.get();
+                            } catch (Exception e) {
+                            }
                             getChannel().basicAck(envelope.getDeliveryTag(), false);
-                            executor.onMessage(new RabbitMqMessage(body));
                         }
                     });
                 }
