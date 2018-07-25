@@ -37,7 +37,7 @@ mv /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.bak
 curl https://mirrors.aliyun.com/repo/Centos-7.repo > /etc/yum.repos.d/CentOS-Base.repo
 curl https://mirrors.aliyun.com/repo/epel-7.repo > /etc/yum.repos.d/epel.repo
 #设置源——docker源
-curl https://download.docker.com/linux/centos/docker-ce.repo > /etc/yum.repos.d/docker-ce.repo
+curl http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo > /etc/yum.repos.d/docker-ce.repo
 yum clean all
 yum makecache
 
