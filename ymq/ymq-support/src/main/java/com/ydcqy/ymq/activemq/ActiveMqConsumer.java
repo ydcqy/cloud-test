@@ -53,10 +53,10 @@ public class ActiveMqConsumer extends AbstractConsumer {
                     Session session = connection.createSession(Boolean.FALSE, Session.CLIENT_ACKNOWLEDGE);
                     Destination dest = null;
                     switch (activeMqQueue.getType()) {
-                        case QUEUE:
+                        case POINT_TO_POINT:
                             dest = session.createQueue(q.getQueueName());
                             break;
-                        case TOPIC:
+                        case PUBLISH_SUBSCRIBE:
                             dest = session.createTopic(q.getQueueName());
                             break;
                     }
@@ -68,9 +68,11 @@ public class ActiveMqConsumer extends AbstractConsumer {
                             Future<?> future = executor.onMessage(new ActiveMqMessage(dataIn.getData()));
                             try {
                                 future.get();
-                            } catch (Exception e) {
+                            } catch (Throwable e) {
+                                e.printStackTrace();
+                            } finally {
+                                msg.acknowledge();
                             }
-                            msg.acknowledge();
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }

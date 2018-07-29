@@ -1,7 +1,9 @@
 package com.ydcqy.ymq.consumer;
 
 import com.ydcqy.ymq.activemq.ActiveMqConfiguration;
+import com.ydcqy.ymq.configuration.Configuration;
 import com.ydcqy.ymq.connection.ConnectionFactory;
+import com.ydcqy.ymq.kafka.KafkaConfiguration;
 import com.ydcqy.ymq.message.MessageListener;
 import com.ydcqy.ymq.message.Queue;
 import com.ydcqy.ymq.rabbitmq.RabbitMqConfiguration;
@@ -30,18 +32,27 @@ public abstract class AbstractConsumer implements Consumer {
         return connectionFactory;
     }
 
+    protected Configuration getConfiguration() {
+        return connectionFactory.getConfiguration();
+    }
+
     public void setConnectionFactory(ConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 
     @Override
     public Consumer bindMessageListener(Queue queue, MessageListener listener) {
-        if (connectionFactory.getConfiguration() instanceof ActiveMqConfiguration) {
-            ActiveMqConfiguration configuration = (ActiveMqConfiguration) connectionFactory.getConfiguration();
+        Configuration cfg = getConfiguration();
+        if (cfg instanceof ActiveMqConfiguration) {
+            ActiveMqConfiguration configuration = (ActiveMqConfiguration) cfg;
             return this.bindMessageListener(queue, configuration.getConsumerListener().getConcurrency(), listener);
         }
-        if (connectionFactory.getConfiguration() instanceof RabbitMqConfiguration) {
-            RabbitMqConfiguration configuration = (RabbitMqConfiguration) connectionFactory.getConfiguration();
+        if (cfg instanceof RabbitMqConfiguration) {
+            RabbitMqConfiguration configuration = (RabbitMqConfiguration) cfg;
+            return this.bindMessageListener(queue, configuration.getConsumerListener().getConcurrency(), listener);
+        }
+        if (cfg instanceof KafkaConfiguration) {
+            KafkaConfiguration configuration = (KafkaConfiguration) cfg;
             return this.bindMessageListener(queue, configuration.getConsumerListener().getConcurrency(), listener);
         }
         throw new IllegalStateException("The configuration is wrong");

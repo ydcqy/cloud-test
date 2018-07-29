@@ -1,20 +1,18 @@
-package com.ydcqy.ymq.activemq;
+package com.ydcqy.ymq.kafka;
 
 import com.ydcqy.ymq.message.Queue;
 
 /**
  * @author xiaoyu
  */
-public class ActiveMqQueue implements Queue {
+public class KafkaQueue implements Queue {
     private Type   type;
     private String queueName;
 
-
-    public ActiveMqQueue(String queueName, Type type) {
+    public KafkaQueue(String queueName, Type type) {
         this.queueName = queueName;
         this.type = type;
     }
-
 
     @Override
     public String getQueueName() {
@@ -34,7 +32,7 @@ public class ActiveMqQueue implements Queue {
         if (null == obj) return false;
         if (this == obj) return true;
         if (this.getClass() != obj.getClass()) return false;
-        ActiveMqQueue n = (ActiveMqQueue) obj;
+        KafkaQueue n = (KafkaQueue) obj;
         return type.equals(n.getType()) && queueName.equals(n.queueName);
     }
 

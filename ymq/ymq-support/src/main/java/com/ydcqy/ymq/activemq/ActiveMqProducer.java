@@ -34,10 +34,10 @@ public class ActiveMqProducer extends AbstractProducer {
             ActiveMqQueue activeMqQueue = (ActiveMqQueue) queue;
             Destination dest = null;
             switch (activeMqQueue.getType()) {
-                case QUEUE:
+                case POINT_TO_POINT:
                     dest = session.createQueue(queue.getQueueName());
                     break;
-                case TOPIC:
+                case PUBLISH_SUBSCRIBE:
                     dest = session.createTopic(queue.getQueueName());
                     break;
             }

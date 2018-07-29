@@ -32,4 +32,11 @@ spring:
       max-connections:
       enabled:
   jms:
-    
+  kafka:
+    consumer:
+      bootstrap-servers:
+
+    producer:
+      batch-size:
+      buffer-memory:
+

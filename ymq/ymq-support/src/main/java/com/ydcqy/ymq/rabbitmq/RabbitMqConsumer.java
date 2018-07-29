@@ -48,7 +48,7 @@ public class RabbitMqConsumer extends AbstractConsumer {
                 RabbitMqQueue rabbitMqQueue = (RabbitMqQueue) q;
                 List<MessageListener> mls = entry.getValue();
                 MessageExecutor executor = new MessageExecutor("rabbitmq", mls.size());
-                for (final MessageListener ml : mls) {
+                for (MessageListener ml : mls) {
                     if (null == executor.getMessageListener()) {
                         executor.setMessageListener(ml);
                     }
@@ -65,9 +65,11 @@ public class RabbitMqConsumer extends AbstractConsumer {
                             Future<?> future = executor.onMessage(new RabbitMqMessage(body));
                             try {
                                 future.get();
-                            } catch (Exception e) {
+                            } catch (Throwable e) {
+                                e.printStackTrace();
+                            } finally {
+                                getChannel().basicAck(envelope.getDeliveryTag(), false);
                             }
-                            getChannel().basicAck(envelope.getDeliveryTag(), false);
                         }
                     });
                 }
