@@ -2,7 +2,6 @@ package com.ydcqy.ymq.message;
 
 import com.ydcqy.ymq.util.NamedThreadFactory;
 
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -10,7 +9,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.LockSupport;
 
 /**
  * @author xiaoyu
@@ -38,47 +36,4 @@ public class MessageExecutor {
         return messageListener;
     }
 
-    public static void main(String[] args) {
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(3));
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LockSupport.park();
-            }
-        });
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LockSupport.park();
-            }
-        });
-        System.out.println("哈哈哈");
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LockSupport.park();
-            }
-        });
-        System.out.println("哈哈哈");
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LockSupport.park();
-            }
-        });
-        System.out.println("哈哈哈"); executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LockSupport.park();
-            }
-        });
-        System.out.println("哈哈哈");
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                LockSupport.park();
-            }
-        });
-        System.out.println("哈哈哈");
-    }
 }

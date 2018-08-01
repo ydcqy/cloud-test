@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class PooledConnectionFactory extends ConnectionFactory {
     private GenericObjectPool<PooledConnection> connectionsPool;
-    private ConnectionFactory connectionFactory;
+    private ConnectionFactory                   connectionFactory;
 
     public PooledConnectionFactory(GenericObjectPoolConfig poolConfig, ConnectionFactory cf) {
         connectionFactory = cf;

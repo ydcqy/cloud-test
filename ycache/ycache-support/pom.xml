@@ -89,7 +89,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix></classpathPrefix>
-                            <mainClass>com.ydcqy.ycache.Test</mainClass>
+                            <mainClass>com.ydcqy.ycache.com.ydcqy.ymq.spring.Test</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

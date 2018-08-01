@@ -73,13 +73,6 @@ public abstract class AbstractConsumer implements Consumer {
         return this;
     }
 
-    @Override
-    public MessageListener getMessageListener(Queue queue) {
-        List<MessageListener> listeners;
-        return (listeners = queueListener.get(queue)) != null ? listeners.get(0) : null;
-    }
-
-
     protected ConcurrentHashMap<Queue, List<MessageListener>> getQueueListener() {
         return queueListener;
     }

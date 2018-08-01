@@ -10,4 +10,54 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
+    <name>ymq-spring-boot</name>
+    <description>Spring Boot Support for Ymq</description>
+
+    <modules>
+        <module>ymq-spring-boot-starter</module>
+        <module>ymq-spring-boot-autoconfigure</module>
+    </modules>
+
+    <properties>
+        <yml.version>1.0.0</yml.version>
+        <spring-boot.version>2.0.4.RELEASE</spring-boot.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.ydcqy</groupId>
+                <artifactId>ymq-support</artifactId>
+                <version>${yml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-autoconfigure</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-test-autoconfigure</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter-test</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 </project>

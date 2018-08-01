@@ -36,7 +36,6 @@ public abstract class AbstractConfigurationFactory implements ConfigurationFacto
 
     @Override
     public Configuration getConfiguration() {
-
         init();
         return this.configuration;
     }

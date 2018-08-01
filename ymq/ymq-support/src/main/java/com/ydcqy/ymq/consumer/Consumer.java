@@ -11,6 +11,7 @@ public interface Consumer {
     Consumer bindMessageListener(Queue queue, MessageListener listener);
 
     Consumer bindMessageListener(Queue queue, Integer consumerConcurrency, MessageListener listener);
+
     void listen() throws MqException;
-    MessageListener getMessageListener(Queue queue);
+
 }

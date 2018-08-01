@@ -9,10 +9,10 @@ import lombok.Data;
 
 @Data
 public class ActiveMqConfiguration implements Configuration {
-    private String brokerUrl;
-    private String username;
-    private String password;
-    private ProducerPool producerPool;
+    private String           brokerUrl;
+    private String           username;
+    private String           password;
+    private ProducerPool     producerPool;
     private ConsumerListener consumerListener;
 
     @Data

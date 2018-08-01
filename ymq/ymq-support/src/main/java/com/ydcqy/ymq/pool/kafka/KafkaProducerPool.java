@@ -1,13 +1,9 @@
 package com.ydcqy.ymq.pool.kafka;
 
-import com.ydcqy.ymq.configuration.Configuration;
 import com.ydcqy.ymq.exception.PooledException;
-import com.ydcqy.ymq.kafka.KafkaConfiguration;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.ByteArraySerializer;
 
 import java.util.Properties;
 

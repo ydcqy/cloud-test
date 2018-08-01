@@ -7,8 +7,8 @@ import com.ydcqy.ymq.configuration.Configuration;
  * @author xiaoyu
  */
 public class ActiveMqConfigurationFactory extends AbstractConfigurationFactory {
-    private static final String CONFIG_PREFIX = "activemq";
-    private static final Class<? extends Configuration> CONFIG_CLASS = ActiveMqConfiguration.class;
+    private static final String                         CONFIG_PREFIX = "activemq";
+    private static final Class<? extends Configuration> CONFIG_CLASS  = ActiveMqConfiguration.class;
 
     @Override
     protected String getConfigPrefix() {
