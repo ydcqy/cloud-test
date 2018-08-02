@@ -3,6 +3,7 @@ package com.ydcqy.cloud.services.top.support;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
@@ -24,7 +25,7 @@ public class TestBeanFactoryPostProcessor implements BeanFactoryPostProcessor, E
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         log.info(JSON.toJSONString(beanFactory));
-//        BeanDefinition meetServiceImpl = beanFactory.getBeanDefinition("meetServiceImpl");
+        BeanDefinition meetServiceImpl = beanFactory.getBeanDefinition("meetServiceImpl");
 //        System.out.println(meetServiceImpl);
         System.out.println("哈哈哈哈....");
     }
