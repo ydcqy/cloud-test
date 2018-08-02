@@ -7,6 +7,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  */
 public class YmqNamespaceHandler extends NamespaceHandlerSupport {
     public void init() {
-
+        System.out.println("活动回顾");
+        registerBeanDefinitionParser("consumer", new ConsumerBeanDefinitionParser());
     }
 }
