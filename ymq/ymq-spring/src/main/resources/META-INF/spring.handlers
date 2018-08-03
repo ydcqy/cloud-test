@@ -1,1 +1,1 @@
-http\://www.ydcqy.com/schema/ymq1=com.ydcqy.ymq.spring.config.YmqNamespaceHandler
+http\://www.ydcqy.com/schema/ymq=com.ydcqy.ymq.spring.config.YmqNamespaceHandler

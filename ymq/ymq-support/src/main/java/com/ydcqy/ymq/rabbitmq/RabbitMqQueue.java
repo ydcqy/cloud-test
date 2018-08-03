@@ -30,6 +30,11 @@ public class RabbitMqQueue implements Queue {
         return queueName;
     }
 
+    @Override
+    public Type getType() {
+        return null;
+    }
+
     public String getMessageRoutingKey() {
         return messageRoutingKey;
     }

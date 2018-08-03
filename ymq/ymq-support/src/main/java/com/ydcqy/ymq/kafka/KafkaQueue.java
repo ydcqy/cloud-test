@@ -36,8 +36,4 @@ public class KafkaQueue implements Queue {
         return type.equals(n.getType()) && queueName.equals(n.queueName);
     }
 
-    public enum Type {
-        POINT_TO_POINT,
-        PUBLISH_SUBSCRIBE
-    }
 }
