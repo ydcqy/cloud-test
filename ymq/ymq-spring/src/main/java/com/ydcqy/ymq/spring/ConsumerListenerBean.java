@@ -1,21 +1,53 @@
 package com.ydcqy.ymq.spring;
 
-import com.ydcqy.ymq.message.Queue;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanNameAware;
+import com.ydcqy.ymq.activemq.ActiveMqQueue;
+import com.ydcqy.ymq.consumer.Consumer;
+import com.ydcqy.ymq.message.Message;
+import com.ydcqy.ymq.message.MessageListener;
+import com.ydcqy.ymq.spring.support.ConsumerContainer;
+import com.ydcqy.ymq.spring.support.MessageWrapper;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.ResourceLoader;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author xiaoyu
  */
-public class ConsumerListenerBean implements InitializingBean, DisposableBean, ApplicationContextAware, ApplicationListener<ContextRefreshedEvent>, BeanNameAware {
-    private Queue queue;
+public class ConsumerListenerBean implements InitializingBean, DisposableBean, ResourceLoaderAware {
 
+    private QueueBean      queueRef;
+    private Object         implementRef;
+    private ConfigBean     configBean;
+    private ResourceLoader resourceLoader;
+
+    public QueueBean getQueueRef() {
+        return queueRef;
+    }
+
+    public void setQueueRef(QueueBean queueRef) {
+        this.queueRef = queueRef;
+    }
+
+    public Object getImplementRef() {
+        return implementRef;
+    }
+
+    public void setImplementRef(Object implementRef) {
+        this.implementRef = implementRef;
+    }
+
+    public ConfigBean getConfigBean() {
+        return configBean;
+    }
+
+    public void setConfigBean(ConfigBean configBean) {
+        this.configBean = configBean;
+    }
 
     public void setBeanName(String s) {
 
@@ -26,14 +58,40 @@ public class ConsumerListenerBean implements InitializingBean, DisposableBean, A
     }
 
     public void afterPropertiesSet() throws Exception {
+        String active = configBean.getActive();
+        if ("activemq".equalsIgnoreCase(active)) {
+            Consumer consumer = ConsumerContainer.getActiveMqConsumer(configBean);
+            final Class<?> anInterface = queueRef.getInterface();
+            System.out.println(queueRef);
+            consumer.bindMessageListener(new ActiveMqQueue(queueRef.getName(), queueRef.getQueueType()), new MessageListener() {
+                @Override
+                public void onMessage(Message message) {
+                    MessageWrapper wrapper = message.getDecodeObject(MessageWrapper.class);
+                    String interfaceName = wrapper.getInterfaceName();
+                    if (!anInterface.getName().equals(interfaceName)) {
+                        throw new ClassCastException(interfaceName);
+                    }
+                    List<Object> paramsList = wrapper.getParamsList();
+                    List<Class<?>> classes = new ArrayList<>();
+                    for (Object o : paramsList) {
+                        classes.add(o.getClass());
+                    }
+                    try {
+                        Method method = anInterface.getMethod(wrapper.getMethodName(), classes.toArray(new Class<?>[0]));
+                        method.invoke(implementRef, paramsList.toArray());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        }
 
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
     }
 
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
-    }
 }

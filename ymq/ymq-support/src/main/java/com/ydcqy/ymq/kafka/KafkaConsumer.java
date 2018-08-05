@@ -7,6 +7,7 @@ import com.ydcqy.ymq.exception.MqException;
 import com.ydcqy.ymq.message.MessageExecutor;
 import com.ydcqy.ymq.message.MessageListener;
 import com.ydcqy.ymq.message.Queue;
+import com.ydcqy.ymq.message.QueueType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -73,11 +74,11 @@ public class KafkaConsumer extends AbstractConsumer {
                     if (null == executor.getMessageListener()) {
                         executor.setMessageListener(ml);
                     }
-                    KafkaQueue.Type type = kafkaQueue.getType();
-                    if (KafkaQueue.Type.POINT_TO_POINT == type) {
+                    QueueType type = kafkaQueue.getType();
+                    if (QueueType.POINT_TO_POINT == type) {
                         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
                         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaQueue.getQueueName() + "_ptp");
-                    } else if (KafkaQueue.Type.PUBLISH_SUBSCRIBE == type) {
+                    } else if (QueueType.PUBLISH_SUBSCRIBE == type) {
                         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
                         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaQueue.getQueueName() + "_pts" + "_" + InetAddress.getLocalHost().getHostAddress() + "_" + i);
                     }

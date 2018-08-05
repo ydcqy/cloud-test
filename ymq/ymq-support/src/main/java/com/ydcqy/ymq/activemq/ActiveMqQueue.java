@@ -1,16 +1,17 @@
 package com.ydcqy.ymq.activemq;
 
 import com.ydcqy.ymq.message.Queue;
+import com.ydcqy.ymq.message.QueueType;
 
 /**
  * @author xiaoyu
  */
 public class ActiveMqQueue implements Queue {
-    private Type   type;
-    private String queueName;
+    private QueueType type;
+    private String    queueName;
 
 
-    public ActiveMqQueue(String queueName, Type type) {
+    public ActiveMqQueue(String queueName, QueueType type) {
         this.queueName = queueName;
         this.type = type;
     }
@@ -21,7 +22,7 @@ public class ActiveMqQueue implements Queue {
         return queueName;
     }
 
-    public Type getType() {
+    public QueueType getType() {
         return type;
     }
 

@@ -1,9 +1,15 @@
 package com.ydcqy.ymq;
 
+import com.ydcqy.ymq.activemq.ActiveMqConfigurationFactory;
+import com.ydcqy.ymq.activemq.ActiveMqConnectionFactory;
+import com.ydcqy.ymq.activemq.ActiveMqMessage;
+import com.ydcqy.ymq.activemq.ActiveMqProducer;
+import com.ydcqy.ymq.activemq.ActiveMqQueue;
 import com.ydcqy.ymq.kafka.KafkaConfigurationFactory;
 import com.ydcqy.ymq.kafka.KafkaMessage;
 import com.ydcqy.ymq.kafka.KafkaProducer;
 import com.ydcqy.ymq.kafka.KafkaQueue;
+import com.ydcqy.ymq.message.QueueType;
 import com.ydcqy.ymq.producer.Producer;
 import com.ydcqy.ymq.util.UnsafeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +41,9 @@ public class ProducerMain {
     private volatile Object value = new Object();
 
     public static void main(String[] args) throws Exception {
-//        final Producer producer = new ActiveMqProducer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration()));
+        final Producer producer = new ActiveMqProducer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration()));
 //        final Producer producer = new RabbitMqProducer(new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration()));
-        final Producer producer = new KafkaProducer(new KafkaConfigurationFactory().getConfiguration());
+//        final Producer producer = new KafkaProducer(new KafkaConfigurationFactory().getConfiguration());
         final AtomicInteger n = new AtomicInteger();
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         log.trace("哇卡卡卡");
@@ -52,8 +58,8 @@ public class ProducerMain {
                     try {
                         ss = System.currentTimeMillis();
 
-//                        producer.send(new ActiveMqQueue("x.y.z", ActiveMqQueue.Type.POINT_TO_POINT), new KafkaMessage("哈喽大圣归来"));
-                        producer.send(new KafkaQueue("x.y.z11113", KafkaQueue.Type.POINT_TO_POINT), new KafkaMessage("哈喽大圣归来"));
+                        producer.send(new ActiveMqQueue("x.y.z", QueueType.POINT_TO_POINT), new ActiveMqMessage("哈喽大圣归来"));
+//                        producer.send(new KafkaQueue("x.y.z11113", QueueType.POINT_TO_POINT), new KafkaMessage("哈喽大圣归来"));
 
                     } catch (Exception e) {
                         e.printStackTrace();

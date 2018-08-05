@@ -12,7 +12,7 @@ import java.util.Map;
  */
 @Slf4j
 public abstract class AbstractConfigurationFactory implements ConfigurationFactory {
-    private static final String CONFIG_FILE = "mq.yml";
+    public static String CONFIG_FILE = "mq.yml";
 
     protected abstract String getConfigPrefix();
 

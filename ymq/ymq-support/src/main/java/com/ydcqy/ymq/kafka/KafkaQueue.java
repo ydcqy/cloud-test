@@ -1,15 +1,16 @@
 package com.ydcqy.ymq.kafka;
 
 import com.ydcqy.ymq.message.Queue;
+import com.ydcqy.ymq.message.QueueType;
 
 /**
  * @author xiaoyu
  */
 public class KafkaQueue implements Queue {
-    private Type   type;
-    private String queueName;
+    private QueueType type;
+    private String    queueName;
 
-    public KafkaQueue(String queueName, Type type) {
+    public KafkaQueue(String queueName, QueueType type) {
         this.queueName = queueName;
         this.type = type;
     }
@@ -19,7 +20,7 @@ public class KafkaQueue implements Queue {
         return queueName;
     }
 
-    public Type getType() {
+    public QueueType getType() {
         return type;
     }
 

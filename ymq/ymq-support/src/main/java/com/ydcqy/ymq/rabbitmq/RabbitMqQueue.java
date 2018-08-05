@@ -1,6 +1,7 @@
 package com.ydcqy.ymq.rabbitmq;
 
 import com.ydcqy.ymq.message.Queue;
+import com.ydcqy.ymq.message.QueueType;
 
 /**
  * @author xiaoyu
@@ -31,7 +32,7 @@ public class RabbitMqQueue implements Queue {
     }
 
     @Override
-    public Type getType() {
+    public QueueType getType() {
         return null;
     }
 

@@ -39,7 +39,6 @@ public class ActiveMqConnectionFactory extends AbstractConnectionFactory {
         ActiveMQPrefetchPolicy policy = new ActiveMQPrefetchPolicy();
         policy.setQueuePrefetch(1);
         cf.setPrefetchPolicy(policy);
-        initPool();
     }
 
     @Override

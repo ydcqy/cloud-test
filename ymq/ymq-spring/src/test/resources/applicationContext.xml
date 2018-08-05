@@ -8,10 +8,11 @@
         http://www.ydcqy.com/schema/ymq
         http://www.ydcqy.com/schema/ymq/ymq-spring.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     <context:component-scan base-package="com.ydcqy.ymq"/>
-    <ymq:config-file path="mq.yml"/>
 
-    <ymq:queue id="abc" name="a.b.c" type="point_to_point" interface="com.ydcqy.ymq.spring.service.AbcService"/>
+    <ymq:config path="mq.yml" active="activemq"/>
 
-    <ymq:consumer-listener queue-ref="abc" implement-ref="abcServiceImpl"/>
-    <ymq:producer id="abcService" queue-ref="abc"/>
+    <ymq:queue id="abcQueue" name="a.b.c1" type="point_to_point" interface="com.ydcqy.ymq.spring.service.Bbbb"/>
+    <ymq:consumer-listener queue-ref="abcQueue" implement-ref="abcServiceImpl"/>
+    <ymq:producer id="mqAbcService" queue-ref="abcQueue"/>
+
 </beans>
