@@ -10,20 +10,26 @@ import com.ydcqy.ymq.consumer.Consumer;
 import com.ydcqy.ymq.exception.MqException;
 import com.ydcqy.ymq.kafka.KafkaConfigurationFactory;
 import com.ydcqy.ymq.kafka.KafkaConsumer;
+import com.ydcqy.ymq.producer.Producer;
 import com.ydcqy.ymq.rabbitmq.RabbitMqConfigurationFactory;
 import com.ydcqy.ymq.rabbitmq.RabbitMqConnectionFactory;
 import com.ydcqy.ymq.rabbitmq.RabbitMqConsumer;
 import com.ydcqy.ymq.spring.ConfigBean;
 import org.springframework.util.StringUtils;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 /**
  * @author xiaoyu
  */
-public class ConsumerContainer {
-    private static volatile Consumer consumer;
+public class Container {
+    private static volatile Consumer        consumer;
+    private static volatile AtomicReference<Producer> producer;
 
-    public static Consumer getActiveMqConsumer(ConfigBean configBean) {
-        synchronized (ConsumerContainer.class) {
+
+
+    public static Consumer getActiveMqConsumer(ConfigBean configBean) {producer.
+        synchronized (Container.class) {
             if (consumer == null) {
                 ConnectionFactory connectionFactory;
                 Configuration configuration = configBean.getConfiguration();
@@ -44,7 +50,7 @@ public class ConsumerContainer {
     }
 
     public static Consumer getRabbitMqConsumer(ConfigBean configBean) {
-        synchronized (ConsumerContainer.class) {
+        synchronized (Container.class) {
             if (consumer == null) {
                 ConnectionFactory connectionFactory;
                 Configuration configuration = configBean.getConfiguration();
@@ -65,7 +71,7 @@ public class ConsumerContainer {
     }
 
     public static Consumer getKafkaConsumer(ConfigBean configBean) {
-        synchronized (ConsumerContainer.class) {
+        synchronized (Container.class) {
             if (consumer == null) {
                 Configuration configuration = configBean.getConfiguration();
                 String path = configBean.getPath();
