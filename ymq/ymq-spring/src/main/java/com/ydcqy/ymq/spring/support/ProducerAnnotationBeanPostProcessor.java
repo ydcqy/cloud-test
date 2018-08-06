@@ -1,6 +1,5 @@
 package com.ydcqy.ymq.spring.support;
 
-import com.alibaba.fastjson.JSON;
 import com.ydcqy.ymq.spring.ConfigBean;
 import com.ydcqy.ymq.spring.ProducerBean;
 import com.ydcqy.ymq.spring.annotation.Producer;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.annotation.InjectionMetadata;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.MergedBeanDefinitionPostProcessor;
@@ -26,10 +24,8 @@ import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -44,10 +40,12 @@ public class ProducerAnnotationBeanPostProcessor extends InstantiationAwareBeanP
     private final ConcurrentMap<String, InjectionMetadata> injectionMetadataCache =
             new ConcurrentHashMap<String, InjectionMetadata>(256);
     private BeanDefinitionRegistry registry;
+    private RootBeanDefinition     beanDefinition;
 
     @Override
     public void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName) {
         if (beanType != null) {
+            this.beanDefinition = beanDefinition;
             InjectionMetadata metadata = findProducerMetadata(beanName, beanType, null);
             metadata.checkConfigMembers(beanDefinition);
         }
@@ -148,20 +146,13 @@ public class ProducerAnnotationBeanPostProcessor extends InstantiationAwareBeanP
         @Override
         protected void inject(Object target, String requestingBeanName, PropertyValues pvs) throws Throwable {
             ReflectionUtils.makeAccessible(field);
-            Object bean = Proxy.newProxyInstance(getClass().getClassLoader(), new Class[]{field.getType()}, new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    System.out.println(JSON.toJSONString(args));
-                    return null;
-                }
-            });
             if (!registry.containsBeanDefinition(producerBeanId)) {
                 BeanDefinitionBuilder builder = BeanDefinitionBuilder.rootBeanDefinition(ProducerBean.class);
                 builder.addPropertyReference("queueRef", queueInterfaceClass.getName())
                         .addPropertyReference("configBean", ConfigBean.CONFIG_BEAN_ID);
                 registry.registerBeanDefinition(producerBeanId, builder.getBeanDefinition());
             }
-            field.set(target, bean);
+            field.set(target, ((BeanFactory) registry).getBean(producerBeanId));
         }
     }
 }
