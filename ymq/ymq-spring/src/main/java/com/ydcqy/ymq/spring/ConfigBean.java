@@ -2,7 +2,8 @@ package com.ydcqy.ymq.spring;
 
 import com.ydcqy.ymq.configuration.Configuration;
 import com.ydcqy.ymq.exception.MqException;
-import com.ydcqy.ymq.spring.support.ConsumerContainer;
+import com.ydcqy.ymq.spring.util.ConsumerHolder;
+import com.ydcqy.ymq.spring.util.ProducerHolder;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ResourceLoaderAware;
@@ -54,10 +55,10 @@ public class ConfigBean implements InitializingBean, ResourceLoaderAware, Applic
 
     public void onApplicationEvent(ContextRefreshedEvent event) {
         try {
-            ConsumerContainer.listen();
+            ProducerHolder.get(this);
+            ConsumerHolder.listen();
         } catch (MqException e) {
             throw new RuntimeException(e);
         }
-
     }
 }

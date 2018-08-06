@@ -8,16 +8,18 @@ import com.ydcqy.ymq.message.QueueType;
  */
 public class RabbitMqQueue implements Queue {
     private static final String DEFAULT_EXCHANGE_NAME = "ymq.default";
-    private String messageRoutingKey;
-    private String exchangeName;
-    private String queueBindingKey;
-    private String queueName;
+    private String    messageRoutingKey;
+    private String    exchangeName;
+    private String    queueBindingKey;
+    private String    queueName;
+    private QueueType type;
 
-    public RabbitMqQueue(String queueName) {
+    public RabbitMqQueue(String queueName, QueueType type) {
         this.messageRoutingKey = queueName;
         this.queueBindingKey = queueName;
         this.queueName = queueName;
         this.exchangeName = DEFAULT_EXCHANGE_NAME;
+        this.type = type;
     }
 
     public RabbitMqQueue(String messageRoutingKey, String queueBindingKey, String queueName) {
@@ -33,7 +35,7 @@ public class RabbitMqQueue implements Queue {
 
     @Override
     public QueueType getType() {
-        return null;
+        return type;
     }
 
     public String getMessageRoutingKey() {

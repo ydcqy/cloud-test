@@ -57,7 +57,7 @@ public class ProducerMain {
                     long ss = 0;
                     try {
                         ss = System.currentTimeMillis();
-
+                        System.out.println("ddddd");
                         producer.send(new ActiveMqQueue("x.y.z", QueueType.POINT_TO_POINT), new ActiveMqMessage("哈喽大圣归来"));
 //                        producer.send(new KafkaQueue("x.y.z11113", QueueType.POINT_TO_POINT), new KafkaMessage("哈喽大圣归来"));
 

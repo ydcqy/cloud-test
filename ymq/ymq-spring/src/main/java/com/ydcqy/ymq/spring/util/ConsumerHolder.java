@@ -1,4 +1,4 @@
-package com.ydcqy.ymq.spring.support;
+package com.ydcqy.ymq.spring.util;
 
 import com.ydcqy.ymq.AbstractConfigurationFactory;
 import com.ydcqy.ymq.activemq.ActiveMqConfigurationFactory;
@@ -11,25 +11,19 @@ import com.ydcqy.ymq.exception.MqException;
 import com.ydcqy.ymq.kafka.KafkaConfigurationFactory;
 import com.ydcqy.ymq.kafka.KafkaConsumer;
 import com.ydcqy.ymq.producer.Producer;
-import com.ydcqy.ymq.rabbitmq.RabbitMqConfigurationFactory;
-import com.ydcqy.ymq.rabbitmq.RabbitMqConnectionFactory;
 import com.ydcqy.ymq.rabbitmq.RabbitMqConsumer;
 import com.ydcqy.ymq.spring.ConfigBean;
 import org.springframework.util.StringUtils;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 /**
  * @author xiaoyu
  */
-public class Container {
-    private static volatile Consumer        consumer;
-    private static volatile AtomicReference<Producer> producer;
+public class ConsumerHolder {
+    private static volatile Consumer consumer;
+    private static volatile Producer producer;
 
-
-
-    public static Consumer getActiveMqConsumer(ConfigBean configBean) {producer.
-        synchronized (Container.class) {
+    public static Consumer get(ConfigBean configBean) {
+        synchronized (ConsumerHolder.class) {
             if (consumer == null) {
                 ConnectionFactory connectionFactory;
                 Configuration configuration = configBean.getConfiguration();
@@ -37,52 +31,34 @@ public class Container {
                 if (StringUtils.isEmpty(path) && null == configuration) {
                     throw new IllegalArgumentException("Configuration error");
                 }
-                if (configuration != null) {
-                    connectionFactory = new ActiveMqConnectionFactory(configuration, false);
-                } else {
-                    AbstractConfigurationFactory.CONFIG_FILE = path;
-                    connectionFactory = new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration(), false);
-                }
-                consumer = new ActiveMqConsumer(connectionFactory);
-            }
-        }
-        return consumer;
-    }
 
-    public static Consumer getRabbitMqConsumer(ConfigBean configBean) {
-        synchronized (Container.class) {
-            if (consumer == null) {
-                ConnectionFactory connectionFactory;
-                Configuration configuration = configBean.getConfiguration();
-                String path = configBean.getPath();
-                if (StringUtils.isEmpty(path) && null == configuration) {
-                    throw new IllegalArgumentException("Configuration error");
-                }
-                if (configuration != null) {
-                    connectionFactory = new RabbitMqConnectionFactory(configuration, false);
-                } else {
-                    AbstractConfigurationFactory.CONFIG_FILE = path;
-                    connectionFactory = new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration(), false);
-                }
-                consumer = new RabbitMqConsumer(connectionFactory);
-            }
-        }
-        return consumer;
-    }
-
-    public static Consumer getKafkaConsumer(ConfigBean configBean) {
-        synchronized (Container.class) {
-            if (consumer == null) {
-                Configuration configuration = configBean.getConfiguration();
-                String path = configBean.getPath();
-                if (StringUtils.isEmpty(path) && null == configuration) {
-                    throw new IllegalArgumentException("Configuration error");
-                }
-                if (configuration != null) {
-                    consumer = new KafkaConsumer(configuration);
-                } else {
-                    AbstractConfigurationFactory.CONFIG_FILE = path;
-                    consumer = new KafkaConsumer(new KafkaConfigurationFactory().getConfiguration());
+                switch (configBean.getActive()) {
+                    case ActiveType.ACTIVEMQ:
+                        if (configuration != null) {
+                            connectionFactory = new ActiveMqConnectionFactory(configuration, false);
+                        } else {
+                            AbstractConfigurationFactory.CONFIG_FILE = path;
+                            connectionFactory = new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration(), false);
+                        }
+                        consumer = new ActiveMqConsumer(connectionFactory);
+                        break;
+                    case ActiveType.RABBITMQ:
+                        if (configuration != null) {
+                            connectionFactory = new ActiveMqConnectionFactory(configuration, false);
+                        } else {
+                            AbstractConfigurationFactory.CONFIG_FILE = path;
+                            connectionFactory = new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration(), false);
+                        }
+                        consumer = new RabbitMqConsumer(connectionFactory);
+                        break;
+                    case ActiveType.KAFKA:
+                        if (configuration != null) {
+                            consumer = new KafkaConsumer(configuration);
+                        } else {
+                            AbstractConfigurationFactory.CONFIG_FILE = path;
+                            consumer = new KafkaConsumer(new KafkaConfigurationFactory().getConfiguration());
+                        }
+                        break;
                 }
             }
         }
