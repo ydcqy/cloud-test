@@ -11,8 +11,8 @@
 
     <ymq:config path="mq.yml" active="activemq"/>
 
-    <ymq:queue id="abcQueue" name="a.b.c1" type="point_to_point" interface="com.ydcqy.ymq.spring.service.Bbbb"/>
+    <ymq:queue id="abcQueue" name="x.y.z" type="point_to_point" interface="com.ydcqy.ymq.spring.service.Bbbb"/>
     <!--<ymq:consumer-listener queue-ref="abcQueue" implement-ref="abcServiceImpl"/>-->
-<!--    <ymq:producer id="mqAbcService" queue-ref="abcQueue"/>-->
+    <ymq:producer id="mqAbcService" queue-ref="abcQueue"/>
 
 </beans>

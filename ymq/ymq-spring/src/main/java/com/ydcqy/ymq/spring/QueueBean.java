@@ -3,6 +3,9 @@ package com.ydcqy.ymq.spring;
 import com.ydcqy.ymq.message.QueueType;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.lang.invoke.WrongMethodTypeException;
+import java.lang.reflect.Method;
+
 /**
  * @author xiaoyu
  */
@@ -46,7 +49,13 @@ public class QueueBean implements InitializingBean {
     }
 
     public void afterPropertiesSet() throws Exception {
-
+        Method[] methods = interfaceClass.getMethods();
+        for (Method method : methods) {
+            Class<?> returnType = method.getReturnType();
+            if (returnType != void.class) {
+                throw new WrongMethodTypeException("The queue interface only runs void type");
+            }
+        }
     }
 
     public QueueType getQueueType() {

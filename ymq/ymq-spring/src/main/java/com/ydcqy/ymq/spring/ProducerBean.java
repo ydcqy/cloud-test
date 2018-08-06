@@ -60,7 +60,6 @@ public class ProducerBean implements FactoryBean, InitializingBean, DisposableBe
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 if (ClassUtils.hasMethod(queueRef.getInterface(), method.getName(), method.getParameterTypes())) {
-                    System.out.println(JSON.toJSONString(args));
                     MessageWrapper wrapper = new MessageWrapper();
                     wrapper.setMethodName(method.getName());
                     wrapper.setInterfaceName(queueRef.getInterface().getName());
