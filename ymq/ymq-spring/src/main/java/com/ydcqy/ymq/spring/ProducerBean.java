@@ -5,6 +5,10 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 /**
  * @author xiaoyu
  */
@@ -12,6 +16,9 @@ public class ProducerBean implements FactoryBean, InitializingBean, DisposableBe
     private QueueBean   queueRef;
     private ConfigBean  configBean;
     private ClassLoader classLoader;
+
+    public ProducerBean() {
+    }
 
     public ConfigBean getConfigBean() {
         return configBean;
@@ -34,8 +41,12 @@ public class ProducerBean implements FactoryBean, InitializingBean, DisposableBe
     }
 
     public Object getObject() throws Exception {
-        System.out.println("ddddddddddd");
-        return "abc";
+        return Proxy.newProxyInstance(classLoader, new Class[]{queueRef.getInterface()}, new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                return null;
+            }
+        });
     }
 
     public Class<?> getObjectType() {

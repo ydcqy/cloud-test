@@ -21,7 +21,7 @@ import java.util.Map;
 @Component
 public class MvcInterceptor implements HandlerInterceptor {
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse httpServletResponse, Object o) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         String scheme = request.getScheme();
         String requestURI = request.getRequestURI();
         StringBuffer requestURL = request.getRequestURL();
@@ -40,6 +40,7 @@ public class MvcInterceptor implements HandlerInterceptor {
         Enumeration<String> attributeNames = request.getAttributeNames();
         Map<String, String[]> parameterMap = request.getParameterMap();
         log.info("----拦截请求----");
+        response.sendRedirect("/login");
         return true;
     }
 

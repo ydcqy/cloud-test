@@ -62,7 +62,6 @@ public class ConsumerListenerBean implements InitializingBean, DisposableBean, R
         if ("activemq".equalsIgnoreCase(active)) {
             Consumer consumer = ConsumerContainer.getActiveMqConsumer(configBean);
             final Class<?> anInterface = queueRef.getInterface();
-            System.out.println(queueRef);
             consumer.bindMessageListener(new ActiveMqQueue(queueRef.getName(), queueRef.getQueueType()), new MessageListener() {
                 @Override
                 public void onMessage(Message message) {

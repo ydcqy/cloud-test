@@ -35,5 +35,8 @@ public class TalkController {
         log.info("testxxxxx......");
         return ResponseEntity.ok("test结果");
     }
-
+    @RequestMapping("login")
+    public ResponseEntity<String> login() {
+        return ResponseEntity.ok("login结果");
+    }
 }

@@ -84,6 +84,8 @@ public class ConsumerContainer {
     }
 
     public static void listen() throws MqException {
-        consumer.listen();
+        if (consumer != null) {
+            consumer.listen();
+        }
     }
 }
