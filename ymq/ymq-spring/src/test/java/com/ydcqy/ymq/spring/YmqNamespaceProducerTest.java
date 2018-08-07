@@ -18,7 +18,7 @@ public class YmqNamespaceProducerTest {
         final ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("applicationContextProducer.xml");
         final HelloworldService helloworldService = ac.getBean(HelloworldService.class);
         log.info("启动成功");
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
         int count = 50000;
         final CountDownLatch countDownLatch = new CountDownLatch(count);
         long l = System.currentTimeMillis();

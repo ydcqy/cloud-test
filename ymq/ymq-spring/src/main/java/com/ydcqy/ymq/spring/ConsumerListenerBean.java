@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class ConsumerListenerBean implements InitializingBean, DisposableBean, ResourceLoaderAware {
 
+
     private QueueBean      queueRef;
     private Object         implementRef;
     private ConfigBean     configBean;
