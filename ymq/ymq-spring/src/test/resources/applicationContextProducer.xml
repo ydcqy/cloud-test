@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:ymq="http://www.ydcqy.com/schema/ymq"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.ydcqy.com/schema/ymq
+        http://www.ydcqy.com/schema/ymq/ymq-spring.xsd">
+
+    <ymq:config path="mq.yml" active="rabbitmq"/>
+    <ymq:queue id="helloworldQueue" name="x.y.z" type="point_to_point"
+               interface="com.ydcqy.ymq.spring.service.HelloworldService"/>
+
+    <ymq:producer id="helloworldServiceProducer" queue-ref="helloworldQueue"/>
+
+</beans>

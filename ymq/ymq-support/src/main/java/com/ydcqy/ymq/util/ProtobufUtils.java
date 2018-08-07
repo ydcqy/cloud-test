@@ -30,7 +30,7 @@ public final class ProtobufUtils {
             ProtostuffIOUtil.mergeFrom(bytes, t, schema);
             return t;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException("Deserialization error," + e.getMessage());
         }
     }
 

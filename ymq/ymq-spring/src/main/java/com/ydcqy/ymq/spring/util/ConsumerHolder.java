@@ -11,6 +11,8 @@ import com.ydcqy.ymq.exception.MqException;
 import com.ydcqy.ymq.kafka.KafkaConfigurationFactory;
 import com.ydcqy.ymq.kafka.KafkaConsumer;
 import com.ydcqy.ymq.producer.Producer;
+import com.ydcqy.ymq.rabbitmq.RabbitMqConfigurationFactory;
+import com.ydcqy.ymq.rabbitmq.RabbitMqConnectionFactory;
 import com.ydcqy.ymq.rabbitmq.RabbitMqConsumer;
 import com.ydcqy.ymq.spring.ConfigBean;
 import org.springframework.util.StringUtils;
@@ -44,10 +46,10 @@ public class ConsumerHolder {
                         break;
                     case ActiveType.RABBITMQ:
                         if (configuration != null) {
-                            connectionFactory = new ActiveMqConnectionFactory(configuration, false);
+                            connectionFactory = new RabbitMqConnectionFactory(configuration, false);
                         } else {
                             AbstractConfigurationFactory.CONFIG_FILE = path;
-                            connectionFactory = new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration(), false);
+                            connectionFactory = new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration(), false);
                         }
                         consumer = new RabbitMqConsumer(connectionFactory);
                         break;

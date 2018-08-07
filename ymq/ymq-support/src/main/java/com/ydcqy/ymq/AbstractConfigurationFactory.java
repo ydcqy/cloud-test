@@ -18,20 +18,25 @@ public abstract class AbstractConfigurationFactory implements ConfigurationFacto
 
     protected abstract Class<? extends Configuration> getConfigurationClass();
 
-    private Configuration configuration;
+    private volatile Configuration configuration;
 
     private Yaml yaml = new Yaml();
 
     private void init() {
-        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE);
-        if (null == is) {
-            is = AbstractConfigurationFactory.class.getResourceAsStream(CONFIG_FILE);
+        synchronized (this) {
+            if (this.configuration != null) {
+                return;
+            }
+            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE);
+            if (null == is) {
+//            is = AbstractConfigurationFactory.class.getResourceAsStream(CONFIG_FILE);
+            }
+            if (null == is) {
+                throw new NullPointerException("The configuration file " + CONFIG_FILE + " does not exist");
+            }
+            Object o = ((Map) yaml.load(is)).get(getConfigPrefix());
+            this.configuration = yaml.loadAs(yaml.dump(o), getConfigurationClass());
         }
-        if (null == is) {
-            throw new NullPointerException("The configuration file mq.yml does not exist");
-        }
-        Object o = ((Map) yaml.load(is)).get(getConfigPrefix());
-        this.configuration = yaml.loadAs(yaml.dump(o), getConfigurationClass());
     }
 
     @Override

@@ -55,7 +55,6 @@ public class ConfigBean implements InitializingBean, ResourceLoaderAware, Applic
 
     public void onApplicationEvent(ContextRefreshedEvent event) {
         try {
-            ProducerHolder.get(this);
             ConsumerHolder.listen();
         } catch (MqException e) {
             throw new RuntimeException(e);

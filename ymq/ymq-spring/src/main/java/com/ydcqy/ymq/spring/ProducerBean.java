@@ -101,6 +101,7 @@ public class ProducerBean implements FactoryBean, InitializingBean, DisposableBe
     }
 
     public void afterPropertiesSet() throws Exception {
+        ProducerHolder.get(configBean);
     }
 
     @Override
