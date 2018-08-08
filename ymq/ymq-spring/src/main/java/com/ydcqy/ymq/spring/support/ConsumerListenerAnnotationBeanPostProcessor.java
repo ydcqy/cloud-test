@@ -14,6 +14,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,9 @@ public class ConsumerListenerAnnotationBeanPostProcessor implements BeanDefiniti
         for (String definitionName : definitionNames) {
             BeanDefinition beanDefinition = registry.getBeanDefinition(definitionName);
             String beanClassName = beanDefinition.getBeanClassName();
+            if (StringUtils.isEmpty(beanClassName)) {
+                return;
+            }
             Class<?> beanClass;
             try {
                 beanClass = ClassUtils.forName(beanClassName, classLoader);

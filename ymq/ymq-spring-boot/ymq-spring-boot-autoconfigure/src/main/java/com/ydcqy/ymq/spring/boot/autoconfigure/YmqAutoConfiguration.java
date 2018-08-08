@@ -1,10 +1,12 @@
 package com.ydcqy.ymq.spring.boot.autoconfigure;
 
 import com.ydcqy.ymq.AbstractConfigurationFactory;
+import com.ydcqy.ymq.activemq.ActiveMqConfiguration;
+import com.ydcqy.ymq.rabbitmq.RabbitMqConfiguration;
 import com.ydcqy.ymq.spring.ConfigBean;
-import com.ydcqy.ymq.spring.support.EnableYmq;
 import com.ydcqy.ymq.spring.support.YmqScanRegistrar;
 import com.ydcqy.ymq.spring.util.ActiveType;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -25,6 +27,7 @@ import java.util.List;
  *
  * @author xiaoyu
  */
+
 @Configuration
 @ConditionalOnClass({AbstractConfigurationFactory.class, ConfigBean.class})
 @EnableConfigurationProperties(YmqProperties.class)
@@ -39,10 +42,9 @@ public class YmqAutoConfiguration {
 
     @Configuration
     @Import(AutoConfiguredYmqScanRegistrar.class)
-//    @EnableYmq
     @ConditionalOnMissingBean(ConfigBean.class)
     @EnableConfigurationProperties(YmqProperties.class)
-    public static class YmqScanRegistrarConfiguration {
+    protected static class YmqScanRegistrarConfiguration {
         private YmqProperties properties;
 
         public YmqScanRegistrarConfiguration(YmqProperties properties) {
@@ -52,15 +54,18 @@ public class YmqAutoConfiguration {
         @Bean
         @ConditionalOnMissingBean
         public ConfigBean configBean() {
-            System.out.println("哈哈");
             String active = properties.getActive();
             com.ydcqy.ymq.configuration.Configuration configuration = null;
             switch (active) {
                 case ActiveType.ACTIVEMQ:
-                    System.out.println(active);
+                    configuration = new ActiveMqConfiguration();
+                    BeanUtils.copyProperties(properties.getActivemq(), configuration);
                     break;
                 case ActiveType.RABBITMQ:
                     System.out.println(active);
+                    configuration = new RabbitMqConfiguration();
+                    BeanUtils.copyProperties(properties.getRabbitmq(), configuration);
+                    System.out.println(configuration);
                     break;
                 case ActiveType.KAFKA:
                     System.out.println(active);
@@ -81,7 +86,6 @@ public class YmqAutoConfiguration {
         @Override
         public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
             List<String> packagesToScan = AutoConfigurationPackages.get(this.beanFactory);
-            System.out.println("路径"+packagesToScan);
             for (String s : packagesToScan) {
                 registerQueueBeanDefinitions(registry, s);
             }
@@ -92,8 +96,6 @@ public class YmqAutoConfiguration {
         @Override
         public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
             this.beanFactory = beanFactory;
-            List<String> packagesToScan = AutoConfigurationPackages.get( beanFactory);
-            System.out.println("路径"+packagesToScan);
         }
     }
 }
