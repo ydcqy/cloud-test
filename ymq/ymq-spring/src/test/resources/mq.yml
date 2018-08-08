@@ -36,7 +36,7 @@ kafka:
     minEvictableIdleTimeMillis: 60000
     timeBetweenEvictionRunsMillis: 30000
     testOnBorrow: false
-    testOnReturn: fasle
+    testOnReturn: false
     testWhileIdle: true
     batchSize: 32768
     lingerMillis: 1000

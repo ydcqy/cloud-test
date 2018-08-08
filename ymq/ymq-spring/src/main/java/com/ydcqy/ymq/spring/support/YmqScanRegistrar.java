@@ -39,7 +39,7 @@ public class YmqScanRegistrar implements ImportBeanDefinitionRegistrar {
         registerProducerProcessor(registry);
     }
 
-    private void registerQueueBeanDefinitions(BeanDefinitionRegistry registry, String basePackage) {
+    protected void registerQueueBeanDefinitions(BeanDefinitionRegistry registry, String basePackage) {
         YmqClassPathBeanDefinitionScanner scanner = new YmqClassPathBeanDefinitionScanner(registry);
         scanner.addIncludeFilter(new AnnotationTypeFilter(Queue.class));
         Set<BeanDefinitionHolder> beanDefinitionHolders = scanner.doScan(basePackage);
@@ -67,14 +67,14 @@ public class YmqScanRegistrar implements ImportBeanDefinitionRegistrar {
         }
     }
 
-    private void registerConsumerListenerProcessor(BeanDefinitionRegistry registry) {
+    protected void registerConsumerListenerProcessor(BeanDefinitionRegistry registry) {
         BeanDefinitionBuilder builder = rootBeanDefinition(ConsumerListenerAnnotationBeanPostProcessor.class);
         builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
         AbstractBeanDefinition beanDefinition = builder.getBeanDefinition();
         BeanDefinitionReaderUtils.registerWithGeneratedName(beanDefinition, registry);
     }
 
-    private void registerProducerProcessor(BeanDefinitionRegistry registry) {
+    protected void registerProducerProcessor(BeanDefinitionRegistry registry) {
         BeanDefinitionBuilder builder = rootBeanDefinition(ProducerAnnotationBeanPostProcessor.class);
         builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
         AbstractBeanDefinition beanDefinition = builder.getBeanDefinition();

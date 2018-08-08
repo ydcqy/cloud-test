@@ -1,5 +1,7 @@
 package com.ydcqy.ymq;
 
+import com.ydcqy.ymq.kafka.KafkaConfigurationFactory;
+import com.ydcqy.ymq.kafka.KafkaProducer;
 import com.ydcqy.ymq.message.QueueType;
 import com.ydcqy.ymq.producer.Producer;
 import com.ydcqy.ymq.rabbitmq.RabbitMqConfigurationFactory;
@@ -38,8 +40,8 @@ public class ProducerMain {
 
     public static void main(String[] args) throws Exception {
 //        final Producer producer = new ActiveMqProducer(new ActiveMqConnectionFactory(new ActiveMqConfigurationFactory().getConfiguration()));
-        final Producer producer = new RabbitMqProducer(new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration()));
-//        final Producer producer = new KafkaProducer(new KafkaConfigurationFactory().getConfiguration());
+//        final Producer producer = new RabbitMqProducer(new RabbitMqConnectionFactory(new RabbitMqConfigurationFactory().getConfiguration()));
+        final Producer producer = new KafkaProducer(new KafkaConfigurationFactory().getConfiguration());
         final AtomicInteger n = new AtomicInteger();
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         log.trace("哇卡卡卡");
