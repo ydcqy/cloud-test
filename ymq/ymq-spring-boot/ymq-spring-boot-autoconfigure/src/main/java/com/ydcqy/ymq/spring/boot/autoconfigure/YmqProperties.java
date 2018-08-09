@@ -9,6 +9,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "ymq")
 public class YmqProperties {
+    /**
+     * Specify mq type
+     */
     private String   active;
     private Activemq activemq;
     private Rabbitmq rabbitmq;
@@ -16,9 +19,19 @@ public class YmqProperties {
 
     @Data
     public static class Activemq {
-        private String           brokerUrl;
-        private String           username;
-        private String           password;
+        /**
+         * Activemq's connection string
+         */
+        private String brokerUrl;
+        /**
+         * Activemq's permissions users
+         */
+        private String username;
+        /**
+         * Activemq's users password
+         */
+        private String password;
+
         private ProducerPool     producerPool;
         private ConsumerListener consumerListener;
 
@@ -90,4 +103,5 @@ public class YmqProperties {
             private Integer concurrency = 1;
         }
     }
+
 }

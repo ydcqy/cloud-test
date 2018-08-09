@@ -1,12 +1,13 @@
 package com.ydcqy.ymq.spring.boot.autoconfigure;
 
+import com.alibaba.fastjson.JSON;
 import com.ydcqy.ymq.AbstractConfigurationFactory;
 import com.ydcqy.ymq.activemq.ActiveMqConfiguration;
+import com.ydcqy.ymq.kafka.KafkaConfiguration;
 import com.ydcqy.ymq.rabbitmq.RabbitMqConfiguration;
 import com.ydcqy.ymq.spring.ConfigBean;
 import com.ydcqy.ymq.spring.support.YmqScanRegistrar;
 import com.ydcqy.ymq.spring.util.ActiveType;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -23,9 +24,11 @@ import org.springframework.core.type.AnnotationMetadata;
 import java.util.List;
 
 /**
- * spring boot automatic configuration support {@link YmqProperties}
+ * spring boot automatic configuration support.
  *
  * @author xiaoyu
+ * @see YmqProperties
+ * @since 1.0.0
  */
 
 @Configuration
@@ -38,7 +41,6 @@ public class YmqAutoConfiguration {
     public YmqAutoConfiguration(YmqProperties properties) {
         this.properties = properties;
     }
-
 
     @Configuration
     @Import(AutoConfiguredYmqScanRegistrar.class)
@@ -58,17 +60,13 @@ public class YmqAutoConfiguration {
             com.ydcqy.ymq.configuration.Configuration configuration = null;
             switch (active) {
                 case ActiveType.ACTIVEMQ:
-                    configuration = new ActiveMqConfiguration();
-                    BeanUtils.copyProperties(properties.getActivemq(), configuration);
+                    configuration = JSON.parseObject(JSON.toJSONString(properties.getActivemq()), ActiveMqConfiguration.class);
                     break;
                 case ActiveType.RABBITMQ:
-                    System.out.println(active);
-                    configuration = new RabbitMqConfiguration();
-                    BeanUtils.copyProperties(properties.getRabbitmq(), configuration);
-                    System.out.println(configuration);
+                    configuration = JSON.parseObject(JSON.toJSONString(properties.getRabbitmq()), RabbitMqConfiguration.class);
                     break;
                 case ActiveType.KAFKA:
-                    System.out.println(active);
+                    configuration = JSON.parseObject(JSON.toJSONString(properties.getKafka()), KafkaConfiguration.class);
                     break;
                 default:
                     throw new IllegalArgumentException("ymq active type of error");

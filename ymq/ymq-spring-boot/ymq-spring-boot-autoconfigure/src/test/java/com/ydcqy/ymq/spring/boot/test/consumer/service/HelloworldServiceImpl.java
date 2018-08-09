@@ -1,6 +1,7 @@
 package com.ydcqy.ymq.spring.boot.test.consumer.service;
 
 import com.ydcqy.ymq.spring.annotation.ConsumerListener;
+import com.ydcqy.ymq.spring.boot.test.mq.service.HelloworldService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

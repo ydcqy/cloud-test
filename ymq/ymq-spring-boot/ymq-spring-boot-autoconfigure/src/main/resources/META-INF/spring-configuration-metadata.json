@@ -1,0 +1,253 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties",
+      "name": "ymq",
+      "type": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties",
+      "name": "ymq.activemq",
+      "sourceMethod": "getActivemq()",
+      "type": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq",
+      "name": "ymq.activemq.consumer-listener",
+      "sourceMethod": "getConsumerListener()",
+      "type": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq$ConsumerListener"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq",
+      "name": "ymq.activemq.producer-pool",
+      "sourceMethod": "getProducerPool()",
+      "type": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq$ProducerPool"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties",
+      "name": "ymq.kafka",
+      "sourceMethod": "getKafka()",
+      "type": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka",
+      "name": "ymq.kafka.consumer-listener",
+      "sourceMethod": "getConsumerListener()",
+      "type": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ConsumerListener"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka",
+      "name": "ymq.kafka.producer-pool",
+      "sourceMethod": "getProducerPool()",
+      "type": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties",
+      "name": "ymq.rabbitmq",
+      "sourceMethod": "getRabbitmq()",
+      "type": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq",
+      "name": "ymq.rabbitmq.consumer-listener",
+      "sourceMethod": "getConsumerListener()",
+      "type": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ConsumerListener"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq",
+      "name": "ymq.rabbitmq.producer-pool",
+      "sourceMethod": "getProducerPool()",
+      "type": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ProducerPool"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties",
+      "name": "ymq.active",
+      "description": "Specify mq type",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq",
+      "name": "ymq.activemq.broker-url",
+      "description": "Activemq's connection string",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq$ConsumerListener",
+      "defaultValue": 1,
+      "name": "ymq.activemq.consumer-listener.concurrency",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq",
+      "name": "ymq.activemq.password",
+      "description": "Activemq's users password",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq$ProducerPool",
+      "name": "ymq.activemq.producer-pool.expiry-timeout",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq$ProducerPool",
+      "name": "ymq.activemq.producer-pool.idle-timeout",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq$ProducerPool",
+      "name": "ymq.activemq.producer-pool.max-connections",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq$ProducerPool",
+      "name": "ymq.activemq.producer-pool.time-between-expiration-check-millis",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Activemq",
+      "name": "ymq.activemq.username",
+      "description": "Activemq's permissions users",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka",
+      "name": "ymq.kafka.bootstrap-servers",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ConsumerListener",
+      "defaultValue": 1,
+      "name": "ymq.kafka.consumer-listener.concurrency",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.batch-size",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.linger-millis",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.max-idle",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.max-total",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.max-wait-millis",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.min-evictable-idle-time-millis",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.min-idle",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.test-on-borrow",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.test-on-return",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.test-while-idle",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Kafka$ProducerPool",
+      "name": "ymq.kafka.producer-pool.time-between-eviction-runs-millis",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ConsumerListener",
+      "defaultValue": 1,
+      "name": "ymq.rabbitmq.consumer-listener.concurrency",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq",
+      "name": "ymq.rabbitmq.host",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq",
+      "name": "ymq.rabbitmq.password",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq",
+      "name": "ymq.rabbitmq.port",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ProducerPool",
+      "name": "ymq.rabbitmq.producer-pool.max-idle",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ProducerPool",
+      "name": "ymq.rabbitmq.producer-pool.max-total",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ProducerPool",
+      "name": "ymq.rabbitmq.producer-pool.max-wait-millis",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ProducerPool",
+      "name": "ymq.rabbitmq.producer-pool.min-evictable-idle-time-millis",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ProducerPool",
+      "name": "ymq.rabbitmq.producer-pool.min-idle",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ProducerPool",
+      "name": "ymq.rabbitmq.producer-pool.test-on-borrow",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ProducerPool",
+      "name": "ymq.rabbitmq.producer-pool.test-on-return",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ProducerPool",
+      "name": "ymq.rabbitmq.producer-pool.test-while-idle",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq$ProducerPool",
+      "name": "ymq.rabbitmq.producer-pool.time-between-eviction-runs-millis",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ydcqy.ymq.spring.boot.autoconfigure.YmqProperties$Rabbitmq",
+      "name": "ymq.rabbitmq.username",
+      "type": "java.lang.String"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 package com.ydcqy.ymq.spring.boot.test.consumer;
 
-import com.ydcqy.ymq.spring.boot.test.consumer.service.HelloworldService;
+import com.ydcqy.ymq.spring.support.EnableYmq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContextAware;
  * @author xiaoyu
  */
 @Slf4j
+@EnableYmq("com.ydcqy")
 @SpringBootApplication
 public class YmqConsumerApplicationTest implements ApplicationContextAware {
     private static ApplicationContext ac;
@@ -19,7 +20,6 @@ public class YmqConsumerApplicationTest implements ApplicationContextAware {
     public static void main(String[] args) {
         SpringApplication.run(YmqConsumerApplicationTest.class, args);
         log.info("==========Spring Boot YmqApplicationTest启动成功！==========");
-        System.out.println(ac.getBean(HelloworldService.class));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.ydcqy.ymq.spring;
 
-import com.alibaba.fastjson.JSON;
 import com.ydcqy.ymq.activemq.ActiveMqMessage;
 import com.ydcqy.ymq.activemq.ActiveMqQueue;
 import com.ydcqy.ymq.kafka.KafkaMessage;
@@ -27,9 +26,10 @@ import java.util.Arrays;
  * @author xiaoyu
  */
 public class ProducerBean implements FactoryBean, InitializingBean, DisposableBean, BeanClassLoaderAware {
-    private QueueBean   queueRef;
-    private ConfigBean  configBean;
-    private ClassLoader classLoader;
+    private                    QueueBean   queueRef;
+    private                    ConfigBean  configBean;
+    private                    ClassLoader classLoader;
+    private transient volatile Object      ref;
 
     public ProducerBean() {
     }
@@ -56,37 +56,48 @@ public class ProducerBean implements FactoryBean, InitializingBean, DisposableBe
     }
 
     public Object getObject() throws Exception {
-        return Proxy.newProxyInstance(classLoader, new Class[]{queueRef.getInterface()}, new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                if (ClassUtils.hasMethod(queueRef.getInterface(), method.getName(), method.getParameterTypes())) {
-                    MessageWrapper wrapper = new MessageWrapper();
-                    wrapper.setMethodName(method.getName());
-                    wrapper.setInterfaceName(queueRef.getInterface().getName());
-                    wrapper.setParamsList(Arrays.asList(args));
-                    String active = configBean.getActive();
-                    Queue queue = null;
-                    Message message = null;
-                    switch (active) {
-                        case ActiveType.ACTIVEMQ:
-                            queue = new ActiveMqQueue(queueRef.getName(), queueRef.getQueueType());
-                            message = new ActiveMqMessage(wrapper);
-                            break;
-                        case ActiveType.RABBITMQ:
-                            queue = new RabbitMqQueue(queueRef.getName(), queueRef.getQueueType());
-                            message = new RabbitMqMessage(wrapper);
-                            break;
-                        case ActiveType.KAFKA:
-                            queue = new KafkaQueue(queueRef.getName(), queueRef.getQueueType());
-                            message = new KafkaMessage(wrapper);
-                            break;
+        return get();
+    }
+
+    public synchronized Object get() {
+        if (ref == null) {
+            ref = Proxy.newProxyInstance(classLoader, new Class[]{queueRef.getInterface()}, new InvocationHandler() {
+                @Override
+                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                    if ("toString".equals(method.getName())) {
+                        return (getClass().isInterface() ? "interface " : (getClass().isPrimitive() ? "" : "class "))
+                                + getClass().getName();
                     }
-                    ProducerHolder.get(configBean).send(queue, message);
+                    if (ClassUtils.hasMethod(queueRef.getInterface(), method.getName(), method.getParameterTypes())) {
+                        MessageWrapper wrapper = new MessageWrapper();
+                        wrapper.setMethodName(method.getName());
+                        wrapper.setInterfaceName(queueRef.getInterface().getName());
+                        wrapper.setParamsList(Arrays.asList(args));
+                        String active = configBean.getActive();
+                        Queue queue = null;
+                        Message message = null;
+                        switch (active) {
+                            case ActiveType.ACTIVEMQ:
+                                queue = new ActiveMqQueue(queueRef.getName(), queueRef.getQueueType());
+                                message = new ActiveMqMessage(wrapper);
+                                break;
+                            case ActiveType.RABBITMQ:
+                                queue = new RabbitMqQueue(queueRef.getName(), queueRef.getQueueType());
+                                message = new RabbitMqMessage(wrapper);
+                                break;
+                            case ActiveType.KAFKA:
+                                queue = new KafkaQueue(queueRef.getName(), queueRef.getQueueType());
+                                message = new KafkaMessage(wrapper);
+                                break;
+                        }
+                        ProducerHolder.get(configBean).send(queue, message);
+                        return null;
+                    }
                     return null;
                 }
-                return null;
-            }
-        });
+            });
+        }
+        return ref;
     }
 
     public Class<?> getObjectType() {

@@ -23,9 +23,12 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -155,4 +158,5 @@ public class ProducerAnnotationBeanPostProcessor extends InstantiationAwareBeanP
             field.set(target, ((BeanFactory) registry).getBean(producerBeanId));
         }
     }
+
 }

@@ -4,7 +4,6 @@ import com.ydcqy.ymq.spring.QueueBean;
 import com.ydcqy.ymq.spring.annotation.Queue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -28,10 +27,11 @@ import static org.springframework.beans.factory.support.BeanDefinitionBuilder.ro
  * @author xiaoyu
  */
 public class YmqScanRegistrar implements ImportBeanDefinitionRegistrar {
+    private static final String CONSUMER_BEAN = ConsumerListenerAnnotationBeanPostProcessor.class.getName();
+    private static final String PRODUCER_BEAN = ProducerAnnotationBeanPostProcessor.class.getName();
 
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         Set<String> packagesToScan = getPackagesToScan(importingClassMetadata);
-
         for (String s : packagesToScan) {
             registerQueueBeanDefinitions(registry, s);
         }
@@ -68,17 +68,23 @@ public class YmqScanRegistrar implements ImportBeanDefinitionRegistrar {
     }
 
     protected void registerConsumerListenerProcessor(BeanDefinitionRegistry registry) {
+        if (registry.containsBeanDefinition(CONSUMER_BEAN)) {
+            return;
+        }
         BeanDefinitionBuilder builder = rootBeanDefinition(ConsumerListenerAnnotationBeanPostProcessor.class);
         builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-        AbstractBeanDefinition beanDefinition = builder.getBeanDefinition();
-        BeanDefinitionReaderUtils.registerWithGeneratedName(beanDefinition, registry);
+        BeanDefinitionHolder holder = new BeanDefinitionHolder(builder.getBeanDefinition(), CONSUMER_BEAN);
+        BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
     }
 
     protected void registerProducerProcessor(BeanDefinitionRegistry registry) {
+        if (registry.containsBeanDefinition(PRODUCER_BEAN)) {
+            return;
+        }
         BeanDefinitionBuilder builder = rootBeanDefinition(ProducerAnnotationBeanPostProcessor.class);
         builder.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-        AbstractBeanDefinition beanDefinition = builder.getBeanDefinition();
-        BeanDefinitionReaderUtils.registerWithGeneratedName(beanDefinition, registry);
+        BeanDefinitionHolder holder = new BeanDefinitionHolder(builder.getBeanDefinition(), PRODUCER_BEAN);
+        BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
     }
 
     private Set<String> getPackagesToScan(AnnotationMetadata metadata) {
