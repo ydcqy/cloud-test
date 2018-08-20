@@ -5,6 +5,7 @@ import com.ydcqy.ycache.cluster.redis.ClusterJedisPool;
 import com.ydcqy.ycache.cluster.redis.ClusterType;
 import com.ydcqy.ycache.config.RedisConfig;
 import com.ydcqy.ycache.exception.CacheConfigException;
+import com.ydcqy.ycache.util.RedisLock;
 import org.apache.commons.lang3.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -284,4 +285,19 @@ public class RedisSupport {
 
     private Jedis jedis;
 
+    public Object eval(String script, List<String> keys, List<String> args) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).eval(script, keys, args);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public RedisLock getLock(String key, int expxSeconds) {
+        RedisLock redisLock = new RedisLock(this, key, expxSeconds);
+        return redisLock;
+    }
 }
