@@ -10,7 +10,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 /**
- * <b>Redis分布式锁</b>
+ * Distributed lock for redis
  *
  * @author xiaoyu
  * @see Lock

@@ -9,6 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by xiaoyu on 2017/10/13.
@@ -73,6 +75,23 @@ public class HttpUtil {
             return StreamUtils.copyToString(conn.getInputStream(), Charset.defaultCharset());
         } finally {
             conn.getInputStream().close();
+        }
+    }
+
+    public static void main(String[] args) {
+        ExecutorService executorService = Executors.newFixedThreadPool(100);
+        for (int i = 0; i < 100000; i++) {
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String get = queryInfo("http://www.baidu.com", "POST", "");
+                        System.out.println(get);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
     }
 
