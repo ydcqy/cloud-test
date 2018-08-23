@@ -10,7 +10,7 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 /**
- * Distributed lock for redis
+ * Distributed lock for redis,and support reentrant.
  *
  * @author xiaoyu
  * @see Lock
