@@ -1,9 +1,7 @@
 //package com.ydcqy.cloud.customer.util;
 //
 //import com.alibaba.fastjson.JSON;
-//import com.yuanda.ydy.sdk.exception.YdyException;
-//import com.yuanda.ydy.sdk.request.Request;
-//import com.yuanda.ydy.sdk.response.Response;
+//
 //
 //import java.io.IOException;
 //import java.io.InputStream;
@@ -13,6 +11,7 @@
 //import java.net.URL;
 //import java.net.URLEncoder;
 //import java.nio.charset.Charset;
+//import java.util.zip.GZIPInputStream;
 //
 ///**
 // * @author xiaoyu
@@ -32,10 +31,10 @@
 //    }
 //
 //    private void check() {
-//        if (null != urlStr && urlStr.trim().length() != 0) {
+//        if (null == urlStr) {
 //            throw new IllegalArgumentException("url不能为空");
 //        }
-//        if (null != token && token.trim().length() != 0) {
+//        if (null == token) {
 //            throw new IllegalArgumentException("token不能为空");
 //        }
 //    }
@@ -77,6 +76,7 @@
 //    private <T extends Response> T parseBody(String body, Class<? extends Response> clazz) {
 //        try {
 //            Response response = JSON.parseObject(body, clazz);
+//            response.setBody(body);
 //            return (T) response;
 //        } catch (Exception e) {
 //            throw new IllegalStateException("服务端响应数据格式不对，请联系相关人员");
@@ -92,7 +92,12 @@
 //
 //    private String getResponseBody(HttpURLConnection conn) throws IOException {
 //        try {
-//            return copyToString(conn.getInputStream(), Charset.defaultCharset());
+//            InputStream input = conn.getInputStream();
+//            String ce = conn.getHeaderField("Content-Encoding");
+//            if (ce != null && ce.equalsIgnoreCase("gzip")) {
+//                input = new GZIPInputStream(input);
+//            }
+//            return copyToString(input, Charset.defaultCharset());
 //        } finally {
 //            conn.getInputStream().close();
 //        }
@@ -114,7 +119,8 @@
 //
 //    private void setHeader(HttpURLConnection conn) {
 //        conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
-//        /*conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");*/
+//        conn.setRequestProperty("Accept-Encoding", "gzip, deflate");
+////        /*conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");*/
 //        conn.setRequestProperty("Content-Type", "application/json");
 //        conn.setUseCaches(false);
 //        conn.setConnectTimeout(30000);
@@ -122,5 +128,4 @@
 //        conn.setDoOutput(true);
 //        conn.setDoInput(true);
 //    }
-//
 //}

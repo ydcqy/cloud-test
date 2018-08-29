@@ -62,15 +62,23 @@ public class PathNodeService {
                 if (null == d) {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("name", nodes[i]);
-                    jsonObject.put("content", null);
                     jsonObject.put("parent", null);
-                    jsonObject.put("leaf", false);
+                    if (isJson(json) || nodes.length > 1) {
+                        jsonObject.put("content", null);
+                        jsonObject.put("leaf", false);
+                    } else {
+                        jsonObject.put("content", json);
+                        jsonObject.put("leaf", true);
+                    }
                     Document document = Document.parse(jsonObject.toString());
                     collection.insertOne(document);
 
                     parentId = document.getObjectId("_id").toString();
                 } else {
                     if (d.getBoolean("leaf")) {
+                        if (i == nodes.length - 1) {
+                            throw new RuntimeException("添加失败，节点已经存在");
+                        }
                         throw new RuntimeException("路径中存在叶子节点");
                     }
                     parentId = d.getObjectId("_id").toString();
@@ -363,10 +371,5 @@ public class PathNodeService {
         return rs;
     }
 
-    /**
-     * 推送节点内容到节点订阅者
-     */
-    public void pushToNodeSubscriber(String path) {
 
-    }
 }
