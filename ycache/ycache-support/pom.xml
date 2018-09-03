@@ -44,21 +44,21 @@
             <artifactId>mongodb-driver</artifactId>
             <version>${mongodb.version}</version>
         </dependency>
-<!--        <dependency>
-            <groupId>com.101tec</groupId>
-            <artifactId>zkclient</artifactId>
-            <version>0.10</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.zookeeper</groupId>
-                    <artifactId>zookeeper</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>-->
+        <!--        <dependency>
+                    <groupId>com.101tec</groupId>
+                    <artifactId>zkclient</artifactId>
+                    <version>0.10</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>org.slf4j</groupId>
+                            <artifactId>slf4j-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.apache.zookeeper</groupId>
+                            <artifactId>zookeeper</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>-->
         <dependency>
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
@@ -97,6 +97,25 @@
                 </configuration>
             </plugin>
             <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass></mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>jar-with-dependencies</descriptorRefs>
+                </configuration>
+      <!--          <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>-->
+            </plugin>
+            <!--<plugin>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <outputDirectory>${project.build.directory}/${project.artifactId}</outputDirectory>
@@ -125,7 +144,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 </project>

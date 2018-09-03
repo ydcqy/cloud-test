@@ -32,8 +32,8 @@ then
 fi
 
 #设置源——阿里源
-mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak
-mv /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.bak
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.bak -f
+mv /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel.repo.bak -f
 curl https://mirrors.aliyun.com/repo/Centos-7.repo > /etc/yum.repos.d/CentOS-Base.repo
 curl https://mirrors.aliyun.com/repo/epel-7.repo > /etc/yum.repos.d/epel.repo
 #设置源——docker源
@@ -48,6 +48,7 @@ yum install -y iptables-services
 systemctl enable iptables.service
 systemctl restart iptables.service
 yum install -y ntp
+systemctl disable chronyd
 systemctl enable ntpd
 systemctl restart ntpd
 yum install -y wget

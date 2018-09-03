@@ -4,3 +4,4 @@
 #make erLang
 yum install -y ncurses-devel openssl openssl-devel unixODBC-devel gcc-c++
 
+mkdir /home/mongodb/{log,db} -p; chown -R mongod:mongod /home/mongodb;

@@ -36,7 +36,7 @@ public class Client {
         socketChannel.setOption(StandardSocketOptions.SO_RCVBUF, 1);
         socketChannel.setOption(StandardSocketOptions.SO_SNDBUF, 1);
 //        socketChannel.setOption(StandardSocketOptions., 10240);
-        socketChannel.connect(new InetSocketAddress("localhost", 1111));
+        socketChannel.connect(new InetSocketAddress("192.168.11.104", 8888));
         Socket socket = socketChannel.socket();
 //        socket.setSendBufferSize(512000);
         SocketChannel channel = socket.getChannel();
