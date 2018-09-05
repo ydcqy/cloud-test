@@ -15,8 +15,8 @@ threading_local = threading.local()
 def on_message(ws, message):
     msg = json.loads(message)
     data_ = msg["data"]
-    # if threading_local.i == 500:
-    logging.info("接收到消息：" + str(msg)[0:])
+    if threading_local.i == 500:
+        logging.info("接收到消息：" + str(msg)[0:])
     if msg["command"] == 6:
         user_ = data_['user']
         user_['groups'] = []
@@ -30,7 +30,8 @@ def on_error(ws, error):
 
 
 def on_close(ws):
-    logging.info("### closed ###")
+    pass
+    # logging.info("### closed ###")
 
 
 def newInstance(i):
@@ -52,9 +53,11 @@ if __name__ == '__main__':
     # loop = asyncio.get_event_loop()
     # tasks = [asyncio.ensure_future(newInstance(i)) for i in range(10)]
     # loop.run_until_complete(asyncio.wait(tasks))
-    concurrency = 2
+    concurrency = 5000
     executor = ThreadPoolExecutor(concurrency)
     for i in range(concurrency):
         # t = threading.Thread(target=newInstance, args=(i,))
-        # t.start()
+        # t.start()3
+
         executor.submit(newInstance, i)
+

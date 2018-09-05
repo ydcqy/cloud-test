@@ -1,4 +1,5 @@
 import http.client
+import json
 import urllib.parse
 
 from ydysdk.exceptions import YdyException
@@ -23,16 +24,18 @@ class YdyClient:
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36"
             , "Content-Type": "application/json"
             , "Accept-Encoding": "gzip, deflate"
+            , "Cache-Control": "no-cache"
+            , 'Connection': 'keep-alive'
         }
         urlsplit = urllib.parse.urlsplit(url_str)
         hostport = urllib.parse.splitport(urlsplit.netloc)
+        queryStr = urlsplit.path + '?' + urlsplit.query
         host = hostport[0]
         port = hostport[1]
         conn = http.client.HTTPConnection(host, port, 30)
-        print(urlsplit)
         if "GET" == str(request.method).upper():
-            conn.request("GET", "/node/sdkapi?token=dsgdsgdsikhuewikdnjlkgh", headers=headers)
+            conn.request("GET", queryStr, headers=headers)
         elif "POST" == str(request.method).upper():
-            conn.request("POST", "/node/sdkapi?token=dsgdsgdsikhuewikdnjlkgh", body=request.get_params(),
+            conn.request("POST", queryStr, body=request.get_params(),
                          headers=headers)
-        return conn.getresponse().read().decode("utf-8")
+        return json.loads(conn.getresponse().read())
