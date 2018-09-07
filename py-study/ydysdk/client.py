@@ -1,3 +1,4 @@
+import gzip
 import http.client
 import json
 import urllib.parse
@@ -38,4 +39,8 @@ class YdyClient:
         elif "POST" == str(request.method).upper():
             conn.request("POST", queryStr, body=request.get_params(),
                          headers=headers)
-        return json.loads(conn.getresponse().read())
+        resp = conn.getresponse()
+        data = resp.read()
+        if "gzip" == str(resp.headers['content-encoding']).lower():
+            data = gzip.decompress(data)
+        return json.loads(data)

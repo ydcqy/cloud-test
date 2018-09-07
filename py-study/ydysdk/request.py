@@ -51,8 +51,7 @@ class NodeAddRequest(Request):
             "nodeContent": self.node_content,
             "api": self.api
         }
-        print(str(params))
-        return str(params)
+        return json.dumps(params)
 
 
 class NodeUpdateRequest(Request):
@@ -94,3 +93,22 @@ class NodeDeleteRequest(Request):
             "api": self.api
         }
         return json.dumps(params)
+
+
+class NodeWatchRequest(Request):
+    api = "/get"
+
+    node_path = None
+
+    def __init__(self):
+        pass
+
+    def set_node_path(self, node_path):
+        self.node_path = node_path
+
+    def get_params(self):
+        params = {
+            "nodePath": self.node_path,
+            "api": self.api
+        }
+        return str(params)

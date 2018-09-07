@@ -2,9 +2,13 @@ package com.ydcqy.kiter;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.StandardSocketOptions;
@@ -13,6 +17,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.security.KeyStore;
 import java.util.Iterator;
 import java.util.concurrent.locks.LockSupport;
 
@@ -21,6 +26,40 @@ import java.util.concurrent.locks.LockSupport;
  */
 @Slf4j
 public class Server {
+    private static SSLEngine  sslEngine;
+    private static SSLContext sslContext;
+    private static final String SSL_TYPE = "SSL";
+    private static final String KS_TYPE  = "JKS";
+    private static final String X509     = "SunX509";
+
+    private static void initSSL() throws Exception {
+        KeyManagerFactory kmf = KeyManagerFactory.getInstance(X509);
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(X509);
+
+        InputStream jksFile = ClassLoader.getSystemResourceAsStream("ssl/app.key");
+
+        char[] svrPassword = null;
+        KeyStore serverKeyStore = KeyStore.getInstance(KS_TYPE);
+        serverKeyStore.load(jksFile, svrPassword);
+        System.out.println(serverKeyStore);
+
+
+        kmf.init(serverKeyStore, svrPassword);
+
+        String clientKeyStoreFile = "c:\\client.jks";
+        String cntPassphrase = "client";
+        char[] cntPassword = cntPassphrase.toCharArray();
+        KeyStore clientKeyStore = KeyStore.getInstance(KS_TYPE);
+        clientKeyStore.load(new FileInputStream(clientKeyStoreFile), cntPassword);
+        tmf.init(clientKeyStore);
+        sslContext = SSLContext.getInstance(SSL_TYPE);
+        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
+        sslEngine = sslContext.createSSLEngine();
+        sslEngine.setUseClientMode(false);
+
+    }
+
     public static void main(String[] args) throws Exception {
         nio();
     }
@@ -31,8 +70,7 @@ public class Server {
         serverSocketChannel.bind(new InetSocketAddress("localhost", 1111), 1024);
         serverSocketChannel.configureBlocking(false);
 
-        SSLContext sslContext = SSLContext.getDefault();
-        SSLEngine sslEngine = sslContext.createSSLEngine();
+        initSSL();
 
         Selector selector = Selector.open();
         SelectionKey serverkey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);

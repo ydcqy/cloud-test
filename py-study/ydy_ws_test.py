@@ -13,6 +13,7 @@ threading_local = threading.local()
 
 
 def on_message(ws, message):
+    nodePath = "/wechat"
     msg = json.loads(message)
     data_ = msg["data"]
     if threading_local.i == 500:
@@ -20,8 +21,8 @@ def on_message(ws, message):
     if msg["command"] == 6:
         user_ = data_['user']
         user_['groups'] = []
-        user_['groups'].append({"group_id": "yuanda/node/a"})
-        msg = {"cmd": 7, "user": user_, "path": "yuanda/node/a"}
+        user_['groups'].append({"group_id": "yuanda/node" + nodePath})
+        msg = {"cmd": 7, "user": user_, "path": "yuanda/node" + nodePath}
         ws.send(json.dumps(msg))
 
 
@@ -53,11 +54,10 @@ if __name__ == '__main__':
     # loop = asyncio.get_event_loop()
     # tasks = [asyncio.ensure_future(newInstance(i)) for i in range(10)]
     # loop.run_until_complete(asyncio.wait(tasks))
-    concurrency = 5000
+    concurrency = 1000
     executor = ThreadPoolExecutor(concurrency)
     for i in range(concurrency):
         # t = threading.Thread(target=newInstance, args=(i,))
         # t.start()3
 
         executor.submit(newInstance, i)
-

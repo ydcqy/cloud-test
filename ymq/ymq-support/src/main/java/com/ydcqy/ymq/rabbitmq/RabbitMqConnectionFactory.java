@@ -35,6 +35,7 @@ public class RabbitMqConnectionFactory extends AbstractConnectionFactory {
         if ((value = cfg.getPort()) != null) cf.setPort((Integer) value);
         if ((value = cfg.getUsername()) != null) cf.setUsername(String.valueOf(value));
         if ((value = cfg.getPassword()) != null) cf.setPassword(String.valueOf(value));
+        cf.setVirtualHost("/wechat");
     }
 
     @Override
