@@ -17,5 +17,6 @@ openssl ca -cert ca-sub.pem -keyfile ca-sub.key -in app.csr -out app.pem -days 3
 
 ##########################################################
 # openssl转jks
-openssl pkcs12 -export -inkey app.key -in app.pem -out app.pfx
+openssl pkcs12 -export -inkey app.key -in app.pem -out app.pfx -passout pass:123456
+keytool -changealias -alias 1 -destalias app  -keystore  app.pfx -storepass 123456
 keytool -importkeystore -srckeystore app.pfx -destkeystore app.jks -srcstoretype PKCS12 -deststoretype JKS

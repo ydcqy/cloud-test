@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import javax.net.ssl.TrustManagerFactory;
-import java.io.FileInputStream;
+import javax.net.ssl.SSLEngineResult;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -19,6 +18,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.security.KeyStore;
 import java.util.Iterator;
+import java.util.Scanner;
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -28,36 +28,35 @@ import java.util.concurrent.locks.LockSupport;
 public class Server {
     private static SSLEngine  sslEngine;
     private static SSLContext sslContext;
-    private static final String SSL_TYPE = "SSL";
-    private static final String KS_TYPE  = "JKS";
+
+    private static final String SSL_TYPE = "TLSv1.2";
+    private static final String KS_TYPE  = "PKCS12";
+    private static final char[] PASSWORD = "123456".toCharArray();
     private static final String X509     = "SunX509";
 
+
     private static void initSSL() throws Exception {
+        log.info("加载SSL...");
         KeyManagerFactory kmf = KeyManagerFactory.getInstance(X509);
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance(X509);
-
-        InputStream jksFile = ClassLoader.getSystemResourceAsStream("ssl/app.key");
-
-        char[] svrPassword = null;
+        InputStream jksFile = ClassLoader.getSystemResourceAsStream("ssl/app.pfx");
         KeyStore serverKeyStore = KeyStore.getInstance(KS_TYPE);
-        serverKeyStore.load(jksFile, svrPassword);
-        System.out.println(serverKeyStore);
+        serverKeyStore.load(jksFile, PASSWORD);
+        kmf.init(serverKeyStore, PASSWORD);
 
+//        TrustManagerFactory tmf = TrustManagerFactory.getInstance(X509);
+//        KeyStore clientKeyStore = KeyStore.getInstance(KS_TYPE);
+//        clientKeyStore.load(jksFile, PASSWORD);
+//        tmf.init(clientKeyStore);
 
-        kmf.init(serverKeyStore, svrPassword);
-
-        String clientKeyStoreFile = "c:\\client.jks";
-        String cntPassphrase = "client";
-        char[] cntPassword = cntPassphrase.toCharArray();
-        KeyStore clientKeyStore = KeyStore.getInstance(KS_TYPE);
-        clientKeyStore.load(new FileInputStream(clientKeyStoreFile), cntPassword);
-        tmf.init(clientKeyStore);
         sslContext = SSLContext.getInstance(SSL_TYPE);
-        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+        sslContext.init(kmf.getKeyManagers(), null, null);
 
         sslEngine = sslContext.createSSLEngine();
         sslEngine.setUseClientMode(false);
-
+        sslEngine.setNeedClientAuth(false);//单向验证
+        log.info("加载SSL完成!");
+        System.out.println(sslEngine.getSession().getApplicationBufferSize());
+        System.out.println(sslEngine.getSession().getPacketBufferSize());
     }
 
     public static void main(String[] args) throws Exception {
@@ -109,7 +108,49 @@ public class Server {
                         log.error(e.getMessage(), e);
                         socketChannel.close();
                     }
-                    log.info("收到数据,size:{},buf:{},content:{}", len, rcvBuf.toString(), new String(rcvBuf.array()));
+                    ByteBuffer packetByteBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
+                    ;
+                    SSLEngineResult result = null;
+                    try {
+                        rcvBuf.flip();
+                        for (; ; ) {
+//                            new Scanner(System.in).nextLine();
+                            log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
+                            switch (sslEngine.getHandshakeStatus()) {
+                                case FINISHED:
+                                    break;
+                                case NEED_UNWRAP:
+                                    log.info("握手解包...");
+                                    result = sslEngine.unwrap(rcvBuf, packetByteBuffer);
+                                    log.info("解包结果,HandshakeStatus:{},Status:{},pktBuf:{},content:{}",
+                                            result.getHandshakeStatus(), result.getStatus(),
+                                            packetByteBuffer, new String(packetByteBuffer.array()));
+                                    break;
+                                case NEED_TASK:
+                                    sslEngine.getDelegatedTask().run();
+                                    break;
+                                case NEED_WRAP:
+                                    log.info("握手打包...");
+                                    packetByteBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
+                                    result = sslEngine.wrap(ByteBuffer.wrap("Hello\n".getBytes()), packetByteBuffer);
+                                    log.info("打包结果,HandshakeStatus:{},Status:{},pktBuf:{}",
+                                            result.getHandshakeStatus(), result.getStatus(),
+                                            packetByteBuffer);
+
+                                    packetByteBuffer.flip();
+                                    socketChannel.write(packetByteBuffer);
+                                    break;
+                                case NOT_HANDSHAKING:
+                                    sslEngine.beginHandshake();
+                                    log.info("开始握手...");
+                                    break;
+                            }
+                            log.info("收到数据,size:{},buf:{},content:{}", len, rcvBuf, new String(rcvBuf.array()));
+                        }
+                    } catch (Exception e) {
+                        log.error(e.getMessage(), e);
+                        socketChannel.close();
+                    }
                 }
             }
         }

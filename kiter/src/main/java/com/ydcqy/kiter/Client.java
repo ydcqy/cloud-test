@@ -33,8 +33,8 @@ public class Client {
 
     private static void nio() throws Exception {
         SocketChannel socketChannel = SocketChannel.open();
-        socketChannel.setOption(StandardSocketOptions.SO_RCVBUF, 1);
-        socketChannel.setOption(StandardSocketOptions.SO_SNDBUF, 1);
+        socketChannel.setOption(StandardSocketOptions.SO_RCVBUF, 8 * 1024);
+        socketChannel.setOption(StandardSocketOptions.SO_SNDBUF, 8 * 1024);
 //        socketChannel.setOption(StandardSocketOptions., 10240);
         socketChannel.connect(new InetSocketAddress("localhost", 1111));
         Socket socket = socketChannel.socket();
