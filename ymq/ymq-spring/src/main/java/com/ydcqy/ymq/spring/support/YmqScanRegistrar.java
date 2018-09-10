@@ -30,6 +30,7 @@ public class YmqScanRegistrar implements ImportBeanDefinitionRegistrar {
     private static final String CONSUMER_BEAN = ConsumerListenerAnnotationBeanPostProcessor.class.getName();
     private static final String PRODUCER_BEAN = ProducerAnnotationBeanPostProcessor.class.getName();
 
+    @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
         Set<String> packagesToScan = getPackagesToScan(importingClassMetadata);
         for (String s : packagesToScan) {

@@ -26,6 +26,7 @@ import java.util.Map;
 public class ConsumerListenerAnnotationBeanPostProcessor implements BeanDefinitionRegistryPostProcessor, BeanClassLoaderAware {
     private ClassLoader classLoader;
 
+    @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
         String[] definitionNames = registry.getBeanDefinitionNames();
         for (String definitionName : definitionNames) {
@@ -62,10 +63,12 @@ public class ConsumerListenerAnnotationBeanPostProcessor implements BeanDefiniti
         }
     }
 
+    @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
     }
 
+    @Override
     public void setBeanClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }

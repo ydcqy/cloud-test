@@ -114,7 +114,7 @@ public class Server {
                     try {
                         rcvBuf.flip();
                         for (; ; ) {
-//                            new Scanner(System.in).nextLine();
+                            new Scanner(System.in).nextLine();
                             log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
                             switch (sslEngine.getHandshakeStatus()) {
                                 case FINISHED:
