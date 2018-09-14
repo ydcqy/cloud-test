@@ -6,10 +6,13 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLEngineResult;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -60,7 +63,8 @@ public class Server {
     }
 
     public static void main(String[] args) throws Exception {
-        nio();
+
+        io();
     }
 
     private static void nio() throws Exception {
@@ -158,19 +162,19 @@ public class Server {
 
     private static void io() throws Exception {
         ServerSocket serverSocket = new ServerSocket(1111, 20);
-//        Socket socket;
-//        if ((socket = serverSocket.accept()) != null) {
-//            log.info("服务端<--客户端 {}", socket);
-//            try {
-//                InputStream input = socket.getInputStream();
-//                for (; ; ) {
-//                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-//                    log.info(reader.readLine());
-//                }
-//            } catch (IOException e) {
-//                log.error(e.getMessage(), e);
-//            }
-//        }
+        Socket socket;
+        if ((socket = serverSocket.accept()) != null) {
+            log.info("服务端<--客户端 {}", socket);
+            try {
+                InputStream input = socket.getInputStream();
+                for (; ; ) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                    log.info(reader.readLine());
+                }
+            } catch (IOException e) {
+                log.error(e.getMessage(), e);
+            }
+        }
         LockSupport.park();
     }
 }

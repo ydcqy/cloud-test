@@ -10,6 +10,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * @author xiaoyu
  */
 public class YmqNamespaceHandler extends NamespaceHandlerSupport {
+    @Override
     public void init() {
         registerBeanDefinitionParser("config", new YmqBeanDefinitionParser(ConfigBean.class ));
         registerBeanDefinitionParser("queue", new YmqBeanDefinitionParser(QueueBean.class ));

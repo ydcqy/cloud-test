@@ -296,7 +296,52 @@ public class RedisSupport {
         }
     }
 
+    public Long incrBy(String key, long integer) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).incrBy(key, integer);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public Long incr(String key) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).incr(key);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public Long decrBy(String key, long integer) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).decrBy(key, integer);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public Long decr(String key) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).decr(key);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
     public RedisLock getLock(String key, int expxSeconds) {
+
         RedisLock redisLock = new RedisLock(this, key, expxSeconds);
         return redisLock;
     }

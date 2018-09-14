@@ -55,6 +55,7 @@ public class ProducerBean implements FactoryBean, InitializingBean, DisposableBe
 
     }
 
+    @Override
     public Object getObject() throws Exception {
         return get();
     }
@@ -100,6 +101,7 @@ public class ProducerBean implements FactoryBean, InitializingBean, DisposableBe
         return ref;
     }
 
+    @Override
     public Class<?> getObjectType() {
         if (queueRef == null) {
             return null;
@@ -107,10 +109,12 @@ public class ProducerBean implements FactoryBean, InitializingBean, DisposableBe
         return queueRef.getInterface();
     }
 
+    @Override
     public boolean isSingleton() {
         return true;
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         ProducerHolder.get(configBean);
     }

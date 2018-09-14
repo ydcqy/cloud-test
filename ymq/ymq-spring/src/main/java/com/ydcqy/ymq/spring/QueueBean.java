@@ -48,6 +48,7 @@ public class QueueBean implements InitializingBean {
         this.interfaceClass = interfaceClass;
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         Method[] methods = interfaceClass.getMethods();
         for (Method method : methods) {

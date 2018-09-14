@@ -25,6 +25,7 @@ public class YmqBeanDefinitionParser implements BeanDefinitionParser {
 
     }
 
+    @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
         RootBeanDefinition beanDefinition = new RootBeanDefinition();
         beanDefinition.setBeanClass(beanClass);

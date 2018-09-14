@@ -58,10 +58,12 @@ public class ConsumerListenerBean implements InitializingBean, DisposableBean, R
 
     }
 
+    @Override
     public void destroy() throws Exception {
 
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         String active = configBean.getActive();
         Consumer consumer = ConsumerHolder.get(configBean);

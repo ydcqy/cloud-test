@@ -40,9 +40,11 @@ public class ConfigBean implements InitializingBean, ApplicationListener<Context
         this.active = active;
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
     }
 
+    @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         try {
             ConsumerHolder.listen();
