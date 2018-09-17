@@ -57,7 +57,7 @@ def delete():
 
 
 if __name__ == '__main__':
-    delete()
+    # delete()
     add()
     update()
     get()
