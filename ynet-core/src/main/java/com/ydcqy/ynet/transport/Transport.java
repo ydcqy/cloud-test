@@ -6,8 +6,10 @@ import java.net.InetSocketAddress;
 /**
  * @author xiaoyu
  */
-public interface Transport extends Closeable, Cloneable {
-    boolean isOpened();
+public interface Transport extends Closeable {
+    boolean isOpen();
+
+    boolean isSSL();
 
     boolean isTransportable();
 

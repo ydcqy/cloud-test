@@ -1,9 +1,10 @@
 package com.ydcqy.ynet.server;
 
-import java.io.Closeable;
+import com.ydcqy.ynet.transport.Transport;
 
 /**
  * @author xiaoyu
  */
-public interface Server extends Closeable, Cloneable {
+public interface Server extends Transport {
+    int clientCount();
 }

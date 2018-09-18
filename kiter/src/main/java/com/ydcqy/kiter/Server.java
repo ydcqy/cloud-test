@@ -72,7 +72,6 @@ public class Server {
         serverSocketChannel.setOption(StandardSocketOptions.SO_RCVBUF, 8 * 1024);
         serverSocketChannel.bind(new InetSocketAddress("localhost", 1111), 1024);
         serverSocketChannel.configureBlocking(false);
-
         initSSL();
 
         Selector selector = Selector.open();
