@@ -20,6 +20,7 @@ abstract class AbstractServer implements Server {
 
     public AbstractServer(InetSocketAddress bindAddress) {
         this.bindAddress = bindAddress;
+        doBind();
     }
 
     @Override
@@ -35,5 +36,10 @@ abstract class AbstractServer implements Server {
         Objects.requireNonNull(bindAddress);
         return bindAddress;
     }
+
+    /**
+     * doBind
+     */
+    protected abstract void doBind();
 
 }

@@ -39,8 +39,8 @@ def newInstance(i):
     # websocket.enableTrace(True)
 
     threading_local.i = i
-    ws = websocket.WebSocketApp("ws://192.168.11.104:8888?username=abc&password=123")
-    # ws = websocket.WebSocketApp("ws://192.168.1.189:8888?username=abc&password=123")
+    # ws = websocket.WebSocketApp("ws://192.168.11.104:8888?username=abc&password=123")
+    ws = websocket.WebSocketApp("ws://127.0.0.1:1111?username=abc&password=123")
 
     ws.on_message = on_message
     ws.on_close = on_close
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     # loop = asyncio.get_event_loop()
     # tasks = [asyncio.ensure_future(newInstance(i)) for i in range(10)]
     # loop.run_until_complete(asyncio.wait(tasks))
-    concurrency = 1
+    concurrency = 10
     executor = ThreadPoolExecutor(concurrency)
     for i in range(concurrency):
         # t = threading.Thread(target=newInstance, args=(i,))

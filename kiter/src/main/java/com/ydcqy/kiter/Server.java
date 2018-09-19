@@ -29,13 +29,13 @@ import java.util.concurrent.locks.LockSupport;
  */
 @Slf4j
 public class Server {
-    private static SSLEngine  sslEngine;
+    private static SSLEngine sslEngine;
     private static SSLContext sslContext;
 
     private static final String SSL_TYPE = "TLSv1.2";
-    private static final String KS_TYPE  = "PKCS12";
+    private static final String KS_TYPE = "PKCS12";
     private static final char[] PASSWORD = "123456".toCharArray();
-    private static final String X509     = "SunX509";
+    private static final String X509 = "SunX509";
 
 
     private static void initSSL() throws Exception {
@@ -64,12 +64,12 @@ public class Server {
 
     public static void main(String[] args) throws Exception {
 
-        io();
+        nio();
     }
 
     private static void nio() throws Exception {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.setOption(StandardSocketOptions.SO_RCVBUF, 8 * 1024);
+        serverSocketChannel.setOption(StandardSocketOptions.SO_SNDBUF, 8 * 1024);
         serverSocketChannel.bind(new InetSocketAddress("localhost", 1111), 1024);
         serverSocketChannel.configureBlocking(false);
         initSSL();
