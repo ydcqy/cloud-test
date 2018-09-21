@@ -39,8 +39,8 @@ def newInstance(i):
     # websocket.enableTrace(True)
 
     threading_local.i = i
-    # ws = websocket.WebSocketApp("ws://192.168.11.104:8888?username=abc&password=123")
-    ws = websocket.WebSocketApp("ws://127.0.0.1:1111?username=abc&password=123")
+    ws = websocket.WebSocketApp("ws://192.168.11.104:8888?username=abc&password=123")
+    # ws = websocket.WebSocketApp("ws://127.0.0.1:1111?username=abc&password=123")
 
     ws.on_message = on_message
     ws.on_close = on_close

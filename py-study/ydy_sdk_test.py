@@ -1,5 +1,8 @@
 import json
 import logging
+import threading
+import time
+from concurrent.futures.thread import ThreadPoolExecutor
 
 from ydysdk.client import YdyClient
 from ydysdk.request import NodeGetRequest, NodeAddRequest, NodeUpdateRequest, NodeDeleteRequest
@@ -24,13 +27,20 @@ logging.basicConfig(level=logging.INFO,
 url = "http://192.168.11.104:8888/node/sdkapi"
 client = YdyClient(url, "dsgdsgdsikhuewikdnjlkgh")
 
-nodePath = "/wechat"
+nodePath = "/TradeStock"
+n = 0
+lock = threading.Lock()
 
 
 def get():
     request = NodeGetRequest()
-    request.set_node_path("/CaiYuanGuPiao/szkt")
-    print(client.send(request))
+    request.set_node_path(nodePath)
+    client.send(request)
+    # print(client.send(request))
+    lock.acquire()
+    global n
+    n = n + 1
+    lock.release()
 
 
 def add():
@@ -56,8 +66,26 @@ def delete():
     print(client.send(request))
 
 
+# if __name__ == '__main__':
+#     # delete()
+#     # add()
+#     # update()
+#     get()
+
+def nnn():
+    while True:
+        time.sleep(1)
+        global n
+        logging.info(n)
+        lock.acquire()
+        n = 0
+        lock.release()
+
+
 if __name__ == '__main__':
-    # delete()
-    add()
-    update()
-    get()
+    t = threading.Thread(target=nnn)
+    t.start()
+    concurrency = 100
+    executor = ThreadPoolExecutor(concurrency)
+    for i in range(100000):
+        executor.submit(get)

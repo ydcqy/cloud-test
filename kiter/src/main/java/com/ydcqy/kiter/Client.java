@@ -1,5 +1,6 @@
 package com.ydcqy.kiter;
 
+import io.netty.buffer.ByteBuf;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -24,13 +25,13 @@ import java.util.concurrent.locks.LockSupport;
  */
 @Slf4j
 public class Client {
-    private static SSLEngine  sslEngine;
+    private static SSLEngine sslEngine;
     private static SSLContext sslContext;
 
     private static final String SSL_TYPE = "TLSv1.2";
-    private static final String KS_TYPE  = "PKCS12";
+    private static final String KS_TYPE = "PKCS12";
     private static final char[] PASSWORD = "123456".toCharArray();
-    private static final String X509     = "SunX509";
+    private static final String X509 = "SunX509";
 
 
     public static void main(String[] args) throws Exception {
@@ -74,10 +75,10 @@ public class Client {
         SocketChannel socketChannel = SocketChannel.open();
         socketChannel.setOption(StandardSocketOptions.SO_RCVBUF, 8 * 1024);
         socketChannel.setOption(StandardSocketOptions.SO_SNDBUF, 8 * 1024);
-        initSSL();
-        sslEngine.beginHandshake();
+//        initSSL();
+//        sslEngine.beginHandshake();
 //        socketChannel.setOption(StandardSocketOptions., 10240);
-        socketChannel.connect(new InetSocketAddress("localhost", 1111));
+        socketChannel.connect(new InetSocketAddress("xiaoyu-pc", 1111));
         Socket socket = socketChannel.socket();
 //        socket.setSendBufferSize(512000);
         SocketChannel channel = socket.getChannel();
@@ -87,7 +88,7 @@ public class Client {
 //            Thread.sleep(1000);
             String s = new Scanner(System.in).nextLine();
 
-            log.info("========== " + sslEngine.getHandshakeStatus());
+//            log.info("========== " + sslEngine.getHandshakeStatus());
             log.info(String.valueOf(socket.isBound()));
             log.info(String.valueOf(channel.isConnected()));
             log.info(String.valueOf(socket.isClosed()));
@@ -99,41 +100,41 @@ public class Client {
 //            writer.flush();
 //            out.write(s.getBytes());
 //            socket.sendUrgentData(0xff);
-            ByteBuffer netData = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
-            SSLEngineResult result = sslEngine.wrap(ByteBuffer.wrap(s.getBytes()), netData);
-            log.info("打包结果,HandshakeStatus:{},Status:{},pktBuf:{}",
-                    result.getHandshakeStatus(), result.getStatus(),
-                    netData);
-            log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
-
-
-            netData.flip();
-            channel.write(netData);
-            for (; ; ) {
-                log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
-                ByteBuffer rcvBuf = ByteBuffer.allocate(4 * 1024);
-                int read = channel.read(rcvBuf);
-                System.out.println(read);
-                Thread.sleep(1000);
-                ByteBuffer packetByteBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
-                log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
-                rcvBuf.flip();
-                result = sslEngine.unwrap(rcvBuf, packetByteBuffer);
-                log.info("解包结果,HandshakeStatus:{},Status:{},pktBuf:{},content:{}",
-                        result.getHandshakeStatus(), result.getStatus(),
-                        packetByteBuffer, new String(packetByteBuffer.array()));
-                sslEngine.getDelegatedTask().run();
-                log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
-
-                netData = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
-                result = sslEngine.wrap(ByteBuffer.wrap(s.getBytes()), netData);
-                log.info("打包结果,HandshakeStatus:{},Status:{},pktBuf:{}",
-                        result.getHandshakeStatus(), result.getStatus(),
-                        netData);
-                log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
-                netData.flip();
-                channel.write(netData);
-            }
+//            ByteBuffer netData = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
+//            SSLEngineResult result = sslEngine.wrap(ByteBuffer.wrap(s.getBytes()), netData);
+//            log.info("打包结果,HandshakeStatus:{},Status:{},pktBuf:{}",
+//                    result.getHandshakeStatus(), result.getStatus(),
+//                    netData);
+//            log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
+//
+//
+//            netData.flip();
+            channel.write(ByteBuffer.wrap(s.getBytes()));
+//            for (; ; ) {
+//                log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
+//                ByteBuffer rcvBuf = ByteBuffer.allocate(4 * 1024);
+//                int read = channel.read(rcvBuf);
+//                System.out.println(read);
+//                Thread.sleep(1000);
+//                ByteBuffer packetByteBuffer = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
+//                log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
+//                rcvBuf.flip();
+//                result = sslEngine.unwrap(rcvBuf, packetByteBuffer);
+//                log.info("解包结果,HandshakeStatus:{},Status:{},pktBuf:{},content:{}",
+//                        result.getHandshakeStatus(), result.getStatus(),
+//                        packetByteBuffer, new String(packetByteBuffer.array()));
+//                sslEngine.getDelegatedTask().run();
+//                log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
+//
+//                netData = ByteBuffer.allocate(sslEngine.getSession().getPacketBufferSize());
+//                result = sslEngine.wrap(ByteBuffer.wrap(s.getBytes()), netData);
+//                log.info("打包结果,HandshakeStatus:{},Status:{},pktBuf:{}",
+//                        result.getHandshakeStatus(), result.getStatus(),
+//                        netData);
+//                log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
+//                netData.flip();
+//                channel.write(netData);
+//            }
         }
     }
 
