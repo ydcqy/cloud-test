@@ -1,5 +1,9 @@
 package com.ydcqy.ynet.transport;
 
+import com.ydcqy.ynet.channel.Channel;
+import com.ydcqy.ynet.codec.Codec;
+import com.ydcqy.ynet.handler.Handler;
+
 import java.io.Closeable;
 import java.net.InetSocketAddress;
 
@@ -15,4 +19,9 @@ public interface Transport extends Closeable {
 
     InetSocketAddress getLocalAddress();
 
+    Channel getChannel();
+
+    Codec getCodec();
+
+    Handler getHandler();
 }

@@ -39,7 +39,7 @@ public class Client {
                 ; i++) {
 
             try {
-                nio();
+                io();
                 System.out.println(i);
             } catch (Exception e) {
                 e.printStackTrace();

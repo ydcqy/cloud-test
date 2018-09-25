@@ -64,16 +64,14 @@ public class Server {
 
     public static void main(String[] args) throws Exception {
 
-        nio();
+        io();
     }
 
     private static void nio() throws Exception {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.setOption(StandardSocketOptions.SO_SNDBUF, 8 * 1024);
         serverSocketChannel.bind(new InetSocketAddress("localhost", 1111), 1024);
         serverSocketChannel.configureBlocking(false);
         initSSL();
-
         Selector selector = Selector.open();
         SelectionKey serverkey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         log.info("keys size:{},selectedKeys size:{}", selector.keys().size(), selector.selectedKeys().size());
@@ -116,7 +114,7 @@ public class Server {
                     SSLEngineResult result = null;
                     try {
                         rcvBuf.flip();
-                        for (; ; ) {
+                 /*       for (; ; ) {
                             new Scanner(System.in).nextLine();
                             log.info("HandshakeStatus:{}", sslEngine.getHandshakeStatus());
                             switch (sslEngine.getHandshakeStatus()) {
@@ -148,8 +146,11 @@ public class Server {
                                     log.info("开始握手...");
                                     break;
                             }
-                            log.info("收到数据,size:{},buf:{},content:{}", len, rcvBuf, new String(rcvBuf.array()));
-                        }
+                        }*/
+                        log.info("收到数据,size:{},buf:{},content:{}", len, rcvBuf, new String(rcvBuf.array()));
+                        serverSocketChannel.close();
+
+
                     } catch (Exception e) {
                         log.error(e.getMessage(), e);
                         socketChannel.close();
@@ -169,6 +170,8 @@ public class Server {
                 for (; ; ) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                     log.info(reader.readLine());
+                    socket.close();
+//                    serverSocket.close();
                 }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);

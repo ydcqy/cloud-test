@@ -15,7 +15,13 @@ public class Test {
     public static void main(String[] args) {
         SimpleServer server = new SimpleServer(1111);
         System.out.println("启动结果：" + server.isOpen());
-        LockSupport.park();
-
+        for (; ; ) {
+            try {
+                Thread.sleep(1000);
+                System.out.println(server.clientCount());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
