@@ -30,9 +30,9 @@ public class SimpleServerHandler extends AbstractNettyServerHandler {
     }
 
     @Override
-    public void send(Channel channel, Object message) throws RemoteException {
+    public void sent(Channel channel, Object message) throws RemoteException {
         if (logger.isDebugEnabled()) {
-            logger.debug("{} send message: {}", channel, message);
+            logger.debug("{} sent message: {}", channel, message);
         }
 
     }

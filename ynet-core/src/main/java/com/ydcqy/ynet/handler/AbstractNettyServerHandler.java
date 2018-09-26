@@ -58,7 +58,7 @@ public abstract class AbstractNettyServerHandler extends ChannelDuplexHandler im
         super.write(ctx, msg, promise);
         Channel channel = getOrAddChannelIfConnected(ctx.channel());
         try {
-            handler.send(channel, msg);
+            handler.sent(channel, msg);
         } finally {
             removeChannelIfDisconnected(ctx.channel());
         }
@@ -66,7 +66,6 @@ public abstract class AbstractNettyServerHandler extends ChannelDuplexHandler im
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-
         Channel channel = getOrAddChannelIfConnected(ctx.channel());
         try {
             handler.caught(channel, cause);

@@ -1,16 +1,14 @@
 package com.ydcqy.ynet.codec;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.CombinedChannelDuplexHandler;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.util.NetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -40,7 +38,6 @@ public final class SimpleServerCodec extends CombinedChannelDuplexHandler<Simple
     protected static final class ResponseEncoder extends MessageToByteEncoder {
         @Override
         protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-            logger.info("-----encode-----,msg:{},out:{}", msg, out);
             out.writeBytes(((String) msg).getBytes());
         }
     }

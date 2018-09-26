@@ -22,13 +22,13 @@ public interface Handler {
     void close(Channel channel) throws RemoteException;
 
     /**
-     * send
+     * sent
      *
      * @param channel
      * @param message
      * @throws RemoteException
      */
-    void send(Channel channel, Object message) throws RemoteException;
+    void sent(Channel channel, Object message) throws RemoteException;
 
     /**
      * receive
