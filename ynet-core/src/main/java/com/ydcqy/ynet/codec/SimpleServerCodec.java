@@ -1,17 +1,24 @@
 package com.ydcqy.ynet.codec;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.CombinedChannelDuplexHandler;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
  * @author xiaoyu
  */
 public final class SimpleServerCodec extends CombinedChannelDuplexHandler<SimpleServerCodec.RequestDecoder, SimpleServerCodec.ResponseEncoder> implements Codec {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleServerCodec.class);
 
     public SimpleServerCodec() {
         super(new RequestDecoder(), new ResponseEncoder());
@@ -21,14 +28,20 @@ public final class SimpleServerCodec extends CombinedChannelDuplexHandler<Simple
 
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-            out.add(new String("哈哈哈"));
+            int readableBytes = in.readableBytes();
+            if (readableBytes > 0) {
+                ByteBuf byteBuf = in.readBytes(readableBytes);
+                String str = byteBuf.toString(Charset.defaultCharset());
+                out.add(str);
+            }
         }
     }
 
     protected static final class ResponseEncoder extends MessageToByteEncoder {
         @Override
         protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-
+            logger.info("-----encode-----,msg:{},out:{}", msg, out);
+            out.writeBytes(((String) msg).getBytes());
         }
     }
 }

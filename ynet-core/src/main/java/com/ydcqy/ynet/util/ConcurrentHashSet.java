@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * ConcurrentHashSet
+ * @author xiaoyu
  */
 public final class ConcurrentHashSet<E> extends AbstractSet<E> implements Serializable {
 

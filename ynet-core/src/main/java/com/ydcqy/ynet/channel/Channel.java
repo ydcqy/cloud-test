@@ -12,4 +12,6 @@ public interface Channel extends Closeable {
      * @return
      */
     boolean isOpen();
+
+    void send(Object message);
 }

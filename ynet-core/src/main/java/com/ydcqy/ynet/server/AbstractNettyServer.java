@@ -2,7 +2,6 @@ package com.ydcqy.ynet.server;
 
 import com.ydcqy.ynet.channel.Channel;
 import com.ydcqy.ynet.channel.NettyChannel;
-import com.ydcqy.ynet.util.ConcurrentHashSet;
 import com.ydcqy.ynet.util.Constants;
 import com.ydcqy.ynet.util.NamedThreadFactory;
 import io.netty.bootstrap.ServerBootstrap;
@@ -20,7 +19,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Set;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author xiaoyu
@@ -28,7 +29,7 @@ import java.util.Set;
 public abstract class AbstractNettyServer extends AbstractServer {
     private static final Logger logger = LoggerFactory.getLogger(AbstractNettyServer.class);
     private Channel channel;
-    private ConcurrentHashSet<Channel> clientChannels = new ConcurrentHashSet<>();
+    private final ConcurrentMap<String, Channel> clientChannels = new ConcurrentHashMap<>();
     private volatile boolean isTransportable;
 
     public AbstractNettyServer(int port) {
@@ -86,11 +87,6 @@ public abstract class AbstractNettyServer extends AbstractServer {
     }
 
     @Override
-    public int clientCount() {
-        return clientChannels.size();
-    }
-
-    @Override
     public boolean isOpen() {
         return channel.isOpen();
     }
@@ -111,7 +107,7 @@ public abstract class AbstractNettyServer extends AbstractServer {
     }
 
     @Override
-    public Set<Channel> getClientChannels() {
+    public Map<String, Channel> getClientChannelMap() {
         return clientChannels;
     }
 }

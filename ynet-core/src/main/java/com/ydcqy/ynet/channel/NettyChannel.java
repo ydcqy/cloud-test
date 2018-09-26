@@ -1,5 +1,7 @@
 package com.ydcqy.ynet.channel;
 
+import io.netty.channel.ChannelFuture;
+
 import java.io.IOException;
 
 /**
@@ -23,6 +25,12 @@ public class NettyChannel implements Channel {
     }
 
     @Override
+    public void send(Object message) {
+        ChannelFuture future = channel.writeAndFlush(message);
+
+    }
+
+    @Override
     public int hashCode() {
         return channel.hashCode();
     }
@@ -43,8 +51,7 @@ public class NettyChannel implements Channel {
 
     @Override
     public String toString() {
-        return "NettyChannel{" + "channel=" + channel + '}';
+        return "NettyChannel [channel=" + channel + "]";
     }
-
 
 }
