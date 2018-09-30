@@ -345,4 +345,49 @@ public class RedisSupport {
         RedisLock redisLock = new RedisLock(this, key, expxSeconds);
         return redisLock;
     }
+
+    public List<String> brpop(String... args) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).brpop(args);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public List<String> brpop(int timeout, String... keys) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).brpop(timeout, keys);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public List<String> blpop(int timeout, String... keys) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).blpop(timeout, keys);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
+    public List<String> blpop(String... args) {
+        Jedis jedis = null;
+        try {
+            return (jedis = jedisPool.getResource()).blpop(args);
+        } finally {
+            if (null != jedis) {
+                jedis.close();
+            }
+        }
+    }
+
 }
