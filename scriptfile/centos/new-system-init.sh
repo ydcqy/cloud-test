@@ -58,3 +58,4 @@ yum install -y vim-enhanced
 
 
 #免密登录
+ssh-keygen -t rsa -P '' -f  ~/.ssh/id_rsa

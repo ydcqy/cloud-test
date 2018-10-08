@@ -10,12 +10,16 @@ import com.ydcqy.ynet.exception.RemoteException;
  */
 public interface Handler {
     /**
+     * open
+     *
      * @param channel
      * @throws RemoteException
      */
     void open(Channel channel) throws RemoteException;
 
     /**
+     * close
+     *
      * @param channel
      * @throws RemoteException
      */
@@ -43,9 +47,9 @@ public interface Handler {
      * caught
      *
      * @param channel
-     * @param throwable
+     * @param cause
      * @throws RemoteException
      */
-    void caught(Channel channel, Throwable throwable) throws RemoteException;
+    void caught(Channel channel, Throwable cause) throws RemoteException;
 
 }

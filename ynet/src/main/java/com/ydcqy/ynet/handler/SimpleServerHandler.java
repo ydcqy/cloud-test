@@ -52,7 +52,7 @@ public class SimpleServerHandler extends AbstractNettyServerHandler {
     }
 
     @Override
-    public void caught(Channel channel, Throwable throwable) throws RemoteException {
-        logger.error("" + channel, throwable);
+    public void caught(Channel channel, Throwable cause) throws RemoteException {
+        logger.error("" + channel, cause);
     }
 }

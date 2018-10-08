@@ -106,14 +106,14 @@
                     </archive>
                     <descriptorRefs>jar-with-dependencies</descriptorRefs>
                 </configuration>
-      <!--          <executions>
+                <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
                     </execution>
-                </executions>-->
+                </executions>
             </plugin>
             <!--<plugin>
                 <artifactId>maven-jar-plugin</artifactId>
