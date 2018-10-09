@@ -1,44 +1,26 @@
 package com.ydcqy.bigdata;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.util.Progressable;
-import org.apache.log4j.lf5.util.StreamUtils;
+import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 
-import java.io.FileInputStream;
-import java.net.URI;
+import java.util.Map;
 
 /**
  * @author xiaoyu
  */
-public class Test {
+public class Test extends Configured implements Tool {
     public static void main(String[] args) throws Exception {
-        String uri = "file:///C:/Users/xiaoyu/Desktop/新建文本文档.txt";
-        if (args.length > 0) {
-            uri = args[0];
+        int run = ToolRunner.run(new Test(), args);
+    }
+
+    @Override
+    public int run(String[] strings) throws Exception {
+        Configuration conf = getConf();
+        for (Map.Entry<String, String> entry : conf) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
         }
-        Configuration cfg = new Configuration();
-        FileSystem fs = FileSystem.get(URI.create(uri), cfg);
-        System.out.println(fs);
-
-        FSDataInputStream in = fs.open(new Path(uri));
-
-        StreamUtils.copy(in, System.out);
-
-        FileStatus listStatus = fs.getFileStatus(new Path("file:///C:/Users/xiaoyu/Desktop"));
-        System.out.println();
-        System.out.println(listStatus);
-        FSDataOutputStream out = fs.create(new Path("file:///C:/Users/xiaoyu/Desktop/新建文本文档copy.txt"), new Progressable() {
-            @Override
-            public void progress() {
-                System.out.print(".");
-            }
-        });
-        StreamUtils.copy(new FileInputStream("C:\\Users\\xiaoyu\\Desktop\\新建文本文档.txt"), out);
-        out.close();
+        return 0;
     }
 }

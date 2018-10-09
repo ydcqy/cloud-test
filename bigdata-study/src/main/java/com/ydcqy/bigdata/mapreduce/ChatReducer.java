@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * @author xiaoyu
  */
-public class HelloWorldReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+public class ChatReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
     @Override
     protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
     }
