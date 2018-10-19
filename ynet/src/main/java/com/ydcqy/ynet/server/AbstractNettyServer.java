@@ -31,6 +31,9 @@ public abstract class AbstractNettyServer extends AbstractServer {
     private Channel channel;
     private final ConcurrentMap<String, Channel> clientChannels = new ConcurrentHashMap<>();
     private volatile boolean isTransportable;
+    private NioEventLoopGroup bossGroup;
+    private NioEventLoopGroup workerGroup;
+    private ServerBootstrap bootstrap;
 
     public AbstractNettyServer(int port) {
         super(port);
@@ -46,10 +49,10 @@ public abstract class AbstractNettyServer extends AbstractServer {
 
     @Override
     protected void doBind() {
-        NioEventLoopGroup bossGroup = new NioEventLoopGroup(1, new NamedThreadFactory("NettyServerBoss", true));
-        NioEventLoopGroup workerGroup = new NioEventLoopGroup(Constants.DEFAULT_EVENT_LOOP_THREADS, new NamedThreadFactory("NettyServerWorker", true));
+        bossGroup = new NioEventLoopGroup(1, new NamedThreadFactory("NettyServerBoss", true));
+        workerGroup = new NioEventLoopGroup(Constants.DEFAULT_EVENT_LOOP_THREADS, new NamedThreadFactory("NettyServerWorker", true));
 
-        ServerBootstrap bootstrap = new ServerBootstrap();
+        bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 128)
@@ -78,7 +81,11 @@ public abstract class AbstractNettyServer extends AbstractServer {
     public void close() {
         super.close();
         try {
-            channel.close();
+            if (channel != null) {
+                channel.close();
+                bossGroup.shutdownGracefully();
+                workerGroup.shutdownGracefully();
+            }
         } catch (IOException e) {
             logger.warn("Failed to close channel", e);
         } finally {

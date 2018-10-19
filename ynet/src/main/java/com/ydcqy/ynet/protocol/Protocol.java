@@ -4,11 +4,8 @@ package com.ydcqy.ynet.protocol;
  * @author xiaoyu
  */
 public interface Protocol {
-    void getTag();
+    String getProtocelName();
 
-    void getVersion();
-
-    void getLength();
-
+    String getProtocelVersion();
 
 }

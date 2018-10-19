@@ -1,5 +1,6 @@
-package com.ydcqy.ynet.codec;
+package com.ydcqy.ynet.rpc;
 
+import com.ydcqy.ynet.codec.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.CombinedChannelDuplexHandler;
@@ -14,10 +15,10 @@ import java.util.List;
 /**
  * @author xiaoyu
  */
-public final class SimpleServerCodec extends CombinedChannelDuplexHandler<SimpleServerCodec.RequestDecoder, SimpleServerCodec.ResponseEncoder> implements Codec {
-    private static final Logger logger = LoggerFactory.getLogger(SimpleServerCodec.class);
+final class YrpcServerCodec extends CombinedChannelDuplexHandler<YrpcServerCodec.RequestDecoder, YrpcServerCodec.ResponseEncoder> implements Codec {
+    private static final Logger logger = LoggerFactory.getLogger(YrpcServerCodec.class);
 
-    public SimpleServerCodec() {
+    public YrpcServerCodec() {
         super(new RequestDecoder(), new ResponseEncoder());
     }
 
