@@ -5,6 +5,7 @@ import com.ydcqy.ynet.channel.NettyChannel;
 import com.ydcqy.ynet.util.Constants;
 import com.ydcqy.ynet.util.NamedThreadFactory;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -20,8 +21,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author xiaoyu
@@ -29,7 +28,6 @@ import java.util.concurrent.ConcurrentMap;
 public abstract class AbstractNettyServer extends AbstractServer {
     private static final Logger logger = LoggerFactory.getLogger(AbstractNettyServer.class);
     private Channel channel;
-    private final ConcurrentMap<String, Channel> clientChannels = new ConcurrentHashMap<>();
     private volatile boolean isTransportable;
     private NioEventLoopGroup bossGroup;
     private NioEventLoopGroup workerGroup;
@@ -57,6 +55,7 @@ public abstract class AbstractNettyServer extends AbstractServer {
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, Boolean.TRUE)
+                .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .childHandler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
@@ -89,7 +88,7 @@ public abstract class AbstractNettyServer extends AbstractServer {
         } catch (IOException e) {
             logger.warn("Failed to close channel", e);
         } finally {
-            clientChannels.clear();
+            getHandler().getChannelMap().clear();
         }
     }
 
@@ -115,6 +114,6 @@ public abstract class AbstractNettyServer extends AbstractServer {
 
     @Override
     public Map<String, Channel> getClientChannelMap() {
-        return clientChannels;
+        return getHandler().getChannelMap();
     }
 }

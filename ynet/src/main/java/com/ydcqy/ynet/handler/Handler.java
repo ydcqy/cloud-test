@@ -3,12 +3,21 @@ package com.ydcqy.ynet.handler;
 import com.ydcqy.ynet.channel.Channel;
 import com.ydcqy.ynet.exception.RemoteException;
 
+import java.util.Map;
+
 /**
  * Handler
  *
  * @author xiaoyu
  */
 public interface Handler {
+    /**
+     * getChannelMap
+     *
+     * @return
+     */
+    Map<String, Channel> getChannelMap();
+
     /**
      * open
      *

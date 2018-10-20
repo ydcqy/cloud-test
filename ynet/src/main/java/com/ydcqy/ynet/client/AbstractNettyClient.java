@@ -1,19 +1,40 @@
 package com.ydcqy.ynet.client;
 
 import com.ydcqy.ynet.channel.Channel;
+import com.ydcqy.ynet.channel.NettyChannel;
+import com.ydcqy.ynet.exception.YnetException;
+import com.ydcqy.ynet.request.Request;
+import com.ydcqy.ynet.response.Response;
 import com.ydcqy.ynet.util.Constants;
 import com.ydcqy.ynet.util.NamedThreadFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.NetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.Future;
 
 /**
  * @author xiaoyu
  */
 public abstract class AbstractNettyClient extends AbstractClient {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractNettyClient.class);
+
+    private static volatile Bootstrap bootstrap;
+
+    private Channel channel;
     private volatile boolean isTransportable;
 
     public AbstractNettyClient(String remoteHost, int remotePort) {
@@ -24,17 +45,65 @@ public abstract class AbstractNettyClient extends AbstractClient {
         super(remoteAddress);
     }
 
+    private void initBootstrap() {
+        if (null == bootstrap) {
+            synchronized (getClass()) {
+                if (null == bootstrap) {
+                    bootstrap = new Bootstrap();
+                    NioEventLoopGroup workerGroup = new NioEventLoopGroup(Constants.DEFAULT_EVENT_LOOP_THREADS, new NamedThreadFactory("NettyClientWorker", true));
+                    bootstrap.group(workerGroup)
+                            .channel(NioSocketChannel.class)
+                            .option(ChannelOption.SO_KEEPALIVE, true)
+                            //.option(ChannelOption.TCP_NODELAY, true)
+                            .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
+                            .handler(new ChannelInitializer<SocketChannel>() {
+                                @Override
+                                protected void initChannel(SocketChannel ch) throws Exception {
+                                    ChannelPipeline pipeline = ch.pipeline();
+                                    pipeline.addLast("codec", (ChannelHandler) getCodec())
+                                            .addLast("handler", (ChannelHandler) getHandler());
+                                }
+                            });
+                }
+            }
+        }
+    }
+
     @Override
     protected void doConnect() {
-        Bootstrap bootstrap = new Bootstrap();
-        NioEventLoopGroup workerGroup = new NioEventLoopGroup(Constants.DEFAULT_EVENT_LOOP_THREADS, new NamedThreadFactory("NettyServerWorker", true));
-        bootstrap.group(workerGroup)
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .option(ChannelOption.TCP_NODELAY, true)
-                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000);
-//                .channel(NioSocketChannel.class);
+        initBootstrap();
+        ChannelFuture channelFuture = bootstrap.connect(getRemoteAddress());
+        channelFuture.addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (future.isSuccess()) {
+                    isTransportable = true;
+                }
+            }
+        });
+        io.netty.channel.Channel ch = channelFuture.syncUninterruptibly().channel();
+        Channel nettyChannel = getHandler().getChannelMap().get(NetUtil.toSocketAddressString((InetSocketAddress) ch.localAddress()));
+        if (null == nettyChannel) {
+            nettyChannel = new NettyChannel(ch);
+            if (ch.isActive()) {
+                Channel c = getHandler().getChannelMap().putIfAbsent(NetUtil.toSocketAddressString((InetSocketAddress) ch.localAddress()), nettyChannel);
+                if (c != null) {
+                    nettyChannel = c;
+                }
+            }
+        }
+        channel = nettyChannel;
+    }
 
+    @Override
+    public <T extends Response> T send(Request<T> request) throws YnetException {
+        return null;
+    }
+
+    @Override
+    public <T extends Response> Future<T> asyncSend(Request<T> request) throws YnetException {
+        return null;
     }
 
     @Override
@@ -45,13 +114,11 @@ public abstract class AbstractNettyClient extends AbstractClient {
     @Override
     public void close() {
         super.close();
-//        try {
-//            channel.close();
-//        } catch (IOException e) {
-//            logger.warn("Failed to close channel", e);
-//        } finally {
-//            clientChannels.clear();
-//        }
+        try {
+            channel.close();
+        } catch (IOException e) {
+            logger.warn("Failed to close channel", e);
+        }
     }
 
     @Override
@@ -66,11 +133,11 @@ public abstract class AbstractNettyClient extends AbstractClient {
 
     @Override
     public InetSocketAddress getLocalAddress() {
-        return null;
+        return channel.getLocalAddress();
     }
 
     @Override
     public Channel getChannel() {
-        return null;
+        return channel;
     }
 }

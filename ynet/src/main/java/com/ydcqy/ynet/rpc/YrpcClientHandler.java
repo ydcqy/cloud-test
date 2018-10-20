@@ -1,26 +1,24 @@
 package com.ydcqy.ynet.rpc;
 
 import com.ydcqy.ynet.channel.Channel;
+import com.ydcqy.ynet.client.Client;
 import com.ydcqy.ynet.exception.RemoteException;
-import com.ydcqy.ynet.handler.AbstractNettyServerHandler;
+import com.ydcqy.ynet.handler.AbstractNettyClientHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * @author xiaoyu
  */
-class YrpcServerHandler extends AbstractNettyServerHandler {
-    private static final Logger logger = LoggerFactory.getLogger(YrpcServerHandler.class);
+class YrpcClientHandler extends AbstractNettyClientHandler {
+    private static final Logger logger = LoggerFactory.getLogger(YrpcClientHandler.class);
 
-    public YrpcServerHandler() {
+    public YrpcClientHandler() {
     }
 
     @Override
     public void open(Channel channel) throws RemoteException {
-        logger.info("{} is opened", channel);
+        logger.info("{} is opened,ch: {}", channel, System.identityHashCode(channel));
     }
 
     @Override
@@ -39,13 +37,6 @@ class YrpcServerHandler extends AbstractNettyServerHandler {
     public void receive(Channel channel, Object message) throws RemoteException {
         if (logger.isDebugEnabled()) {
             logger.debug("{} receive message: {}", channel, message);
-        }
-        Map<String, Channel> channelMap = getChannelMap();
-        Collection<Channel> channels = channelMap.values();
-        for (Channel ch : channels) {
-            if (ch != channel) {
-                ch.send(message);
-            }
         }
     }
 

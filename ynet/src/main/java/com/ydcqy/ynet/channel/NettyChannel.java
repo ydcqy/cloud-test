@@ -3,6 +3,7 @@ package com.ydcqy.ynet.channel;
 import io.netty.channel.ChannelFuture;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
 /**
  * @author xiaoyu
@@ -28,6 +29,16 @@ public class NettyChannel implements Channel {
     public void send(Object message) {
         ChannelFuture future = channel.writeAndFlush(message);
 
+    }
+
+    @Override
+    public InetSocketAddress getLocalAddress() {
+        return (InetSocketAddress) channel.localAddress();
+    }
+
+    @Override
+    public InetSocketAddress getRemoteAddress() {
+        return (InetSocketAddress) channel.remoteAddress();
     }
 
     @Override

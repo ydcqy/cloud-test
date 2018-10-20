@@ -17,11 +17,11 @@ import java.util.concurrent.ConcurrentMap;
  * @author xiaoyu
  */
 @ChannelHandler.Sharable
-public abstract class AbstractNettyServerHandler extends ChannelDuplexHandler implements Handler {
+public abstract class AbstractNettyClientHandler extends ChannelDuplexHandler implements Handler {
     private ConcurrentMap<String, Channel> channelMap = new ConcurrentHashMap<>();
     private Handler handler = this;
 
-    public AbstractNettyServerHandler() {
+    public AbstractNettyClientHandler() {
     }
 
     @Override
@@ -79,11 +79,11 @@ public abstract class AbstractNettyServerHandler extends ChannelDuplexHandler im
         if (ch == null) {
             return null;
         }
-        Channel nettyChannel = channelMap.get(NetUtil.toSocketAddressString((InetSocketAddress) ch.remoteAddress()));
+        Channel nettyChannel = channelMap.get(NetUtil.toSocketAddressString((InetSocketAddress) ch.localAddress()));
         if (null == nettyChannel) {
             nettyChannel = new NettyChannel(ch);
             if (ch.isActive()) {
-                Channel c = channelMap.putIfAbsent(NetUtil.toSocketAddressString((InetSocketAddress) ch.remoteAddress()), nettyChannel);
+                Channel c = channelMap.putIfAbsent(NetUtil.toSocketAddressString((InetSocketAddress) ch.localAddress()), nettyChannel);
                 if (c != null) {
                     nettyChannel = c;
                 }
@@ -94,7 +94,7 @@ public abstract class AbstractNettyServerHandler extends ChannelDuplexHandler im
 
     private void removeChannelIfDisconnected(io.netty.channel.Channel ch) {
         if (ch != null && !ch.isActive()) {
-            channelMap.remove(NetUtil.toSocketAddressString((InetSocketAddress) ch.remoteAddress()));
+            channelMap.remove(NetUtil.toSocketAddressString((InetSocketAddress) ch.localAddress()));
         }
     }
 

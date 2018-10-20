@@ -9,7 +9,7 @@ import com.ydcqy.ynet.handler.SimpleServerHandler;
  * @author xiaoyu
  */
 public class SimpleServer extends AbstractNettyServer {
-    private Handler handler = new SimpleServerHandler(this);
+    private static final Handler handler = new SimpleServerHandler();
 
     public SimpleServer(int port) {
         super(port);

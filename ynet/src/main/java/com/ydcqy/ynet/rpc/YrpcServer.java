@@ -4,15 +4,13 @@ import com.ydcqy.ynet.codec.Codec;
 import com.ydcqy.ynet.handler.Handler;
 import com.ydcqy.ynet.server.AbstractNettyServer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.locks.LockSupport;
 
 /**
  * @author xiaoyu
  */
 public class YrpcServer extends AbstractNettyServer {
-    private Handler handler = new YrpcServerHandler(this);
+    private static final  Handler handler = new YrpcServerHandler();
 
     public YrpcServer(int port) {
         super(port);
