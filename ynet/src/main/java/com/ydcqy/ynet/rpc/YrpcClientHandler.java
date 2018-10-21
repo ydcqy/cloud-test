@@ -1,7 +1,6 @@
 package com.ydcqy.ynet.rpc;
 
 import com.ydcqy.ynet.channel.Channel;
-import com.ydcqy.ynet.client.Client;
 import com.ydcqy.ynet.exception.RemoteException;
 import com.ydcqy.ynet.handler.AbstractNettyClientHandler;
 import org.slf4j.Logger;
@@ -18,7 +17,7 @@ class YrpcClientHandler extends AbstractNettyClientHandler {
 
     @Override
     public void open(Channel channel) throws RemoteException {
-        logger.info("{} is opened,ch: {}", channel, System.identityHashCode(channel));
+        logger.info("{} is opened", channel);
     }
 
     @Override

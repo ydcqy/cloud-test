@@ -31,13 +31,13 @@ public class YrpcClient extends AbstractNettyClient {
         return handler;
     }
 
-    public static void main(String[] args) {
-        new Thread() {
-            @Override
-            public void run() {
-                new YrpcClient("127.0.0.1", 1111);
-            }
-        }.start();
+    public static void main(String[] args) throws Exception {
+
+        YrpcClient client = new YrpcClient("127.0.0.1", 1111);
+        YrpcRequest request = new YrpcRequest();
+        YrpcResponse response = client.send(request);
+        System.out.println(response);
+
         LockSupport.park();
     }
 }

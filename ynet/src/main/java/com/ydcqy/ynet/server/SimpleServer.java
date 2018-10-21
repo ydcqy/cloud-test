@@ -24,4 +24,23 @@ public class SimpleServer extends AbstractNettyServer {
     public Handler getHandler() {
         return handler;
     }
+    public static void main(String[] args) throws InterruptedException {
+
+//        for (; ; ) {
+//            Thread.sleep(100);
+//            System.out.println(123);
+//            System.out.println(222);
+//        }
+        SimpleServer server = new SimpleServer(1111);
+        System.out.println("启动结果：" + server.isOpen());
+//        LockSupport.park();
+        for (; ; ) {
+            try {
+                Thread.sleep(2000);
+                System.out.println(server.getClientChannelMap().size());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
