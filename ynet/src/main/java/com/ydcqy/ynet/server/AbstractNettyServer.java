@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author xiaoyu
@@ -51,6 +52,7 @@ public abstract class AbstractNettyServer extends AbstractServer {
         workerGroup = new NioEventLoopGroup(Constants.DEFAULT_EVENT_LOOP_THREADS, new NamedThreadFactory("NettyServerWorker", true));
 
         bootstrap = new ServerBootstrap();
+        CountDownLatch cdl = new CountDownLatch(1);
         bootstrap.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 128)
@@ -68,12 +70,22 @@ public abstract class AbstractNettyServer extends AbstractServer {
         channelFuture.addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
-                if (future.isSuccess()) {
-                    isTransportable = true;
-                }
+                cdl.countDown();
             }
         });
-        channel = new NettyChannel(channelFuture.syncUninterruptibly().channel());
+        try {
+            cdl.await();
+        } catch (InterruptedException e) {
+            throw new IllegalStateException(e);
+        }
+        if (channelFuture.isSuccess()) {
+            isTransportable = true;
+            logger.info("{} bind to the {}", AbstractNettyServer.this.getClass().getSimpleName(), getLocalAddress());
+            channel = new NettyChannel(channelFuture.syncUninterruptibly().channel());
+        } else {
+            logger.error(channelFuture.cause().getMessage(), channelFuture.cause());
+            throw new RuntimeException(channelFuture.cause().getMessage(), channelFuture.cause());
+        }
     }
 
     @Override
