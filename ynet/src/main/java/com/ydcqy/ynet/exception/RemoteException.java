@@ -3,7 +3,7 @@ package com.ydcqy.ynet.exception;
 /**
  * @author xiaoyu
  */
-public class RemoteException extends Exception {
+public class RemoteException extends YnetException {
     public RemoteException() {
     }
 
@@ -19,7 +19,4 @@ public class RemoteException extends Exception {
         super(cause);
     }
 
-    public RemoteException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

@@ -25,7 +25,6 @@ public class YrpcClient extends AbstractNettyClient {
     public Codec getCodec() {
         return new YrpcClientCodec();
     }
-
     @Override
     public Handler getHandler() {
         return handler;
