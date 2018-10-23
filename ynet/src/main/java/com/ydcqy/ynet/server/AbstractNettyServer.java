@@ -7,7 +7,6 @@ import com.ydcqy.ynet.util.NamedThreadFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -66,25 +65,14 @@ public abstract class AbstractNettyServer extends AbstractServer {
                                 .addLast("handler", (ChannelHandler) getHandler());
                     }
                 });
-        ChannelFuture channelFuture = bootstrap.bind(getLocalAddress());
-        channelFuture.addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
-                cdl.countDown();
-            }
-        });
-        try {
-            cdl.await();
-        } catch (InterruptedException e) {
-            throw new IllegalStateException(e);
-        }
+        ChannelFuture channelFuture = bootstrap.bind(getLocalAddress()).awaitUninterruptibly();
         if (channelFuture.isSuccess()) {
             isTransportable = true;
             logger.info("{} bind to the {}", AbstractNettyServer.this.getClass().getSimpleName(), getLocalAddress());
-            channel = new NettyChannel(channelFuture.syncUninterruptibly().channel());
+            channel = new NettyChannel(channelFuture.channel());
         } else {
             logger.error(channelFuture.cause().getMessage(), channelFuture.cause());
-            throw new RuntimeException(channelFuture.cause().getMessage(), channelFuture.cause());
+            throw new IllegalStateException(channelFuture.cause().getMessage(), channelFuture.cause());
         }
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @author xiaoyu
  */
-final class YrpcServerCodec extends CombinedChannelDuplexHandler<YrpcServerCodec.RequestDecoder, YrpcServerCodec.ResponseEncoder> implements Codec {
+public final class YrpcServerCodec extends CombinedChannelDuplexHandler<YrpcServerCodec.RequestDecoder, YrpcServerCodec.ResponseEncoder> implements Codec {
     private static final Logger logger = LoggerFactory.getLogger(YrpcServerCodec.class);
 
     public YrpcServerCodec() {
@@ -54,3 +54,4 @@ final class YrpcServerCodec extends CombinedChannelDuplexHandler<YrpcServerCodec
         }
     }
 }
+

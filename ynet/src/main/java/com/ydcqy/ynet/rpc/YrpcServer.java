@@ -10,7 +10,7 @@ import java.util.concurrent.locks.LockSupport;
  * @author xiaoyu
  */
 public class YrpcServer extends AbstractNettyServer {
-    private static final  Handler handler = new YrpcServerHandler();
+    private static final Handler handler = new YrpcServerHandler();
 
     public YrpcServer(int port) {
         super(port);
@@ -27,7 +27,7 @@ public class YrpcServer extends AbstractNettyServer {
     }
 
     public static void main(String[] args) {
-        YrpcServer yrpcServer = new YrpcServer(24001);
+        YrpcServer yrpcServer = new YrpcServer(1111);
         System.out.println("启动结果：" + yrpcServer.isOpen());
         LockSupport.park();
     }

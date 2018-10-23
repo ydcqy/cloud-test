@@ -10,7 +10,6 @@ import com.ydcqy.ynet.util.NamedThreadFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -73,16 +72,14 @@ public abstract class AbstractNettyClient extends AbstractClient {
     @Override
     protected void doConnect() {
         initBootstrap();
-        ChannelFuture channelFuture = bootstrap.connect(getRemoteAddress());
-        channelFuture.addListener(new ChannelFutureListener() {
-            @Override
-            public void operationComplete(ChannelFuture future) throws Exception {
-                if (future.isSuccess()) {
-                    isTransportable = true;
-                }
-            }
-        });
-        io.netty.channel.Channel ch = channelFuture.syncUninterruptibly().channel();
+        ChannelFuture channelFuture = bootstrap.connect(getRemoteAddress()).awaitUninterruptibly();
+        if (channelFuture.isSuccess()) {
+            isTransportable = true;
+        } else {
+            logger.error(channelFuture.cause().getMessage(), channelFuture.cause());
+            throw new RuntimeException(channelFuture.cause().getMessage(), channelFuture.cause());
+        }
+        io.netty.channel.Channel ch = channelFuture.channel();
         Channel nettyChannel = getHandler().getChannelMap().get(NetUtil.toSocketAddressString((InetSocketAddress) ch.localAddress()));
         if (null == nettyChannel) {
             nettyChannel = new NettyChannel(ch);

@@ -24,6 +24,7 @@ public class SimpleServer extends AbstractNettyServer {
     public Handler getHandler() {
         return handler;
     }
+
     public static void main(String[] args) throws InterruptedException {
 
 //        for (; ; ) {

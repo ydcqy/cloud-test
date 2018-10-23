@@ -2,7 +2,6 @@ package com.ydcqy.ynet.channel;
 
 import java.io.Closeable;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 
 /**
  * @author xiaoyu
