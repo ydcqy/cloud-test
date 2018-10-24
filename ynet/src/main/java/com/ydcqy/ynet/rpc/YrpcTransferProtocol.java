@@ -1,13 +1,11 @@
 package com.ydcqy.ynet.rpc;
 
 import com.ydcqy.ynet.protocol.TransferProtocol;
-import com.ydcqy.ynet.request.Request;
-import com.ydcqy.ynet.response.Response;
 
 /**
  * @author xiaoyu
  */
-public class YrpcTransferProtocol extends TransferProtocol {
+public class YrpcTransferProtocol extends TransferProtocol<YrpcRequest, YrpcResponse> {
     @Override
     public String getProtocelName() {
         return "YRPC";
@@ -20,22 +18,22 @@ public class YrpcTransferProtocol extends TransferProtocol {
 
 
     @Override
-    public void setRequest(Request request) {
+    public void setRequest(YrpcRequest request) {
 
     }
 
     @Override
-    public void setResponse(Response response) {
+    public void setResponse(YrpcResponse response) {
 
     }
 
     @Override
-    public Request getRequest() {
+    public YrpcRequest getRequest() {
         return null;
     }
 
     @Override
-    public Response getResponse() {
+    public YrpcResponse getResponse() {
         return null;
     }
 }

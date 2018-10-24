@@ -15,14 +15,26 @@ import java.util.List;
 /**
  * @author xiaoyu
  */
-public final class YrpcServerCodec extends CombinedChannelDuplexHandler<YrpcServerCodec.RequestDecoder, YrpcServerCodec.ResponseEncoder> implements Codec {
+public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMessageDecoder, MessageToByteEncoder> implements Codec {
     private static final Logger logger = LoggerFactory.getLogger(YrpcServerCodec.class);
 
     public YrpcServerCodec() {
-        super(new RequestDecoder(), new ResponseEncoder());
+        init(new RequestDecoder(), new ResponseEncoder());
     }
 
-    protected static final class RequestDecoder extends ByteToMessageDecoder {
+    @Override
+    public byte[] encode(Object message) {
+        return new byte[0];
+    }
+
+    @Override
+    public Object decode(byte[] bytes) {
+        return null;
+    }
+
+    private final class RequestDecoder extends ByteToMessageDecoder {
+        private Codec codec = YrpcServerCodec.this;
+
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
             if (logger.isDebugEnabled()) {
@@ -34,22 +46,24 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<YrpcServ
                 String str = byteBuf.toString(Charset.defaultCharset());
                 out.add(str);
             }
+            long i = 0x111;
             if (logger.isDebugEnabled()) {
                 logger.info("-----decode after----- in: {},out: {},inObj: {},outObj: {}", in, out, System.identityHashCode(in), System.identityHashCode(out));
             }
         }
     }
 
-    protected static final class ResponseEncoder extends MessageToByteEncoder {
+    private final class ResponseEncoder extends MessageToByteEncoder {
+        private Codec codec = YrpcServerCodec.this;
 
         @Override
         protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
             if (logger.isDebugEnabled()) {
-                logger.info("-----encode before----- msg: {},out: {},inObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
+                logger.info("-----encode before----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }
             out.writeBytes(((String) msg).getBytes());
             if (logger.isDebugEnabled()) {
-                logger.info("-----encode after----- msg: {},out: {},inObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
+                logger.info("-----encode after----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }
         }
     }

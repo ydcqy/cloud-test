@@ -15,14 +15,26 @@ import java.util.List;
 /**
  * @author xiaoyu
  */
-final class YrpcClientCodec extends CombinedChannelDuplexHandler<YrpcClientCodec.ResponseDecoder, YrpcClientCodec.RequestEncoder> implements Codec {
+final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDecoder, MessageToByteEncoder> implements Codec {
     private static final Logger logger = LoggerFactory.getLogger(YrpcClientCodec.class);
 
     public YrpcClientCodec() {
-        super(new ResponseDecoder(), new RequestEncoder());
+        init(new ResponseDecoder(), new RequestEncoder());
     }
 
-    protected static final class ResponseDecoder extends ByteToMessageDecoder {
+    @Override
+    public byte[] encode(Object message) {
+        return "哈哈".getBytes();
+    }
+
+    @Override
+    public Object decode(byte[] bytes) {
+        return null;
+    }
+
+    private final class ResponseDecoder extends ByteToMessageDecoder {
+        private Codec codec = YrpcClientCodec.this;
+
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
             if (logger.isDebugEnabled()) {
@@ -40,16 +52,21 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<YrpcClientCodec
         }
     }
 
-    protected static final class RequestEncoder extends MessageToByteEncoder {
+    private final class RequestEncoder extends MessageToByteEncoder {
+        private Codec codec = YrpcClientCodec.this;
 
         @Override
         protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
             if (logger.isDebugEnabled()) {
-                logger.info("-----encode before----- msg: {},out: {},inObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
+                logger.info("-----encode before----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }
-            out.writeBytes(((String) msg).getBytes());
+            ByteBuf buf = ctx.alloc().buffer();
+            byte[] bytes = codec.encode(msg);
+            int length = bytes.length;
+            String len = Integer.toBinaryString(length);
+            out.writeBytes(buf.writeBytes(bytes));
             if (logger.isDebugEnabled()) {
-                logger.info("-----encode after----- msg: {},out: {},inObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
+                logger.info("-----encode after----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }
         }
     }

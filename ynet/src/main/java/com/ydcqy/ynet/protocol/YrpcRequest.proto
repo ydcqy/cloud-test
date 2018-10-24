@@ -1,0 +1,24 @@
+syntax = "proto3";
+package ynet;
+
+option java_generic_services = true;
+option java_package = "com.ydcqy.ynet.protocol";
+option java_outer_classname = "YrpcProtos";
+
+
+service AbcService {
+    rpc abc (YrpcRequest) returns (YrpcRequest);
+}
+
+message YrpcRequest {
+    string requestId = 1;
+    string group = 2;
+    string version = 3;
+    string interfaceName = 4;
+    string methodName = 5;
+}
+
+message YrpcResponse {
+    string requestId = 1;
+}
+

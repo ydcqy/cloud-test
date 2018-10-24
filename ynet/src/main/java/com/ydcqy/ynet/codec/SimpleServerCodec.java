@@ -14,11 +14,21 @@ import java.util.List;
 /**
  * @author xiaoyu
  */
-public final class SimpleServerCodec extends CombinedChannelDuplexHandler<SimpleServerCodec.RequestDecoder, SimpleServerCodec.ResponseEncoder> implements Codec {
+public final class SimpleServerCodec extends CombinedChannelDuplexHandler<ByteToMessageDecoder, MessageToByteEncoder> implements Codec {
     private static final Logger logger = LoggerFactory.getLogger(SimpleServerCodec.class);
 
     public SimpleServerCodec() {
-        super(new RequestDecoder(), new ResponseEncoder());
+        init(new RequestDecoder(), new ResponseEncoder());
+    }
+
+    @Override
+    public byte[] encode(Object message) {
+        return new byte[0];
+    }
+
+    @Override
+    public Object decode(byte[] bytes) {
+        return null;
     }
 
     protected static final class RequestDecoder extends ByteToMessageDecoder {

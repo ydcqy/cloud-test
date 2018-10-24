@@ -3,20 +3,35 @@ package com.ydcqy.cloud.services.talk.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import org.apache.commons.lang.StringUtils;
 import org.bson.BsonDocument;
 import org.bson.Document;
 
+import javax.naming.SizeLimitExceededException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author xiaoyu
  */
 public class PathNodeService {
+    private static Cache<String, String> guavaCache = CacheBuilder.newBuilder()
+            .expireAfterAccess(30, TimeUnit.SECONDS)
+            .expireAfterWrite(60, TimeUnit.SECONDS)
+            .maximumSize(10000)
+            .build();
+    private static final int NODE_CONTENT_LIMIT_SIZE = 100 * 1024;
+    private static final int QUERY_LIMIT_COUNT = 1000;
     private MongoCollection<Document> collection;
 
     public PathNodeService(MongoCollection<Document> collection) {
@@ -44,6 +59,7 @@ public class PathNodeService {
             throw new RuntimeException("修改失败，节点不存在");
         }
         updateTreeNodes(c, json);
+        delCache(path);
     }
 
     /**
@@ -111,7 +127,9 @@ public class PathNodeService {
         if (isJson(json)) {
             handleJsonToTreeNode((JSON) JSON.parse(json), parentId);
         }
+        delCache(path);
     }
+
 
     /**
      * 所传节点内容是json对象时，递归处理节点
@@ -168,10 +186,52 @@ public class PathNodeService {
 
     private boolean isJson(String text) {
         try {
-            JSON.parse(text);
+            JSON json = (JSON) JSON.parse(text);
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+
+    /**
+     * 本地缓存处理
+     *
+     * @param nodePath
+     * @param levelNum
+     * @return
+     */
+    private String findContentByPathCacheProcess(String nodePath, int levelNum, Map<String, Object> params) {
+        try {
+            String key = nodePath + "#" + levelNum + JSON.toJSONString(params);
+            String rs = guavaCache.get(key, new Callable<String>() {
+                @Override
+                public String call() throws Exception {
+                    System.out.println("===查询MongoDB===，缓存key：" + key);
+                    return findContentByPath2(nodePath, levelNum, params);
+                }
+            });
+            if (rs.getBytes().length > NODE_CONTENT_LIMIT_SIZE) {
+                delCache(nodePath);
+                throw new SizeLimitExceededException("内容大小超出限制");
+            }
+            return rs;
+        } catch (Exception e) {
+            throw new RuntimeException(substringAfterLast(e.getMessage(), "Exception: "));
+        }
+    }
+
+    private static String substringAfterLast(String str, String separator) {
+        if (StringUtils.isEmpty(str)) {
+            return str;
+        } else if (StringUtils.isEmpty(separator)) {
+            return "";
+        } else {
+            int pos = str.lastIndexOf(separator);
+            if (pos == -1) {
+                return str;
+            }
+            return pos != -1 && pos != str.length() - separator.length() ? str.substring(pos + separator.length()) : "";
         }
     }
 
@@ -181,7 +241,23 @@ public class PathNodeService {
      * @param path 路径
      * @return
      */
-    public String findContentByPath(String path, boolean isAllLevels) {
+    public String findContentByPath(String path, boolean isAllLevels, Map<String, Object> queryFilterParams) {
+        return findContentByPath(path, isAllLevels ? -1 : 1, queryFilterParams);
+    }
+
+    /**
+     * 根据层级数查询节点
+     *
+     * @param path
+     * @param levelNum
+     * @return
+     */
+    private String findContentByPath(String path, int levelNum, Map<String, Object> params) {
+        return findContentByPathCacheProcess(path, levelNum, params);
+    }
+
+    private String findContentByPath2(String path, int levelNum, Map<String, Object> params) {
+
         String[] split = path.split("/");
         String[] nodes = Arrays.copyOfRange(split, 1, split.length);
         Document c = null;
@@ -197,8 +273,32 @@ public class PathNodeService {
         if (c == null) {
             throw new RuntimeException("查询失败，节点不存在");
         }
-        Object jsonObject = findTreeNodes(c, isAllLevels);
+        Object jsonObject = null;
+
+        checkQueryParams(params);
+        AtomicInteger queryCount = new AtomicInteger(0);
+        if (params != null && "$key".equals(params.get("orderBy"))) {
+            jsonObject = findTreeNodes(c, levelNum, true, params, queryCount);
+        } else if (params != null && params.get("orderBy") != null && String.valueOf(params.get("orderBy")).contains("$child-")) {
+            jsonObject = findTreeNodes(c, levelNum, false, params, queryCount);
+        } else {
+            jsonObject = findTreeNodes(c, levelNum, false, null, queryCount);
+        }
         return JSON.toJSONString(jsonObject);
+    }
+
+
+    /**
+     * 检查查询过滤条件参数
+     *
+     * @param params
+     */
+    private void checkQueryParams(Map<String, Object> params) {
+        if (params != null && "$key".equals(params.get("orderBy")) || params != null && String.valueOf(params.get("orderBy")).contains("$child-")) {
+            if (params.get("limitToFirst") != null && params.get("limitToLast") != null) {
+                throw new RuntimeException("limitToFirst 和 limitToLast 不能同时作为参数");
+            }
+        }
     }
 
     /**
@@ -224,7 +324,27 @@ public class PathNodeService {
             throw new RuntimeException("删除失败，节点不存在");
         }
         deleteTreeNodes(c);
+        delCache(path);
+    }
 
+    /**
+     * 清除缓存
+     *
+     * @param path
+     */
+    public void delCache(String path) {
+        Set<String> rmPaths = findParentNode(path);
+        Set<String> strings = guavaCache.asMap().keySet();
+        for (String key : strings) {
+            String rmPath = key.split("#")[0];
+            if (rmPaths.contains(rmPath)) {
+                guavaCache.asMap().remove(key);
+                System.out.println("清除缓存，path：" + path + "，key：" + key);
+            } else if (rmPath.startsWith(path)) {
+                guavaCache.asMap().remove(key);
+                System.out.println("清除缓存，path：" + path + "，key：" + key);
+            }
+        }
     }
 
     private Document findPathNode(String name, String parent) {
@@ -234,20 +354,153 @@ public class PathNodeService {
         return collection.find(BsonDocument.parse("{'name':'" + name + "','parent':'" + parent + "'}")).first();
     }
 
-    private Object findTreeNodes(Document document, boolean isAllLevels) {
+    private Object findTreeNodes(Document document, int levelNum, boolean isParams, Map<String, Object> params, AtomicInteger queryCount) {
+
         if (document == null) {
             return null;
         }
 
         if (!document.getBoolean("leaf")) {
-            FindIterable<Document> documents = collection
-                    .find(BsonDocument.parse("{'parent':'" + document.getObjectId("_id") + "'}"));
-            JSONObject rs = new JSONObject();
-            for (Document d : documents) {
-                if (isAllLevels) {
-                    Object obj = findTreeNodes(d, isAllLevels);
-                    rs.put(d.getString("name"), obj);
+            long currCount = 0;
+            FindIterable<Document> documents = null;
+
+            boolean isQueryAgain = false;
+
+            if (null != params && isParams) {
+                String filter = "{'parent':'" + document.getObjectId("_id") + "'";
+                if ("$key".equals(params.get("orderBy"))) {
+                    if (params.get("equalTo") != null) {
+                        Object equalTo = params.get("equalTo");
+                        if (equalTo instanceof String) {
+                            filter += ",'name':'" + equalTo + "'";
+                        } else {
+                            filter += ",'name':" + equalTo;
+                        }
+                    } else if (params.get("startAt") != null && params.get("endAt") != null) {
+                        Object startAt = params.get("startAt");
+                        Object endAt = params.get("endAt");
+                        if (startAt instanceof String || endAt instanceof String) {
+                            filter += ",'name':{$gte:'" + startAt + "',$lte:'" + endAt + "'}";
+                        } else {
+                            filter += ",'name':{$gte:" + startAt + ",$lte:" + endAt + "}";
+                        }
+                    } else if (params.get("startAt") != null) {
+                        Object startAt = params.get("startAt");
+                        if (startAt instanceof String) {
+                            filter += ",'name':{$gte:'" + startAt + "'}";
+                        } else {
+                            filter += ",'name':{$gte:" + startAt + "}";
+                        }
+                    } else if (params.get("endAt") != null) {
+                        Object endAt = params.get("endAt");
+                        if (endAt instanceof String) {
+                            filter += ",'name':{$lte:'" + endAt + "'}";
+                        } else {
+                            filter += ",'name':{$lte:" + endAt + "}";
+                        }
+                    }
+                    filter += "}";
+                    documents = collection
+                            .find(BsonDocument.parse(filter));
+
+                    if (params.get("limitToFirst") != null) {
+                        documents.limit((Integer) params.get("limitToFirst"));
+                        documents.sort(BsonDocument.parse("{'name':1}"));
+
+                    } else if (params.get("limitToLast") != null) {
+                        documents.limit((Integer) params.get("limitToLast"));
+                        documents.sort(BsonDocument.parse("{'name':-1}"));
+                    }
                 } else {
+                    String orderBy = String.valueOf(params.get("orderBy"));
+                    String childKey = orderBy.split("\\$child-")[1];
+                    filter += ",'name':'" + childKey + "'";
+                    if (params.get("equalTo") != null) {
+                        Object equalTo = params.get("equalTo");
+                        if (equalTo instanceof String) {
+                            filter += ",'content':'" + equalTo + "'";
+                        } else {
+                            filter += ",'content':" + equalTo;
+                        }
+                    } else if (params.get("startAt") != null && params.get("endAt") != null) {
+                        Object startAt = params.get("startAt");
+                        Object endAt = params.get("endAt");
+                        if (startAt instanceof String || endAt instanceof String) {
+                            filter += ",'content':{$gte:'" + startAt + "',$lte:'" + endAt + "'}";
+                        } else {
+                            filter += ",'content':{$gte:" + startAt + ",$lte:" + endAt + "}";
+                        }
+                    } else if (params.get("startAt") != null) {
+                        Object startAt = params.get("startAt");
+                        if (startAt instanceof String) {
+                            filter += ",'content':{$gte:'" + startAt + "'}";
+                        } else {
+                            filter += ",'content':{$gte:" + startAt + "}";
+                        }
+                    } else if (params.get("endAt") != null) {
+                        Object endAt = params.get("endAt");
+                        if (endAt instanceof String) {
+                            filter += ",'content':{$lte:'" + endAt + "'}";
+                        } else {
+                            filter += ",'content':{$lte:" + endAt + "}";
+                        }
+                    }
+                    filter += "}";
+                    documents = collection
+                            .find(BsonDocument.parse(filter));
+                    if (params.get("limitToFirst") != null) {
+                        documents.limit((Integer) params.get("limitToFirst"));
+                        documents.sort(BsonDocument.parse("{'content':1}"));
+
+                    } else if (params.get("limitToLast") != null) {
+                        documents.limit((Integer) params.get("limitToLast"));
+                        documents.sort(BsonDocument.parse("{'content':-1}"));
+                    }
+                    isQueryAgain = true;
+                }
+                currCount = collection.count(BsonDocument.parse(filter));
+                isParams = false;
+                params = null;
+            } else if (null != params && !isParams) {
+                BsonDocument bd = BsonDocument.parse("{'parent':'" + document.getObjectId("_id") + "'}");
+                documents = collection.find(bd);
+                currCount = collection.count(bd);
+                isParams = true;
+            } else {
+                BsonDocument bd = BsonDocument.parse("{'parent':'" + document.getObjectId("_id") + "'}");
+                documents = collection.find(bd);
+                currCount = collection.count(bd);
+            }
+
+            if (isQueryAgain && documents.iterator().hasNext()) {
+                documents = collection
+                        .find(BsonDocument.parse("{'parent':'" + document.getObjectId("_id") + "'}"));
+            }
+
+            if (queryCount.addAndGet((int) currCount) > QUERY_LIMIT_COUNT) {
+                throw new RuntimeException("数据量过大，请优化查询条件或JSON数据结构");
+            }
+
+            JSONObject rs = new JSONObject(new TreeMap<>());
+            for (Document d : documents) {
+
+                if (levelNum == -1) {
+                    Object obj = findTreeNodes(d, levelNum, isParams, params, queryCount);
+                    if (obj instanceof JSONObject) {
+                        if (((JSONObject) obj).size() == 0) {
+                            continue;
+                        }
+                    }
+                    rs.put(d.getString("name"), obj);
+                } else if (levelNum > 1) {
+                    Object obj = findTreeNodes(d, levelNum - 1, isParams, params, queryCount);
+                    if (obj instanceof JSONObject) {
+                        if (((JSONObject) obj).size() == 0) {
+                            continue;
+                        }
+                    }
+                    rs.put(d.getString("name"), obj);
+                } else if (levelNum == 1) {
                     rs.put(d.getString("name"), "");
                 }
             }
@@ -363,13 +616,15 @@ public class PathNodeService {
      * @param path
      * @return
      */
-    public Set<String> findParentNode(String path) {
+    private Set<String> findParentNode(String path) {
         Set<String> rs = new HashSet<>();
         String[] split = path.split("/");
         String[] nodes = Arrays.copyOfRange(split, 1, split.length);
-        rs.addAll(Arrays.asList(nodes));
+
+        for (int i = 0; i < nodes.length; i++) {
+            rs.add("/" + StringUtils.join(Arrays.copyOfRange(nodes, 0, i + 1), "/"));
+        }
         return rs;
     }
-
 
 }
