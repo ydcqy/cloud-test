@@ -10,10 +10,12 @@ public class YrpcResponse implements Response {
     private Object result;
     private Throwable throwable;
 
+    @Override
     public String getRequestId() {
         return requestId;
     }
 
+    @Override
     public void setRequestId(String requestId) {
         this.requestId = requestId;
     }

@@ -2,23 +2,23 @@ package com.ydcqy.ynet.rpc;
 
 import com.ydcqy.ynet.request.Request;
 
-import java.util.List;
-
 /**
  * @author xiaoyu
  */
 public class YrpcRequest implements Request<YrpcResponse> {
     private String requestId;
     private String group;
-    private String version;
+    private String version = "1.0";
     private String interfaceName;
     private String methodName;
-    private List<Object> paramsList;
+    private Object params;
 
+    @Override
     public String getRequestId() {
         return requestId;
     }
 
+    @Override
     public void setRequestId(String requestId) {
         this.requestId = requestId;
     }
@@ -55,16 +55,11 @@ public class YrpcRequest implements Request<YrpcResponse> {
         this.methodName = methodName;
     }
 
-    public List<Object> getParamsList() {
-        return paramsList;
+    public Object getParams() {
+        return params;
     }
 
-    public void setParamsList(List<Object> paramsList) {
-        this.paramsList = paramsList;
-    }
-
-    @Override
-    public Class<YrpcResponse> getResponseClass() {
-        return YrpcResponse.class;
+    public void setParams(Object params) {
+        this.params = params;
     }
 }

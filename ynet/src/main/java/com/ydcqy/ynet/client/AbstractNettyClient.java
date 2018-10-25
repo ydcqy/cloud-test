@@ -7,6 +7,7 @@ import com.ydcqy.ynet.request.Request;
 import com.ydcqy.ynet.response.Response;
 import com.ydcqy.ynet.util.Constants;
 import com.ydcqy.ynet.util.NamedThreadFactory;
+import com.ydcqy.ynet.util.ResultSynchronizer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelFuture;
@@ -96,7 +97,7 @@ public abstract class AbstractNettyClient extends AbstractClient {
     @Override
     public <T extends Response> T send(Request<T> request) throws YnetException {
         channel.send(request);
-        return null;
+        return (T) new ResultSynchronizer(request.getRequestId(), 5000).get();
     }
 
     @Override

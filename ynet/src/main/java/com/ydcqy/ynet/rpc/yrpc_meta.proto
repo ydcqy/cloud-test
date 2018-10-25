@@ -1,0 +1,20 @@
+syntax = "proto3";
+package ynet;
+
+option java_package = "com.ydcqy.ynet.rpc.proto";
+option java_outer_classname = "YrpcProtos";
+
+
+message YrpcRequest {
+    string requestId = 1;
+    string group = 2;
+    string version = 3;
+    string interfaceName = 4;
+    string methodName = 5;
+    bytes params = 6;
+}
+
+message YrpcResponse {
+    string requestId = 1;
+}
+

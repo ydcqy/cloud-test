@@ -38,7 +38,7 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
             if (logger.isDebugEnabled()) {
-                logger.info("-----decode before----- in: {},out: {},inObj: {},outObj: {}", in, out, System.identityHashCode(in), System.identityHashCode(out));
+                logger.debug("-----decode before----- in: {},out: {},inObj: {},outObj: {}", in, out, System.identityHashCode(in), System.identityHashCode(out));
             }
             int readableBytes = in.readableBytes();
             if (readableBytes > 0) {
@@ -48,7 +48,7 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
             }
             long i = 0x111;
             if (logger.isDebugEnabled()) {
-                logger.info("-----decode after----- in: {},out: {},inObj: {},outObj: {}", in, out, System.identityHashCode(in), System.identityHashCode(out));
+                logger.debug("-----decode after----- in: {},out: {},inObj: {},outObj: {}", in, "", System.identityHashCode(in), System.identityHashCode(out));
             }
         }
     }
@@ -59,11 +59,11 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
         @Override
         protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
             if (logger.isDebugEnabled()) {
-                logger.info("-----encode before----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
+                logger.debug("-----encode before----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }
             out.writeBytes(((String) msg).getBytes());
             if (logger.isDebugEnabled()) {
-                logger.info("-----encode after----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
+                logger.debug("-----encode after----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }
         }
     }
