@@ -4,7 +4,8 @@ import com.ydcqy.ynet.codec.Codec;
 import com.ydcqy.ynet.handler.Handler;
 import com.ydcqy.ynet.server.AbstractNettyServer;
 
-import java.util.concurrent.locks.LockSupport;
+import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * @author xiaoyu
@@ -26,9 +27,12 @@ public class YrpcServer extends AbstractNettyServer {
         return handler;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         YrpcServer yrpcServer = new YrpcServer(1111);
         System.out.println("启动结果：" + yrpcServer.isOpen());
-        LockSupport.park();
+        while (new Scanner(System.in).nextLine() != null) {
+            System.out.println(yrpcServer.getClientChannelMap().size());
+        }
     }
+
 }

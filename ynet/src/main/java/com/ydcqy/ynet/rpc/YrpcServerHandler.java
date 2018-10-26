@@ -52,5 +52,11 @@ class YrpcServerHandler extends AbstractNettyServerHandler {
     @Override
     public void caught(Channel channel, Throwable cause) throws RemoteException {
         logger.error("" + channel, cause);
+        if (!(cause instanceof RemoteException)) {
+            try {
+                channel.close();
+            } catch (Exception e) {
+            }
+        }
     }
 }

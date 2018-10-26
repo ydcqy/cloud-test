@@ -39,7 +39,7 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
             return null;
         }
         if (!(message instanceof YrpcRequest)) {
-            throw new UnsupportedOperationException("Unsupported type for " + message.getClass());
+            throw new UnsupportedOperationException("Unsupported type of " + message.getClass());
         }
         YrpcRequest req = (YrpcRequest) message;
         byte[] bytes;
@@ -126,14 +126,19 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
             if (!(msg instanceof Request)) {
                 throw new IllegalArgumentException("The message type must be Request.class");
             }
-            YrpcTransferProtocol transferProtocol = new YrpcTransferProtocol();
-            transferProtocol.setRequest((YrpcRequest) msg);
             ByteBuf buf = ctx.alloc().buffer();
-            out.writeBytes(buf.writeBytes(codec.encode(msg)));
+            byte[] bytes = codec.encode(msg);
+            int length = bytes.length;
+            buf.writeByte(serializationType.bitValue);
+            buf.writeByte((length >> 24) & 0xff);
+            buf.writeByte((length >> 16) & 0xff);
+            buf.writeByte((length >> 8) & 0xff);
+            buf.writeByte(length & 0xff);
+            out.writeBytes(buf.writeBytes(bytes));
             if (logger.isDebugEnabled()) {
                 logger.debug("-----encode after----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }
         }
-    }
 
+    }
 }

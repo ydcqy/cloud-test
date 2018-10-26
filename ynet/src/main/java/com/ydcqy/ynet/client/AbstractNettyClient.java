@@ -54,7 +54,7 @@ public abstract class AbstractNettyClient extends AbstractClient {
                     bootstrap.group(workerGroup)
                             .channel(NioSocketChannel.class)
                             .option(ChannelOption.SO_KEEPALIVE, true)
-                            //.option(ChannelOption.TCP_NODELAY, true)
+//                            .option(ChannelOption.TCP_NODELAY, true)
                             .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
                             .handler(new ChannelInitializer<SocketChannel>() {
@@ -97,7 +97,10 @@ public abstract class AbstractNettyClient extends AbstractClient {
     @Override
     public <T extends Response> T send(Request<T> request) throws YnetException {
         channel.send(request);
-        return (T) new ResultSynchronizer(request.getRequestId(), 5000).get();
+//        channel.send(request);
+//        channel.send(request);
+
+        return (T) ResultSynchronizer.get(request.getRequestId(), 5000000);
     }
 
     @Override

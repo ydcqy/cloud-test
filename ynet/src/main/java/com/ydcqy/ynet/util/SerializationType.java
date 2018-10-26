@@ -9,9 +9,18 @@ public enum SerializationType {
     JSON((byte) 3),
     JAVA((byte) 4);
 
-    public int bitValue;
+    public byte bitValue;
 
     SerializationType(byte bitValue) {
         this.bitValue = bitValue;
+    }
+
+    public static SerializationType valueOf(byte bitValue) {
+        for (SerializationType type : values()) {
+            if (type.bitValue == bitValue) {
+                return type;
+            }
+        }
+        return null;
     }
 }
