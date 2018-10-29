@@ -19,11 +19,11 @@ public final class YrpcProtos {
           com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string requestId = 1;</code>
+     * <code>string request_id = 1;</code>
      */
     java.lang.String getRequestId();
     /**
-     * <code>string requestId = 1;</code>
+     * <code>string request_id = 1;</code>
      */
     com.google.protobuf.ByteString
     getRequestIdBytes();
@@ -49,29 +49,29 @@ public final class YrpcProtos {
     getVersionBytes();
 
     /**
-     * <code>string interfaceName = 4;</code>
+     * <code>string interface_name = 4;</code>
      */
     java.lang.String getInterfaceName();
     /**
-     * <code>string interfaceName = 4;</code>
+     * <code>string interface_name = 4;</code>
      */
     com.google.protobuf.ByteString
     getInterfaceNameBytes();
 
     /**
-     * <code>string methodName = 5;</code>
+     * <code>string method_name = 5;</code>
      */
     java.lang.String getMethodName();
     /**
-     * <code>string methodName = 5;</code>
+     * <code>string method_name = 5;</code>
      */
     com.google.protobuf.ByteString
     getMethodNameBytes();
 
     /**
-     * <code>bytes params = 6;</code>
+     * <code>bytes param = 6;</code>
      */
-    com.google.protobuf.ByteString getParams();
+    com.google.protobuf.ByteString getParam();
   }
   /**
    * Protobuf type {@code ynet.YrpcRequest}
@@ -91,7 +91,7 @@ public final class YrpcProtos {
       version_ = "";
       interfaceName_ = "";
       methodName_ = "";
-      params_ = com.google.protobuf.ByteString.EMPTY;
+      param_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     @java.lang.Override
@@ -150,7 +150,7 @@ public final class YrpcProtos {
             }
             case 50: {
 
-              params_ = input.readBytes();
+              param_ = input.readBytes();
               break;
             }
             default: {
@@ -185,10 +185,10 @@ public final class YrpcProtos {
                       com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcRequest.class, com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcRequest.Builder.class);
     }
 
-    public static final int REQUESTID_FIELD_NUMBER = 1;
+    public static final int REQUEST_ID_FIELD_NUMBER = 1;
     private volatile java.lang.Object requestId_;
     /**
-     * <code>string requestId = 1;</code>
+     * <code>string request_id = 1;</code>
      */
     public java.lang.String getRequestId() {
       java.lang.Object ref = requestId_;
@@ -203,7 +203,7 @@ public final class YrpcProtos {
       }
     }
     /**
-     * <code>string requestId = 1;</code>
+     * <code>string request_id = 1;</code>
      */
     public com.google.protobuf.ByteString
     getRequestIdBytes() {
@@ -287,10 +287,10 @@ public final class YrpcProtos {
       }
     }
 
-    public static final int INTERFACENAME_FIELD_NUMBER = 4;
+    public static final int INTERFACE_NAME_FIELD_NUMBER = 4;
     private volatile java.lang.Object interfaceName_;
     /**
-     * <code>string interfaceName = 4;</code>
+     * <code>string interface_name = 4;</code>
      */
     public java.lang.String getInterfaceName() {
       java.lang.Object ref = interfaceName_;
@@ -305,7 +305,7 @@ public final class YrpcProtos {
       }
     }
     /**
-     * <code>string interfaceName = 4;</code>
+     * <code>string interface_name = 4;</code>
      */
     public com.google.protobuf.ByteString
     getInterfaceNameBytes() {
@@ -321,10 +321,10 @@ public final class YrpcProtos {
       }
     }
 
-    public static final int METHODNAME_FIELD_NUMBER = 5;
+    public static final int METHOD_NAME_FIELD_NUMBER = 5;
     private volatile java.lang.Object methodName_;
     /**
-     * <code>string methodName = 5;</code>
+     * <code>string method_name = 5;</code>
      */
     public java.lang.String getMethodName() {
       java.lang.Object ref = methodName_;
@@ -339,7 +339,7 @@ public final class YrpcProtos {
       }
     }
     /**
-     * <code>string methodName = 5;</code>
+     * <code>string method_name = 5;</code>
      */
     public com.google.protobuf.ByteString
     getMethodNameBytes() {
@@ -355,13 +355,13 @@ public final class YrpcProtos {
       }
     }
 
-    public static final int PARAMS_FIELD_NUMBER = 6;
-    private com.google.protobuf.ByteString params_;
+    public static final int PARAM_FIELD_NUMBER = 6;
+    private com.google.protobuf.ByteString param_;
     /**
-     * <code>bytes params = 6;</code>
+     * <code>bytes param = 6;</code>
      */
-    public com.google.protobuf.ByteString getParams() {
-      return params_;
+    public com.google.protobuf.ByteString getParam() {
+      return param_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -393,8 +393,8 @@ public final class YrpcProtos {
       if (!getMethodNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 5, methodName_);
       }
-      if (!params_.isEmpty()) {
-        output.writeBytes(6, params_);
+      if (!param_.isEmpty()) {
+        output.writeBytes(6, param_);
       }
       unknownFields.writeTo(output);
     }
@@ -420,9 +420,9 @@ public final class YrpcProtos {
       if (!getMethodNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, methodName_);
       }
-      if (!params_.isEmpty()) {
+      if (!param_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(6, params_);
+                .computeBytesSize(6, param_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -450,8 +450,8 @@ public final class YrpcProtos {
               .equals(other.getInterfaceName());
       result = result && getMethodName()
               .equals(other.getMethodName());
-      result = result && getParams()
-              .equals(other.getParams());
+      result = result && getParam()
+              .equals(other.getParam());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -463,18 +463,18 @@ public final class YrpcProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + REQUESTID_FIELD_NUMBER;
+      hash = (37 * hash) + REQUEST_ID_FIELD_NUMBER;
       hash = (53 * hash) + getRequestId().hashCode();
       hash = (37 * hash) + GROUP_FIELD_NUMBER;
       hash = (53 * hash) + getGroup().hashCode();
       hash = (37 * hash) + VERSION_FIELD_NUMBER;
       hash = (53 * hash) + getVersion().hashCode();
-      hash = (37 * hash) + INTERFACENAME_FIELD_NUMBER;
+      hash = (37 * hash) + INTERFACE_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getInterfaceName().hashCode();
-      hash = (37 * hash) + METHODNAME_FIELD_NUMBER;
+      hash = (37 * hash) + METHOD_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getMethodName().hashCode();
-      hash = (37 * hash) + PARAMS_FIELD_NUMBER;
-      hash = (53 * hash) + getParams().hashCode();
+      hash = (37 * hash) + PARAM_FIELD_NUMBER;
+      hash = (53 * hash) + getParam().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -618,7 +618,7 @@ public final class YrpcProtos {
 
         methodName_ = "";
 
-        params_ = com.google.protobuf.ByteString.EMPTY;
+        param_ = com.google.protobuf.ByteString.EMPTY;
 
         return this;
       }
@@ -651,7 +651,7 @@ public final class YrpcProtos {
         result.version_ = version_;
         result.interfaceName_ = interfaceName_;
         result.methodName_ = methodName_;
-        result.params_ = params_;
+        result.param_ = param_;
         onBuilt();
         return result;
       }
@@ -720,8 +720,8 @@ public final class YrpcProtos {
           methodName_ = other.methodName_;
           onChanged();
         }
-        if (other.getParams() != com.google.protobuf.ByteString.EMPTY) {
-          setParams(other.getParams());
+        if (other.getParam() != com.google.protobuf.ByteString.EMPTY) {
+          setParam(other.getParam());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -754,7 +754,7 @@ public final class YrpcProtos {
 
       private java.lang.Object requestId_ = "";
       /**
-       * <code>string requestId = 1;</code>
+       * <code>string request_id = 1;</code>
        */
       public java.lang.String getRequestId() {
         java.lang.Object ref = requestId_;
@@ -769,7 +769,7 @@ public final class YrpcProtos {
         }
       }
       /**
-       * <code>string requestId = 1;</code>
+       * <code>string request_id = 1;</code>
        */
       public com.google.protobuf.ByteString
       getRequestIdBytes() {
@@ -785,7 +785,7 @@ public final class YrpcProtos {
         }
       }
       /**
-       * <code>string requestId = 1;</code>
+       * <code>string request_id = 1;</code>
        */
       public Builder setRequestId(
               java.lang.String value) {
@@ -798,7 +798,7 @@ public final class YrpcProtos {
         return this;
       }
       /**
-       * <code>string requestId = 1;</code>
+       * <code>string request_id = 1;</code>
        */
       public Builder clearRequestId() {
 
@@ -807,7 +807,7 @@ public final class YrpcProtos {
         return this;
       }
       /**
-       * <code>string requestId = 1;</code>
+       * <code>string request_id = 1;</code>
        */
       public Builder setRequestIdBytes(
               com.google.protobuf.ByteString value) {
@@ -961,7 +961,7 @@ public final class YrpcProtos {
 
       private java.lang.Object interfaceName_ = "";
       /**
-       * <code>string interfaceName = 4;</code>
+       * <code>string interface_name = 4;</code>
        */
       public java.lang.String getInterfaceName() {
         java.lang.Object ref = interfaceName_;
@@ -976,7 +976,7 @@ public final class YrpcProtos {
         }
       }
       /**
-       * <code>string interfaceName = 4;</code>
+       * <code>string interface_name = 4;</code>
        */
       public com.google.protobuf.ByteString
       getInterfaceNameBytes() {
@@ -992,7 +992,7 @@ public final class YrpcProtos {
         }
       }
       /**
-       * <code>string interfaceName = 4;</code>
+       * <code>string interface_name = 4;</code>
        */
       public Builder setInterfaceName(
               java.lang.String value) {
@@ -1005,7 +1005,7 @@ public final class YrpcProtos {
         return this;
       }
       /**
-       * <code>string interfaceName = 4;</code>
+       * <code>string interface_name = 4;</code>
        */
       public Builder clearInterfaceName() {
 
@@ -1014,7 +1014,7 @@ public final class YrpcProtos {
         return this;
       }
       /**
-       * <code>string interfaceName = 4;</code>
+       * <code>string interface_name = 4;</code>
        */
       public Builder setInterfaceNameBytes(
               com.google.protobuf.ByteString value) {
@@ -1030,7 +1030,7 @@ public final class YrpcProtos {
 
       private java.lang.Object methodName_ = "";
       /**
-       * <code>string methodName = 5;</code>
+       * <code>string method_name = 5;</code>
        */
       public java.lang.String getMethodName() {
         java.lang.Object ref = methodName_;
@@ -1045,7 +1045,7 @@ public final class YrpcProtos {
         }
       }
       /**
-       * <code>string methodName = 5;</code>
+       * <code>string method_name = 5;</code>
        */
       public com.google.protobuf.ByteString
       getMethodNameBytes() {
@@ -1061,7 +1061,7 @@ public final class YrpcProtos {
         }
       }
       /**
-       * <code>string methodName = 5;</code>
+       * <code>string method_name = 5;</code>
        */
       public Builder setMethodName(
               java.lang.String value) {
@@ -1074,7 +1074,7 @@ public final class YrpcProtos {
         return this;
       }
       /**
-       * <code>string methodName = 5;</code>
+       * <code>string method_name = 5;</code>
        */
       public Builder clearMethodName() {
 
@@ -1083,7 +1083,7 @@ public final class YrpcProtos {
         return this;
       }
       /**
-       * <code>string methodName = 5;</code>
+       * <code>string method_name = 5;</code>
        */
       public Builder setMethodNameBytes(
               com.google.protobuf.ByteString value) {
@@ -1097,31 +1097,31 @@ public final class YrpcProtos {
         return this;
       }
 
-      private com.google.protobuf.ByteString params_ = com.google.protobuf.ByteString.EMPTY;
+      private com.google.protobuf.ByteString param_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>bytes params = 6;</code>
+       * <code>bytes param = 6;</code>
        */
-      public com.google.protobuf.ByteString getParams() {
-        return params_;
+      public com.google.protobuf.ByteString getParam() {
+        return param_;
       }
       /**
-       * <code>bytes params = 6;</code>
+       * <code>bytes param = 6;</code>
        */
-      public Builder setParams(com.google.protobuf.ByteString value) {
+      public Builder setParam(com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
 
-        params_ = value;
+        param_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>bytes params = 6;</code>
+       * <code>bytes param = 6;</code>
        */
-      public Builder clearParams() {
+      public Builder clearParam() {
 
-        params_ = getDefaultInstance().getParams();
+        param_ = getDefaultInstance().getParam();
         onChanged();
         return this;
       }
@@ -1183,14 +1183,29 @@ public final class YrpcProtos {
           com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string requestId = 1;</code>
+     * <code>string request_id = 1;</code>
      */
     java.lang.String getRequestId();
     /**
-     * <code>string requestId = 1;</code>
+     * <code>string request_id = 1;</code>
      */
     com.google.protobuf.ByteString
     getRequestIdBytes();
+
+    /**
+     * <code>bytes result = 2;</code>
+     */
+    com.google.protobuf.ByteString getResult();
+
+    /**
+     * <code>string err_msg = 3;</code>
+     */
+    java.lang.String getErrMsg();
+    /**
+     * <code>string err_msg = 3;</code>
+     */
+    com.google.protobuf.ByteString
+    getErrMsgBytes();
   }
   /**
    * Protobuf type {@code ynet.YrpcResponse}
@@ -1206,6 +1221,8 @@ public final class YrpcProtos {
     }
     private YrpcResponse() {
       requestId_ = "";
+      result_ = com.google.protobuf.ByteString.EMPTY;
+      errMsg_ = "";
     }
 
     @java.lang.Override
@@ -1236,6 +1253,17 @@ public final class YrpcProtos {
               java.lang.String s = input.readStringRequireUtf8();
 
               requestId_ = s;
+              break;
+            }
+            case 18: {
+
+              result_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              errMsg_ = s;
               break;
             }
             default: {
@@ -1270,10 +1298,10 @@ public final class YrpcProtos {
                       com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcResponse.class, com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcResponse.Builder.class);
     }
 
-    public static final int REQUESTID_FIELD_NUMBER = 1;
+    public static final int REQUEST_ID_FIELD_NUMBER = 1;
     private volatile java.lang.Object requestId_;
     /**
-     * <code>string requestId = 1;</code>
+     * <code>string request_id = 1;</code>
      */
     public java.lang.String getRequestId() {
       java.lang.Object ref = requestId_;
@@ -1288,7 +1316,7 @@ public final class YrpcProtos {
       }
     }
     /**
-     * <code>string requestId = 1;</code>
+     * <code>string request_id = 1;</code>
      */
     public com.google.protobuf.ByteString
     getRequestIdBytes() {
@@ -1298,6 +1326,49 @@ public final class YrpcProtos {
                 com.google.protobuf.ByteString.copyFromUtf8(
                         (java.lang.String) ref);
         requestId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int RESULT_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString result_;
+    /**
+     * <code>bytes result = 2;</code>
+     */
+    public com.google.protobuf.ByteString getResult() {
+      return result_;
+    }
+
+    public static final int ERR_MSG_FIELD_NUMBER = 3;
+    private volatile java.lang.Object errMsg_;
+    /**
+     * <code>string err_msg = 3;</code>
+     */
+    public java.lang.String getErrMsg() {
+      java.lang.Object ref = errMsg_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs =
+                (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        errMsg_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string err_msg = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+    getErrMsgBytes() {
+      java.lang.Object ref = errMsg_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b =
+                com.google.protobuf.ByteString.copyFromUtf8(
+                        (java.lang.String) ref);
+        errMsg_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -1321,6 +1392,12 @@ public final class YrpcProtos {
       if (!getRequestIdBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, requestId_);
       }
+      if (!result_.isEmpty()) {
+        output.writeBytes(2, result_);
+      }
+      if (!getErrMsgBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, errMsg_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -1332,6 +1409,13 @@ public final class YrpcProtos {
       size = 0;
       if (!getRequestIdBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, requestId_);
+      }
+      if (!result_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+                .computeBytesSize(2, result_);
+      }
+      if (!getErrMsgBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, errMsg_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1351,6 +1435,10 @@ public final class YrpcProtos {
       boolean result = true;
       result = result && getRequestId()
               .equals(other.getRequestId());
+      result = result && getResult()
+              .equals(other.getResult());
+      result = result && getErrMsg()
+              .equals(other.getErrMsg());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -1362,8 +1450,12 @@ public final class YrpcProtos {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      hash = (37 * hash) + REQUESTID_FIELD_NUMBER;
+      hash = (37 * hash) + REQUEST_ID_FIELD_NUMBER;
       hash = (53 * hash) + getRequestId().hashCode();
+      hash = (37 * hash) + RESULT_FIELD_NUMBER;
+      hash = (53 * hash) + getResult().hashCode();
+      hash = (37 * hash) + ERR_MSG_FIELD_NUMBER;
+      hash = (53 * hash) + getErrMsg().hashCode();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1499,6 +1591,10 @@ public final class YrpcProtos {
         super.clear();
         requestId_ = "";
 
+        result_ = com.google.protobuf.ByteString.EMPTY;
+
+        errMsg_ = "";
+
         return this;
       }
 
@@ -1526,6 +1622,8 @@ public final class YrpcProtos {
       public com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcResponse buildPartial() {
         com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcResponse result = new com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcResponse(this);
         result.requestId_ = requestId_;
+        result.result_ = result_;
+        result.errMsg_ = errMsg_;
         onBuilt();
         return result;
       }
@@ -1578,6 +1676,13 @@ public final class YrpcProtos {
           requestId_ = other.requestId_;
           onChanged();
         }
+        if (other.getResult() != com.google.protobuf.ByteString.EMPTY) {
+          setResult(other.getResult());
+        }
+        if (!other.getErrMsg().isEmpty()) {
+          errMsg_ = other.errMsg_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -1609,7 +1714,7 @@ public final class YrpcProtos {
 
       private java.lang.Object requestId_ = "";
       /**
-       * <code>string requestId = 1;</code>
+       * <code>string request_id = 1;</code>
        */
       public java.lang.String getRequestId() {
         java.lang.Object ref = requestId_;
@@ -1624,7 +1729,7 @@ public final class YrpcProtos {
         }
       }
       /**
-       * <code>string requestId = 1;</code>
+       * <code>string request_id = 1;</code>
        */
       public com.google.protobuf.ByteString
       getRequestIdBytes() {
@@ -1640,7 +1745,7 @@ public final class YrpcProtos {
         }
       }
       /**
-       * <code>string requestId = 1;</code>
+       * <code>string request_id = 1;</code>
        */
       public Builder setRequestId(
               java.lang.String value) {
@@ -1653,7 +1758,7 @@ public final class YrpcProtos {
         return this;
       }
       /**
-       * <code>string requestId = 1;</code>
+       * <code>string request_id = 1;</code>
        */
       public Builder clearRequestId() {
 
@@ -1662,7 +1767,7 @@ public final class YrpcProtos {
         return this;
       }
       /**
-       * <code>string requestId = 1;</code>
+       * <code>string request_id = 1;</code>
        */
       public Builder setRequestIdBytes(
               com.google.protobuf.ByteString value) {
@@ -1672,6 +1777,104 @@ public final class YrpcProtos {
         checkByteStringIsUtf8(value);
 
         requestId_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString result_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes result = 2;</code>
+       */
+      public com.google.protobuf.ByteString getResult() {
+        return result_;
+      }
+      /**
+       * <code>bytes result = 2;</code>
+       */
+      public Builder setResult(com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        result_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes result = 2;</code>
+       */
+      public Builder clearResult() {
+
+        result_ = getDefaultInstance().getResult();
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object errMsg_ = "";
+      /**
+       * <code>string err_msg = 3;</code>
+       */
+      public java.lang.String getErrMsg() {
+        java.lang.Object ref = errMsg_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+                  (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          errMsg_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string err_msg = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+      getErrMsgBytes() {
+        java.lang.Object ref = errMsg_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b =
+                  com.google.protobuf.ByteString.copyFromUtf8(
+                          (java.lang.String) ref);
+          errMsg_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string err_msg = 3;</code>
+       */
+      public Builder setErrMsg(
+              java.lang.String value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+
+        errMsg_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string err_msg = 3;</code>
+       */
+      public Builder clearErrMsg() {
+
+        errMsg_ = getDefaultInstance().getErrMsg();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string err_msg = 3;</code>
+       */
+      public Builder setErrMsgBytes(
+              com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        checkByteStringIsUtf8(value);
+
+        errMsg_ = value;
         onChanged();
         return this;
       }
@@ -1747,12 +1950,13 @@ public final class YrpcProtos {
           descriptor;
   static {
     java.lang.String[] descriptorData = {
-            "\n\017yrpc_meta.proto\022\004ynet\"{\n\013YrpcRequest\022\021" +
-                    "\n\trequestId\030\001 \001(\t\022\r\n\005group\030\002 \001(\t\022\017\n\007vers" +
-                    "ion\030\003 \001(\t\022\025\n\rinterfaceName\030\004 \001(\t\022\022\n\nmeth" +
-                    "odName\030\005 \001(\t\022\016\n\006params\030\006 \001(\014\"!\n\014YrpcResp" +
-                    "onse\022\021\n\trequestId\030\001 \001(\tB&\n\030com.ydcqy.yne" +
-                    "t.rpc.protoB\nYrpcProtosb\006proto3"
+            "\n\017yrpc_meta.proto\022\004ynet\"}\n\013YrpcRequest\022\022" +
+                    "\n\nrequest_id\030\001 \001(\t\022\r\n\005group\030\002 \001(\t\022\017\n\007ver" +
+                    "sion\030\003 \001(\t\022\026\n\016interface_name\030\004 \001(\t\022\023\n\013me" +
+                    "thod_name\030\005 \001(\t\022\r\n\005param\030\006 \001(\014\"C\n\014YrpcRe" +
+                    "sponse\022\022\n\nrequest_id\030\001 \001(\t\022\016\n\006result\030\002 \001" +
+                    "(\014\022\017\n\007err_msg\030\003 \001(\tB&\n\030com.ydcqy.ynet.rp" +
+                    "c.protoB\nYrpcProtosb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
             new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1771,13 +1975,13 @@ public final class YrpcProtos {
     internal_static_ynet_YrpcRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_ynet_YrpcRequest_descriptor,
-            new java.lang.String[] { "RequestId", "Group", "Version", "InterfaceName", "MethodName", "Params", });
+            new java.lang.String[] { "RequestId", "Group", "Version", "InterfaceName", "MethodName", "Param", });
     internal_static_ynet_YrpcResponse_descriptor =
             getDescriptor().getMessageTypes().get(1);
     internal_static_ynet_YrpcResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_ynet_YrpcResponse_descriptor,
-            new java.lang.String[] { "RequestId", });
+            new java.lang.String[] { "RequestId", "Result", "ErrMsg", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

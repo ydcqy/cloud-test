@@ -8,7 +8,7 @@ import com.ydcqy.ynet.response.Response;
 public class YrpcResponse implements Response {
     private String requestId;
     private Object result;
-    private Throwable throwable;
+    private String errMsg;
 
     @Override
     public String getRequestId() {
@@ -28,11 +28,11 @@ public class YrpcResponse implements Response {
         this.result = result;
     }
 
-    public Throwable getThrowable() {
-        return throwable;
+    public String getErrMsg() {
+        return errMsg;
     }
 
-    public void setThrowable(Throwable throwable) {
-        this.throwable = throwable;
+    public void setErrMsg(String errMsg) {
+        this.errMsg = errMsg;
     }
 }

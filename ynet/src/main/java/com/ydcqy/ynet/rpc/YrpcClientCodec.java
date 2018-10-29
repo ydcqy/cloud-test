@@ -45,8 +45,8 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
         byte[] bytes;
         switch (serializationType) {
             case PROTO:
-                Object params = req.getParams();
-                if (params != null && !(params instanceof MessageLiteOrBuilder)) {
+                Object param = req.getParam();
+                if (param != null && !(param instanceof MessageLiteOrBuilder)) {
                     throw new UnsupportedOperationException("The params must be MessageLiteOrBuilder");
                 }
                 YrpcProtos.YrpcRequest.Builder builder = YrpcProtos.YrpcRequest.newBuilder();
@@ -65,11 +65,11 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
                 if (!StringUtil.isNullOrEmpty(req.getMethodName())) {
                     builder.setMethodName(req.getMethodName());
                 }
-                if (params instanceof MessageLite) {
-                    builder.setParams(ByteString.copyFrom(((MessageLite) params).toByteArray()));
+                if (param instanceof MessageLite) {
+                    builder.setParam(ByteString.copyFrom(((MessageLite) param).toByteArray()));
                 }
-                if (params instanceof MessageLite.Builder) {
-                    builder.setParams(ByteString.copyFrom(((MessageLite.Builder) params).build().toByteArray()));
+                if (param instanceof MessageLite.Builder) {
+                    builder.setParam(ByteString.copyFrom(((MessageLite.Builder) param).build().toByteArray()));
                 }
                 YrpcProtos.YrpcRequest req1 = builder.build();
                 bytes = req1.toByteArray();
@@ -82,6 +82,7 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
             case JAVA:
                 bytes = SerializationUtils.serialize(req);
                 break;
+
             default:
                 throw new UnsupportedOperationException();
         }
