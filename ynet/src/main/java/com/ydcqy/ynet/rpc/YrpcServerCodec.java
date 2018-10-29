@@ -2,8 +2,10 @@ package com.ydcqy.ynet.rpc;
 
 import com.alibaba.fastjson.JSON;
 import com.google.protobuf.ByteString;
+import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLiteOrBuilder;
 import com.ydcqy.ynet.codec.Codec;
+import com.ydcqy.ynet.exception.RemoteException;
 import com.ydcqy.ynet.rpc.proto.YrpcProtos;
 import com.ydcqy.ynet.util.SerializationType;
 import com.ydcqy.ynet.util.SerializationUtils;
@@ -16,6 +18,7 @@ import io.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -59,12 +62,6 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
                         switch (serializationType) {
                             case PROTO:
                                 YrpcProtos.YrpcRequest req1 = YrpcProtos.YrpcRequest.parseFrom(byteBuf.nioBuffer());
-                                ByteString param = req1.getParam();
-//                                param
-                                System.out.println(param);
-                                if (param != null && !(param instanceof MessageLiteOrBuilder)) {
-                                    throw new UnsupportedOperationException("The params must be MessageLiteOrBuilder");
-                                }
                                 req = new YrpcRequest();
                                 if (!StringUtil.isNullOrEmpty(req1.getRequestId())) {
                                     req.setRequestId(req1.getRequestId());
@@ -81,8 +78,37 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
                                 if (!StringUtil.isNullOrEmpty(req1.getMethodName())) {
                                     req.setMethodName(req1.getMethodName());
                                 }
-                                if (param != null) {
-                                    req.setParam(param);
+                                ByteString param = req1.getParam();
+                                if (param != null && param.size() > 0) {
+                                    Class<?> aClass = Class.forName(req.getInterfaceName());
+                                    Method[] methods = aClass.getMethods();
+                                    if (methods.length == 0) {
+                                        throw new RemoteException("The " + req.getInterfaceName() + " interface does not have any methods");
+                                    }
+                                    Method method = null;
+                                    for (Method m : methods) {
+                                        if (m.equals(req.getMethodName())) {
+                                            if (method != null) {
+                                                throw new RemoteException("The " + req.getInterfaceName() + " has more than one " + req.getMethodName() + " method when serializationType is proto");
+                                            }
+                                            method = m;
+                                        }
+                                    }
+                                    Class<?>[] parameterTypes = method.getParameterTypes();
+                                    if (parameterTypes.length > 1) {
+                                        throw new RemoteException("The " + req.getInterfaceName() + "#" + req.getMethodName() + " has more than one parameter when serializationType is proto");
+                                    }
+                                    if (parameterTypes.length > 0 && !MessageLiteOrBuilder.class.isAssignableFrom(parameterTypes[0])) {
+                                        throw new RemoteException("Param of " + req.getInterfaceName() + "#" + req.getMethodName() + " must be MessageLiteOrBuilder when serializationType is proto");
+                                    }
+                                    Class<MessageLiteOrBuilder> messageLiteOrBuilder = (Class<MessageLiteOrBuilder>) parameterTypes[0];
+//                                    YrpcProtos.YrpcRequest.getDefaultInstance().getParserForType()
+//                                    if (param instanceof MessageLite) {
+//                                        builder.setParam(ByteString.copyFrom(((MessageLite) param).toByteArray()));
+//                                    }
+//                                    if (param instanceof MessageLite.Builder) {
+//                                        builder.setParam(ByteString.copyFrom(((MessageLite.Builder) param).build().toByteArray()));
+//                                    }
                                 }
                                 break;
                             case THRIFT:
