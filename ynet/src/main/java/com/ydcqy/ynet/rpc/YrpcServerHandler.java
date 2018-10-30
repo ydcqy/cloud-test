@@ -3,17 +3,18 @@ package com.ydcqy.ynet.rpc;
 import com.ydcqy.ynet.channel.Channel;
 import com.ydcqy.ynet.exception.RemoteException;
 import com.ydcqy.ynet.handler.AbstractNettyServerHandler;
+import com.ydcqy.ynet.rpc.config.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.Map;
+import java.lang.reflect.Method;
 
 /**
  * @author xiaoyu
  */
 class YrpcServerHandler extends AbstractNettyServerHandler {
     private static final Logger logger = LoggerFactory.getLogger(YrpcServerHandler.class);
+    private ServerConfig serverConfig;
 
     public YrpcServerHandler() {
     }
@@ -40,12 +41,21 @@ class YrpcServerHandler extends AbstractNettyServerHandler {
         if (logger.isDebugEnabled()) {
             logger.debug("{} receive message: {}", channel, message);
         }
-        Map<String, Channel> channelMap = getChannelMap();
-        Collection<Channel> channels = channelMap.values();
-        for (Channel ch : channels) {
-            if (ch != channel) {
-                ch.send(message);
+        YrpcRequest request = (YrpcRequest) message;
+        Object serviceImpl = serverConfig.getService(request.getInterfaceName(), request.getGroup(), request.getVersion());
+        if (logger.isDebugEnabled()) {
+            logger.debug("interface: {}, interfaceImpl: {}", request.getInterfaceName(), serviceImpl);
+        }
+        try {
+
+            Method method = serviceImpl.getClass().getMethod(request.getMethodName(), request.getParam().getClass());
+            Object result = method.invoke(serviceImpl, request.getParam());
+            if (logger.isDebugEnabled()) {
+                logger.debug("interface: {}, interfaceImpl: {}, method: {}, param: {}, execute result: {}"
+                        , request.getInterfaceName(), serviceImpl, request.getMethodName(), request.getParam(), result);
             }
+        } catch (Exception e) {
+            throw new RpcException(e.getMessage(), e);
         }
     }
 
@@ -58,5 +68,9 @@ class YrpcServerHandler extends AbstractNettyServerHandler {
             } catch (Exception e) {
             }
         }
+    }
+
+    public void setServerConfig(ServerConfig config) {
+        this.serverConfig = config;
     }
 }

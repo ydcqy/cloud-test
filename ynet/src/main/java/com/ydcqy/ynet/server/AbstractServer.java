@@ -10,6 +10,9 @@ abstract class AbstractServer implements Server {
     private volatile boolean isClose;
     private InetSocketAddress bindAddress;
 
+    protected AbstractServer() {
+    }
+
     public AbstractServer(int port) {
         this(new InetSocketAddress(port));
     }
@@ -35,6 +38,14 @@ abstract class AbstractServer implements Server {
     public InetSocketAddress getLocalAddress() {
         Objects.requireNonNull(bindAddress);
         return bindAddress;
+    }
+
+    /**
+     * bind
+     */
+    protected void bind(InetSocketAddress bindAddress) {
+        this.bindAddress = bindAddress;
+        doBind();
     }
 
     /**

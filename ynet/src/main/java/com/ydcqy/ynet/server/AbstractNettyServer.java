@@ -33,6 +33,9 @@ public abstract class AbstractNettyServer extends AbstractServer {
     private NioEventLoopGroup workerGroup;
     private ServerBootstrap bootstrap;
 
+    protected AbstractNettyServer() {
+    }
+
     public AbstractNettyServer(int port) {
         super(port);
     }

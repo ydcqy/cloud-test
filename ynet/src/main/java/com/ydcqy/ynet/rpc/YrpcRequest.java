@@ -8,7 +8,7 @@ import com.ydcqy.ynet.request.Request;
 public class YrpcRequest implements Request<YrpcResponse> {
     private String requestId;
     private String group;
-    private String version = "1.0";
+    private String version;
     private String interfaceName;
     private String methodName;
     private Object param;
