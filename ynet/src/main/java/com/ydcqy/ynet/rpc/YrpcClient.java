@@ -1,12 +1,12 @@
 package com.ydcqy.ynet.rpc;
 
+import com.google.protobuf.StringValue;
 import com.ydcqy.ynet.client.AbstractNettyClient;
 import com.ydcqy.ynet.codec.Codec;
 import com.ydcqy.ynet.handler.Handler;
 import com.ydcqy.ynet.util.SerializationType;
 
 import java.net.InetSocketAddress;
-import java.util.Arrays;
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -51,12 +51,11 @@ public class YrpcClient extends AbstractNettyClient {
         YrpcClient client = new YrpcClient("127.0.0.1", 1111);
         YrpcRequest request = new YrpcRequest();
         request.setRequestId("20181025001");
-        request.setInterfaceName("com.ydcqy.yrpc.test.AbcService");
-        request.setMethodName("abc");
-//        request.setParam(Arrays.asList("111", "哈哈哈 来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j来电管家里见到过j"));
+        request.setInterfaceName(HelloService.class.getName());
+        request.setMethodName("sayHi");
+        request.setParam(StringValue.newBuilder().setValue("张三"));
         YrpcResponse response = client.send(request);
         System.out.println(response);
-
         LockSupport.park();
     }
 }

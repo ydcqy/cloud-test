@@ -18,6 +18,7 @@ import io.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -87,7 +88,7 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
                                     }
                                     Method method = null;
                                     for (Method m : methods) {
-                                        if (m.equals(req.getMethodName())) {
+                                        if (m.getName().equals(req.getMethodName())) {
                                             if (method != null) {
                                                 throw new RemoteException("The " + req.getInterfaceName() + " has more than one " + req.getMethodName() + " method when serializationType is proto");
                                             }
@@ -101,14 +102,18 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
                                     if (parameterTypes.length > 0 && !MessageLiteOrBuilder.class.isAssignableFrom(parameterTypes[0])) {
                                         throw new RemoteException("Param of " + req.getInterfaceName() + "#" + req.getMethodName() + " must be MessageLiteOrBuilder when serializationType is proto");
                                     }
-                                    Class<MessageLiteOrBuilder> messageLiteOrBuilder = (Class<MessageLiteOrBuilder>) parameterTypes[0];
-//                                    YrpcProtos.YrpcRequest.getDefaultInstance().getParserForType()
-//                                    if (param instanceof MessageLite) {
-//                                        builder.setParam(ByteString.copyFrom(((MessageLite) param).toByteArray()));
-//                                    }
-//                                    if (param instanceof MessageLite.Builder) {
-//                                        builder.setParam(ByteString.copyFrom(((MessageLite.Builder) param).build().toByteArray()));
-//                                    }
+                                    Class<?> parameterClass = parameterTypes[0];
+                                    if (MessageLite.class.isAssignableFrom(parameterClass)) {
+                                        req.setParam(((MessageLiteOrBuilder) parameterClass
+                                                .getMethod("newBuilder").invoke(null))
+                                                .getDefaultInstanceForType().getParserForType()
+                                                .parseFrom(param));
+
+                                    } else if (MessageLite.Builder.class.isAssignableFrom(parameterClass)) {
+                                        Constructor<?> constructor = parameterClass.getDeclaredConstructor();
+                                        constructor.setAccessible(true);
+                                        req.setParam(((MessageLite.Builder) constructor.newInstance()).mergeFrom(param));
+                                    }
                                 }
                                 break;
                             case THRIFT:
@@ -160,6 +165,7 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
             }
         }
     }
+
 
     private final class ResponseEncoder extends MessageToByteEncoder {
         private Codec codec = YrpcServerCodec.this;
