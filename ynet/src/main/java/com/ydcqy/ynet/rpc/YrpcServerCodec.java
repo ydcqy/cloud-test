@@ -6,6 +6,7 @@ import com.google.protobuf.MessageLite;
 import com.google.protobuf.MessageLiteOrBuilder;
 import com.ydcqy.ynet.codec.Codec;
 import com.ydcqy.ynet.exception.CodecException;
+import com.ydcqy.ynet.response.Response;
 import com.ydcqy.ynet.rpc.proto.YrpcProtos;
 import com.ydcqy.ynet.util.SerializationType;
 import com.ydcqy.ynet.util.SerializationUtils;
@@ -30,14 +31,58 @@ import java.util.List;
  */
 public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMessageDecoder, MessageToByteEncoder> implements Codec {
     private static final Logger logger = LoggerFactory.getLogger(YrpcServerCodec.class);
+    private SerializationType serializationType;
 
-    public YrpcServerCodec() {
+    public YrpcServerCodec(SerializationType serializationType) {
+        this.serializationType = serializationType;
         init(new RequestDecoder(), new ResponseEncoder());
     }
 
     @Override
     public byte[] encode(Object message) {
-        return new byte[0];
+        if (null == message) {
+            return null;
+        }
+        if (!(message instanceof YrpcResponse)) {
+            throw new UnsupportedOperationException("Unsupported type of " + message.getClass());
+        }
+        YrpcResponse resp = (YrpcResponse) message;
+        byte[] bytes;
+        switch (serializationType) {
+            case PROTO:
+                Object result = resp.getResult();
+                if (result != null && !(result instanceof MessageLiteOrBuilder)) {
+                    throw new UnsupportedOperationException("The result must be MessageLiteOrBuilder");
+                }
+                YrpcProtos.YrpcResponse.Builder builder = YrpcProtos.YrpcResponse.newBuilder();
+                if (!StringUtil.isNullOrEmpty(resp.getRequestId())) {
+                    builder.setRequestId(resp.getRequestId());
+                }
+                if (!StringUtil.isNullOrEmpty(resp.getErrMsg())) {
+                    builder.setErrMsg(resp.getErrMsg());
+                }
+                if (result instanceof MessageLite) {
+                    builder.setResult(ByteString.copyFrom(((MessageLite) result).toByteArray()));
+                } else if (result instanceof MessageLite.Builder) {
+                    builder.setResult(ByteString.copyFrom(((MessageLite.Builder) result).build().toByteArray()));
+                }
+
+                YrpcProtos.YrpcResponse resp1 = builder.build();
+                bytes = resp1.toByteArray();
+                break;
+            case THRIFT:
+                throw new UnsupportedOperationException();
+            case JSON:
+                bytes = JSON.toJSONString(resp).getBytes();
+                break;
+            case JAVA:
+                bytes = SerializationUtils.serialize(resp);
+                break;
+
+            default:
+                throw new UnsupportedOperationException();
+        }
+        return bytes;
     }
 
     @Override
@@ -47,11 +92,9 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
 
     private final class RequestDecoder extends ByteToMessageDecoder {
         private static final int HEAD_BYTE_COUNT = 5;
-        private Codec codec = YrpcServerCodec.this;
         private volatile boolean isEncode;
         private volatile int encodeLength;
         private volatile SerializationType serializationType;
-
 
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
@@ -62,7 +105,7 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
                 if (isEncode) {
                     if (in.readableBytes() >= encodeLength) {
                         ByteBuf byteBuf = in.readBytes(encodeLength);
-                        YrpcRequest req = null;
+                        YrpcRequest req;
                         switch (serializationType) {
                             case PROTO:
                                 YrpcProtos.YrpcRequest req1 = YrpcProtos.YrpcRequest.parseFrom(byteBuf.nioBuffer());
@@ -180,14 +223,25 @@ public final class YrpcServerCodec extends CombinedChannelDuplexHandler<ByteToMe
 
 
     private final class ResponseEncoder extends MessageToByteEncoder {
-        private Codec codec = YrpcServerCodec.this;
+        private YrpcServerCodec codec = YrpcServerCodec.this;
 
         @Override
         protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
             if (logger.isDebugEnabled()) {
                 logger.debug("-----encode before----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }
-            out.writeBytes(((String) msg).getBytes());
+            if (!(msg instanceof Response)) {
+                throw new IllegalArgumentException("The message type must be Response.class");
+            }
+            ByteBuf buf = ctx.alloc().buffer();
+            byte[] bytes = codec.encode(msg);
+            int length = bytes.length;
+            buf.writeByte(serializationType.bitValue);
+            buf.writeByte((length >> 24) & 0xff);
+            buf.writeByte((length >> 16) & 0xff);
+            buf.writeByte((length >> 8) & 0xff);
+            buf.writeByte(length & 0xff);
+            out.writeBytes(buf.writeBytes(bytes));
             if (logger.isDebugEnabled()) {
                 logger.debug("-----encode after----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }

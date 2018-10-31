@@ -7,6 +7,7 @@ import com.google.protobuf.MessageLiteOrBuilder;
 import com.ydcqy.ynet.codec.Codec;
 import com.ydcqy.ynet.request.Request;
 import com.ydcqy.ynet.rpc.proto.YrpcProtos;
+import com.ydcqy.ynet.util.ResultSynchronizer;
 import com.ydcqy.ynet.util.SerializationType;
 import com.ydcqy.ynet.util.SerializationUtils;
 import io.netty.buffer.ByteBuf;
@@ -18,6 +19,8 @@ import io.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -70,11 +73,13 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
                 if (!StringUtil.isNullOrEmpty(req.getMethodName())) {
                     builder.setMethodName(req.getMethodName());
                 }
-                for (Object param : params) {
-                    if (param instanceof MessageLite) {
-                        builder.addParams(ByteString.copyFrom(((MessageLite) param).toByteArray()));
-                    } else if (param instanceof MessageLite.Builder) {
-                        builder.addParams(ByteString.copyFrom(((MessageLite.Builder) param).build().toByteArray()));
+                if (params != null) {
+                    for (Object param : params) {
+                        if (param instanceof MessageLite) {
+                            builder.addParams(ByteString.copyFrom(((MessageLite) param).toByteArray()));
+                        } else if (param instanceof MessageLite.Builder) {
+                            builder.addParams(ByteString.copyFrom(((MessageLite.Builder) param).build().toByteArray()));
+                        }
                     }
                 }
                 YrpcProtos.YrpcRequest req1 = builder.build();
@@ -95,29 +100,117 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
         return bytes;
     }
 
-
     @Override
     public Object decode(byte[] bytes) {
         return null;
     }
 
-
     private final class ResponseDecoder extends ByteToMessageDecoder {
-        private Codec codec = YrpcClientCodec.this;
+        private static final int HEAD_BYTE_COUNT = 5;
+        private volatile boolean isEncode;
+        private volatile int encodeLength;
+        private volatile SerializationType serializationType;
 
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
             if (logger.isDebugEnabled()) {
                 logger.debug("-----decode before----- in: {},out: {},inObj: {},outObj: {}", in, out, System.identityHashCode(in), System.identityHashCode(out));
             }
-            int readableBytes = in.readableBytes();
-            if (readableBytes > 0) {
-                ByteBuf byteBuf = in.readBytes(readableBytes);
-                String str = byteBuf.toString(Charset.defaultCharset());
-                out.add(str);
+            while (in.readableBytes() > 0) {
+                if (isEncode) {
+                    if (in.readableBytes() >= encodeLength) {
+                        ByteBuf byteBuf = in.readBytes(encodeLength);
+                        YrpcResponse resp;
+                        switch (serializationType) {
+                            case PROTO:
+                                YrpcProtos.YrpcResponse resp1 = YrpcProtos.YrpcResponse.parseFrom(byteBuf.nioBuffer());
+                                resp = new YrpcResponse();
+                                YrpcRequest request = null;
+                                if (!StringUtil.isNullOrEmpty(resp1.getRequestId())) {
+                                    resp.setRequestId(resp1.getRequestId());
+                                    Request req = ResultSynchronizer.get(resp.getRequestId());
+                                    if (req instanceof YrpcRequest) {
+                                        request = (YrpcRequest) req;
+                                    }
+                                }
+                                if (!StringUtil.isNullOrEmpty(resp1.getErrMsg())) {
+                                    resp.setErrMsg(resp1.getErrMsg());
+                                }
+                                if (request != null) {
+                                    Class<?> aClass = Class.forName(request.getInterfaceName());
+                                    Class<?>[] paramsClass = null;
+                                    Object[] args = request.getParams();
+                                    if (args != null) {
+                                        paramsClass = new Class[args.length];
+                                        for (int i = 0; i < args.length; i++) {
+                                            paramsClass[i] = args[i].getClass();
+                                        }
+                                    }
+
+                                    Method method = aClass.getMethod(request.getMethodName(), paramsClass);
+                                    Class<?> returnClass = method.getReturnType();
+                                    ByteString resultByte = resp1.getResult();
+                                    if (MessageLite.class.isAssignableFrom(returnClass)) {
+                                        resp.setResult(((MessageLiteOrBuilder) returnClass
+                                                .getMethod("newBuilder").invoke(null))
+                                                .getDefaultInstanceForType().getParserForType()
+                                                .parseFrom(resultByte));
+                                    } else if (MessageLite.Builder.class.isAssignableFrom(returnClass)) {
+                                        Constructor<?> constructor = returnClass.getDeclaredConstructor();
+                                        constructor.setAccessible(true);
+                                        resp.setResult(((MessageLite.Builder) constructor.newInstance()).mergeFrom(resultByte));
+                                    }
+                                }
+
+                                break;
+                            case THRIFT:
+                                throw new UnsupportedOperationException();
+                            case JSON:
+                                resp = JSON.parseObject(byteBuf.toString(Charset.defaultCharset()), YrpcResponse.class);
+                                break;
+                            case JAVA:
+                                byte[] bytes = new byte[byteBuf.readableBytes()];
+                                byteBuf.readBytes(bytes);
+                                resp = (YrpcResponse) SerializationUtils.deserialize(bytes);
+                                break;
+                            default:
+                                throw new UnsupportedOperationException();
+                        }
+
+                        serializationType = null;
+                        isEncode = false;
+                        encodeLength = 0;
+                        if (!StringUtil.isNullOrEmpty(resp.getRequestId())) {
+                            out.add(resp);
+                        }
+                        continue;
+                    }
+                    break;
+                } else {
+                    if (in.readableBytes() >= HEAD_BYTE_COUNT) {
+                        byte typeBit = in.readByte();
+                        SerializationType type = SerializationType.valueOf(typeBit);
+                        if (type == null) {
+                            in.resetReaderIndex();
+                            in.resetWriterIndex();
+                            throw new UnsupportedOperationException("Unsupported protocol");
+                        }
+                        int lenValue = 0;
+                        lenValue += ((in.readByte() & 0xff) << 24);
+                        lenValue += ((in.readByte() & 0xff) << 16);
+                        lenValue += ((in.readByte() & 0xff) << 8);
+                        lenValue += (in.readByte() & 0xff);
+
+                        serializationType = type;
+                        isEncode = true;
+                        encodeLength = lenValue;
+                        continue;
+                    }
+                    break;
+                }
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("-----decode after----- in: {},out: {},inObj: {},outObj: {}", in, out, System.identityHashCode(in), System.identityHashCode(out));
+            if (logger.isDebugEnabled() && !out.isEmpty()) {
+                logger.debug("-----decode after----- in: {},out: {},inObj: {},outObj: {}", in, out.size(), System.identityHashCode(in), System.identityHashCode(out));
             }
         }
     }
@@ -145,6 +238,7 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
             if (logger.isDebugEnabled()) {
                 logger.debug("-----encode after----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }
+
         }
 
     }

@@ -66,6 +66,8 @@ class YrpcServerHandler extends AbstractNettyServerHandler {
         if (logger.isDebugEnabled()) {
             logger.debug("interface: {}, interfaceImpl: {}", request.getInterfaceName(), serviceImpl);
         }
+        YrpcResponse response = null;
+
         try {
             Objects.requireNonNull(serviceImpl, "No service running");
             checkRequestMethod(request);
@@ -83,12 +85,14 @@ class YrpcServerHandler extends AbstractNettyServerHandler {
                 logger.debug("interface: {}, interfaceImpl: {}, method: {}, params: {}, execute result: {}"
                         , request.getInterfaceName(), serviceImpl, request.getMethodName(), Arrays.asList(paramsClass), result);
             }
-            YrpcResponse response = new YrpcResponse();
+            response = new YrpcResponse();
             response.setRequestId(request.getRequestId());
             response.setResult(result);
-            channel.send(response);
         } catch (Exception e) {
             throw new RpcException(request.getRequestId(), e.getMessage(), e);
+        }
+        if (response != null) {
+            channel.send(response);
         }
     }
 
@@ -98,31 +102,31 @@ class YrpcServerHandler extends AbstractNettyServerHandler {
         if (cause instanceof io.netty.handler.codec.CodecException) {
             cause = cause.getCause();
         }
-
+        YrpcResponse response = null;
         if (cause instanceof CodecException) {
             CodecException exception = (CodecException) cause;
-            YrpcResponse response = new YrpcResponse();
             response.setRequestId(exception.getRequestId());
             StringWriter stringWriter = new StringWriter();
             cause.printStackTrace(new PrintWriter(stringWriter));
             response.setRequestId(exception.getRequestId());
             response.setErrMsg(stringWriter.toString());
-//            channel.send(response);
         } else if (cause instanceof RpcException) {
             RpcException exception = (RpcException) cause;
-            YrpcResponse response = new YrpcResponse();
+            response = new YrpcResponse();
             response.setRequestId(exception.getRequestId());
             StringWriter stringWriter = new StringWriter();
             cause.printStackTrace(new PrintWriter(stringWriter));
             response.setRequestId(exception.getRequestId());
             response.setErrMsg(stringWriter.toString());
-//            channel.send(response);
         } else {
             try {
                 channel.close();
                 return;
             } catch (Throwable e) {
             }
+        }
+        if (response != null) {
+            channel.send(response);
         }
     }
 

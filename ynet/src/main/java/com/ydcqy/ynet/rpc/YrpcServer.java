@@ -4,6 +4,7 @@ import com.ydcqy.ynet.codec.Codec;
 import com.ydcqy.ynet.handler.Handler;
 import com.ydcqy.ynet.rpc.config.ServerConfig;
 import com.ydcqy.ynet.server.AbstractNettyServer;
+import com.ydcqy.ynet.util.SerializationType;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -22,7 +23,7 @@ public class YrpcServer extends AbstractNettyServer {
 
     @Override
     public Codec getCodec() {
-        return new YrpcServerCodec();
+        return new YrpcServerCodec(SerializationType.PROTO);
     }
 
     @Override

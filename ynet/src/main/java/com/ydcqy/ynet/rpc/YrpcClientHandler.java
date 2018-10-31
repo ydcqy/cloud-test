@@ -3,6 +3,7 @@ package com.ydcqy.ynet.rpc;
 import com.ydcqy.ynet.channel.Channel;
 import com.ydcqy.ynet.exception.RemoteException;
 import com.ydcqy.ynet.handler.AbstractNettyClientHandler;
+import com.ydcqy.ynet.util.ResultSynchronizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +45,8 @@ class YrpcClientHandler extends AbstractNettyClientHandler {
         if (logger.isDebugEnabled()) {
             logger.debug("{} receive message: {}", channel, message);
         }
+        YrpcResponse response = (YrpcResponse) message;
+        ResultSynchronizer.set(response.getRequestId(), response);
     }
 
     @Override

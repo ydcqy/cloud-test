@@ -12,8 +12,8 @@ public class HelloServiceImpl implements HelloService {
     private static final Logger logger = LoggerFactory.getLogger(HelloServiceImpl.class);
 
     @Override
-    public String sayHi(StringValue username, Int32Value age) {
+    public StringValue sayHi(StringValue username, Int32Value age) {
         logger.info("name: {}, age: {}", username.getValue(), age.getValue());
-        return "hi";
+        return StringValue.newBuilder().setValue("hi").build();
     }
 }
