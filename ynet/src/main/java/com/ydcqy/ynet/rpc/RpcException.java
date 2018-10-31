@@ -6,18 +6,20 @@ import com.ydcqy.ynet.exception.RemoteException;
  * @author xiaoyu
  */
 public class RpcException extends RemoteException {
-    public RpcException() {
-    }
+    private String requestId;
 
-    public RpcException(String message) {
+    public RpcException(String requestId, String message) {
         super(message);
+        this.requestId = requestId;
     }
 
-    public RpcException(String message, Throwable cause) {
+    public RpcException(String requestId, String message, Throwable cause) {
         super(message, cause);
+        this.requestId = requestId;
+
     }
 
-    public RpcException(Throwable cause) {
-        super(cause);
+    public String getRequestId() {
+        return requestId;
     }
 }

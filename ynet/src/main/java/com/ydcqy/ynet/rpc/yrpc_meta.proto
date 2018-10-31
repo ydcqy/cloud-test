@@ -11,7 +11,7 @@ message YrpcRequest {
     string version = 3;
     string interface_name = 4;
     string method_name = 5;
-    bytes param = 6;
+    repeated bytes params = 6;
 }
 
 message YrpcResponse {

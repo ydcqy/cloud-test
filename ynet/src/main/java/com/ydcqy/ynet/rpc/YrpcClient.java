@@ -1,12 +1,15 @@
 package com.ydcqy.ynet.rpc;
 
+import com.google.protobuf.Int32Value;
 import com.google.protobuf.StringValue;
 import com.ydcqy.ynet.client.AbstractNettyClient;
 import com.ydcqy.ynet.codec.Codec;
+import com.ydcqy.ynet.exception.YnetException;
 import com.ydcqy.ynet.handler.Handler;
 import com.ydcqy.ynet.util.SerializationType;
 
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -53,9 +56,20 @@ public class YrpcClient extends AbstractNettyClient {
         request.setRequestId("20181025001");
         request.setInterfaceName(HelloService.class.getName());
         request.setMethodName("sayHi");
-        request.setParam(StringValue.newBuilder().setValue("张三"));
-        YrpcResponse response = client.send(request);
-        System.out.println(response);
+        request.setParams(Arrays.asList(StringValue.newBuilder().setValue("张三")
+                , Int32Value.newBuilder().setValue(100)
+        ).toArray());
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    client.send(request);
+                } catch (YnetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
         LockSupport.park();
     }
 }

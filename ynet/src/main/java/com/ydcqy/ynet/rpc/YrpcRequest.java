@@ -11,7 +11,7 @@ public class YrpcRequest implements Request<YrpcResponse> {
     private String version;
     private String interfaceName;
     private String methodName;
-    private Object param;
+    private Object[] params;
 
     @Override
     public String getRequestId() {
@@ -55,11 +55,11 @@ public class YrpcRequest implements Request<YrpcResponse> {
         this.methodName = methodName;
     }
 
-    public Object getParam() {
-        return param;
+    public Object[] getParams() {
+        return params;
     }
 
-    public void setParam(Object param) {
-        this.param = param;
+    public void setParams(Object[] params) {
+        this.params = params;
     }
 }

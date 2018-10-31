@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author xiaoyu
@@ -15,6 +16,11 @@ public class SimpleServerHandler extends AbstractNettyServerHandler {
     private static final Logger logger = LoggerFactory.getLogger(SimpleServerHandler.class);
 
     public SimpleServerHandler() {
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return null;
     }
 
     @Override

@@ -7,17 +7,22 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.NetUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author xiaoyu
  */
 @ChannelHandler.Sharable
 public abstract class AbstractNettyServerHandler extends ChannelDuplexHandler implements Handler {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractNettyServerHandler.class);
+
     private ConcurrentMap<String, Channel> channelMap = new ConcurrentHashMap<>();
     private Handler handler = this;
 
@@ -48,7 +53,22 @@ public abstract class AbstractNettyServerHandler extends ChannelDuplexHandler im
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Channel channel = getOrAddChannelIfConnected(ctx.channel());
         try {
-            handler.receive(channel, msg);
+            ExecutorService executorService = getExecutorService();
+            if (executorService != null) {
+                getExecutorService().execute(() -> {
+                    try {
+                        handler.receive(channel, msg);
+                    } catch (Throwable e) {
+                        try {
+                            AbstractNettyServerHandler.this.exceptionCaught(ctx, e);
+                        } catch (Throwable e1) {
+                            logger.error(e1.getMessage(), e1);
+                        }
+                    }
+                });
+            } else {
+                handler.receive(channel, msg);
+            }
         } finally {
             removeChannelIfDisconnected(ctx.channel());
         }

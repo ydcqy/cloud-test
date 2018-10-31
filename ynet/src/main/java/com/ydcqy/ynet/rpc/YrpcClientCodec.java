@@ -45,10 +45,15 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
         byte[] bytes;
         switch (serializationType) {
             case PROTO:
-                Object param = req.getParam();
-                if (param != null && !(param instanceof MessageLiteOrBuilder)) {
-                    throw new UnsupportedOperationException("The param must be MessageLiteOrBuilder");
+                Object[] params = req.getParams();
+                if (params != null) {
+                    for (Object param : params) {
+                        if (!(param instanceof MessageLiteOrBuilder)) {
+                            throw new UnsupportedOperationException("All the params must be MessageLiteOrBuilder");
+                        }
+                    }
                 }
+
                 YrpcProtos.YrpcRequest.Builder builder = YrpcProtos.YrpcRequest.newBuilder();
                 if (!StringUtil.isNullOrEmpty(req.getRequestId())) {
                     builder.setRequestId(req.getRequestId());
@@ -65,10 +70,12 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
                 if (!StringUtil.isNullOrEmpty(req.getMethodName())) {
                     builder.setMethodName(req.getMethodName());
                 }
-                if (param instanceof MessageLite) {
-                    builder.setParam(ByteString.copyFrom(((MessageLite) param).toByteArray()));
-                } else if (param instanceof MessageLite.Builder) {
-                    builder.setParam(ByteString.copyFrom(((MessageLite.Builder) param).build().toByteArray()));
+                for (Object param : params) {
+                    if (param instanceof MessageLite) {
+                        builder.addParams(ByteString.copyFrom(((MessageLite) param).toByteArray()));
+                    } else if (param instanceof MessageLite.Builder) {
+                        builder.addParams(ByteString.copyFrom(((MessageLite.Builder) param).build().toByteArray()));
+                    }
                 }
                 YrpcProtos.YrpcRequest req1 = builder.build();
                 bytes = req1.toByteArray();

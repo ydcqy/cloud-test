@@ -4,6 +4,7 @@ import com.ydcqy.ynet.channel.Channel;
 import com.ydcqy.ynet.exception.RemoteException;
 
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Handler
@@ -11,6 +12,13 @@ import java.util.Map;
  * @author xiaoyu
  */
 public interface Handler {
+    /**
+     * getExecutorService
+     *
+     * @return
+     */
+    ExecutorService getExecutorService();
+
     /**
      * getChannelMap
      *

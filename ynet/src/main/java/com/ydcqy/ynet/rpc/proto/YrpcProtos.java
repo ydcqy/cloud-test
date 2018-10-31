@@ -69,9 +69,17 @@ public final class YrpcProtos {
     getMethodNameBytes();
 
     /**
-     * <code>bytes param = 6;</code>
+     * <code>repeated bytes params = 6;</code>
      */
-    com.google.protobuf.ByteString getParam();
+    java.util.List<com.google.protobuf.ByteString> getParamsList();
+    /**
+     * <code>repeated bytes params = 6;</code>
+     */
+    int getParamsCount();
+    /**
+     * <code>repeated bytes params = 6;</code>
+     */
+    com.google.protobuf.ByteString getParams(int index);
   }
   /**
    * Protobuf type {@code ynet.YrpcRequest}
@@ -91,7 +99,7 @@ public final class YrpcProtos {
       version_ = "";
       interfaceName_ = "";
       methodName_ = "";
-      param_ = com.google.protobuf.ByteString.EMPTY;
+      params_ = java.util.Collections.emptyList();
     }
 
     @java.lang.Override
@@ -149,8 +157,11 @@ public final class YrpcProtos {
               break;
             }
             case 50: {
-
-              param_ = input.readBytes();
+              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+                params_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+                mutable_bitField0_ |= 0x00000020;
+              }
+              params_.add(input.readBytes());
               break;
             }
             default: {
@@ -168,6 +179,9 @@ public final class YrpcProtos {
         throw new com.google.protobuf.InvalidProtocolBufferException(
                 e).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+          params_ = java.util.Collections.unmodifiableList(params_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -185,6 +199,7 @@ public final class YrpcProtos {
                       com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcRequest.class, com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcRequest.Builder.class);
     }
 
+    private int bitField0_;
     public static final int REQUEST_ID_FIELD_NUMBER = 1;
     private volatile java.lang.Object requestId_;
     /**
@@ -355,13 +370,26 @@ public final class YrpcProtos {
       }
     }
 
-    public static final int PARAM_FIELD_NUMBER = 6;
-    private com.google.protobuf.ByteString param_;
+    public static final int PARAMS_FIELD_NUMBER = 6;
+    private java.util.List<com.google.protobuf.ByteString> params_;
     /**
-     * <code>bytes param = 6;</code>
+     * <code>repeated bytes params = 6;</code>
      */
-    public com.google.protobuf.ByteString getParam() {
-      return param_;
+    public java.util.List<com.google.protobuf.ByteString>
+    getParamsList() {
+      return params_;
+    }
+    /**
+     * <code>repeated bytes params = 6;</code>
+     */
+    public int getParamsCount() {
+      return params_.size();
+    }
+    /**
+     * <code>repeated bytes params = 6;</code>
+     */
+    public com.google.protobuf.ByteString getParams(int index) {
+      return params_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -393,8 +421,8 @@ public final class YrpcProtos {
       if (!getMethodNameBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 5, methodName_);
       }
-      if (!param_.isEmpty()) {
-        output.writeBytes(6, param_);
+      for (int i = 0; i < params_.size(); i++) {
+        output.writeBytes(6, params_.get(i));
       }
       unknownFields.writeTo(output);
     }
@@ -420,9 +448,14 @@ public final class YrpcProtos {
       if (!getMethodNameBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, methodName_);
       }
-      if (!param_.isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-                .computeBytesSize(6, param_);
+      {
+        int dataSize = 0;
+        for (int i = 0; i < params_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+                  .computeBytesSizeNoTag(params_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getParamsList().size();
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -450,8 +483,8 @@ public final class YrpcProtos {
               .equals(other.getInterfaceName());
       result = result && getMethodName()
               .equals(other.getMethodName());
-      result = result && getParam()
-              .equals(other.getParam());
+      result = result && getParamsList()
+              .equals(other.getParamsList());
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -473,8 +506,10 @@ public final class YrpcProtos {
       hash = (53 * hash) + getInterfaceName().hashCode();
       hash = (37 * hash) + METHOD_NAME_FIELD_NUMBER;
       hash = (53 * hash) + getMethodName().hashCode();
-      hash = (37 * hash) + PARAM_FIELD_NUMBER;
-      hash = (53 * hash) + getParam().hashCode();
+      if (getParamsCount() > 0) {
+        hash = (37 * hash) + PARAMS_FIELD_NUMBER;
+        hash = (53 * hash) + getParamsList().hashCode();
+      }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -618,8 +653,8 @@ public final class YrpcProtos {
 
         methodName_ = "";
 
-        param_ = com.google.protobuf.ByteString.EMPTY;
-
+        params_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -646,12 +681,19 @@ public final class YrpcProtos {
       @java.lang.Override
       public com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcRequest buildPartial() {
         com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcRequest result = new com.ydcqy.ynet.rpc.proto.YrpcProtos.YrpcRequest(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         result.requestId_ = requestId_;
         result.group_ = group_;
         result.version_ = version_;
         result.interfaceName_ = interfaceName_;
         result.methodName_ = methodName_;
-        result.param_ = param_;
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          params_ = java.util.Collections.unmodifiableList(params_);
+          bitField0_ = (bitField0_ & ~0x00000020);
+        }
+        result.params_ = params_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -720,8 +762,15 @@ public final class YrpcProtos {
           methodName_ = other.methodName_;
           onChanged();
         }
-        if (other.getParam() != com.google.protobuf.ByteString.EMPTY) {
-          setParam(other.getParam());
+        if (!other.params_.isEmpty()) {
+          if (params_.isEmpty()) {
+            params_ = other.params_;
+            bitField0_ = (bitField0_ & ~0x00000020);
+          } else {
+            ensureParamsIsMutable();
+            params_.addAll(other.params_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -751,6 +800,7 @@ public final class YrpcProtos {
         }
         return this;
       }
+      private int bitField0_;
 
       private java.lang.Object requestId_ = "";
       /**
@@ -1097,31 +1147,74 @@ public final class YrpcProtos {
         return this;
       }
 
-      private com.google.protobuf.ByteString param_ = com.google.protobuf.ByteString.EMPTY;
-      /**
-       * <code>bytes param = 6;</code>
-       */
-      public com.google.protobuf.ByteString getParam() {
-        return param_;
+      private java.util.List<com.google.protobuf.ByteString> params_ = java.util.Collections.emptyList();
+      private void ensureParamsIsMutable() {
+        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+          params_ = new java.util.ArrayList<com.google.protobuf.ByteString>(params_);
+          bitField0_ |= 0x00000020;
+        }
       }
       /**
-       * <code>bytes param = 6;</code>
+       * <code>repeated bytes params = 6;</code>
        */
-      public Builder setParam(com.google.protobuf.ByteString value) {
+      public java.util.List<com.google.protobuf.ByteString>
+      getParamsList() {
+        return java.util.Collections.unmodifiableList(params_);
+      }
+      /**
+       * <code>repeated bytes params = 6;</code>
+       */
+      public int getParamsCount() {
+        return params_.size();
+      }
+      /**
+       * <code>repeated bytes params = 6;</code>
+       */
+      public com.google.protobuf.ByteString getParams(int index) {
+        return params_.get(index);
+      }
+      /**
+       * <code>repeated bytes params = 6;</code>
+       */
+      public Builder setParams(
+              int index, com.google.protobuf.ByteString value) {
         if (value == null) {
           throw new NullPointerException();
         }
-
-        param_ = value;
+        ensureParamsIsMutable();
+        params_.set(index, value);
         onChanged();
         return this;
       }
       /**
-       * <code>bytes param = 6;</code>
+       * <code>repeated bytes params = 6;</code>
        */
-      public Builder clearParam() {
-
-        param_ = getDefaultInstance().getParam();
+      public Builder addParams(com.google.protobuf.ByteString value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureParamsIsMutable();
+        params_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes params = 6;</code>
+       */
+      public Builder addAllParams(
+              java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+        ensureParamsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+                values, params_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated bytes params = 6;</code>
+       */
+      public Builder clearParams() {
+        params_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);
         onChanged();
         return this;
       }
@@ -1950,13 +2043,13 @@ public final class YrpcProtos {
           descriptor;
   static {
     java.lang.String[] descriptorData = {
-            "\n\017yrpc_meta.proto\022\004ynet\"}\n\013YrpcRequest\022\022" +
+            "\n\017yrpc_meta.proto\022\004ynet\"~\n\013YrpcRequest\022\022" +
                     "\n\nrequest_id\030\001 \001(\t\022\r\n\005group\030\002 \001(\t\022\017\n\007ver" +
                     "sion\030\003 \001(\t\022\026\n\016interface_name\030\004 \001(\t\022\023\n\013me" +
-                    "thod_name\030\005 \001(\t\022\r\n\005param\030\006 \001(\014\"C\n\014YrpcRe" +
-                    "sponse\022\022\n\nrequest_id\030\001 \001(\t\022\016\n\006result\030\002 \001" +
-                    "(\014\022\017\n\007err_msg\030\003 \001(\tB&\n\030com.ydcqy.ynet.rp" +
-                    "c.protoB\nYrpcProtosb\006proto3"
+                    "thod_name\030\005 \001(\t\022\016\n\006params\030\006 \003(\014\"C\n\014YrpcR" +
+                    "esponse\022\022\n\nrequest_id\030\001 \001(\t\022\016\n\006result\030\002 " +
+                    "\001(\014\022\017\n\007err_msg\030\003 \001(\tB&\n\030com.ydcqy.ynet.r" +
+                    "pc.protoB\nYrpcProtosb\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
             new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1975,7 +2068,7 @@ public final class YrpcProtos {
     internal_static_ynet_YrpcRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
             internal_static_ynet_YrpcRequest_descriptor,
-            new java.lang.String[] { "RequestId", "Group", "Version", "InterfaceName", "MethodName", "Param", });
+            new java.lang.String[] { "RequestId", "Group", "Version", "InterfaceName", "MethodName", "Params", });
     internal_static_ynet_YrpcResponse_descriptor =
             getDescriptor().getMessageTypes().get(1);
     internal_static_ynet_YrpcResponse_fieldAccessorTable = new

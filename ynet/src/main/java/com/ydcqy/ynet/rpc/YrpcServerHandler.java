@@ -1,13 +1,23 @@
 package com.ydcqy.ynet.rpc;
 
 import com.ydcqy.ynet.channel.Channel;
+import com.ydcqy.ynet.exception.CodecException;
 import com.ydcqy.ynet.exception.RemoteException;
 import com.ydcqy.ynet.handler.AbstractNettyServerHandler;
 import com.ydcqy.ynet.rpc.config.ServerConfig;
+import com.ydcqy.ynet.util.NamedThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author xiaoyu
@@ -15,6 +25,8 @@ import java.lang.reflect.Method;
 class YrpcServerHandler extends AbstractNettyServerHandler {
     private static final Logger logger = LoggerFactory.getLogger(YrpcServerHandler.class);
     private ServerConfig serverConfig;
+    private ExecutorService executorService = new ThreadPoolExecutor(100, 100,
+            0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), new NamedThreadFactory("yrpc"));
 
     public YrpcServerHandler() {
     }
@@ -36,6 +48,14 @@ class YrpcServerHandler extends AbstractNettyServerHandler {
         }
     }
 
+    private void checkRequestMethod(YrpcRequest request) throws Exception {
+        Class<?> aClass = Class.forName(request.getInterfaceName());
+        Method[] methods = aClass.getMethods();
+        if (methods.length == 0) {
+            throw new com.ydcqy.ynet.exception.CodecException(request.getRequestId(), "The " + request.getInterfaceName() + " interface does not have any methods");
+        }
+    }
+
     @Override
     public void receive(Channel channel, Object message) throws RemoteException {
         if (logger.isDebugEnabled()) {
@@ -47,30 +67,71 @@ class YrpcServerHandler extends AbstractNettyServerHandler {
             logger.debug("interface: {}, interfaceImpl: {}", request.getInterfaceName(), serviceImpl);
         }
         try {
-
-            Method method = serviceImpl.getClass().getMethod(request.getMethodName(), request.getParam().getClass());
-            Object result = method.invoke(serviceImpl, request.getParam());
-            if (logger.isDebugEnabled()) {
-                logger.debug("interface: {}, interfaceImpl: {}, method: {}, param: {}, execute result: {}"
-                        , request.getInterfaceName(), serviceImpl, request.getMethodName(), request.getParam(), result);
+            Objects.requireNonNull(serviceImpl, "No service running");
+            checkRequestMethod(request);
+            Class<?>[] paramsClass = null;
+            Object[] args = request.getParams();
+            if (args != null) {
+                paramsClass = new Class[args.length];
+                for (int i = 0; i < args.length; i++) {
+                    paramsClass[i] = args[i].getClass();
+                }
             }
+            Method method = serviceImpl.getClass().getMethod(request.getMethodName(), paramsClass);
+            Object result = method.invoke(serviceImpl, args);
+            if (logger.isDebugEnabled()) {
+                logger.debug("interface: {}, interfaceImpl: {}, method: {}, params: {}, execute result: {}"
+                        , request.getInterfaceName(), serviceImpl, request.getMethodName(), Arrays.asList(paramsClass), result);
+            }
+            YrpcResponse response = new YrpcResponse();
+            response.setRequestId(request.getRequestId());
+            response.setResult(result);
+            channel.send(response);
         } catch (Exception e) {
-            throw new RpcException(e.getMessage(), e);
+            throw new RpcException(request.getRequestId(), e.getMessage(), e);
         }
     }
 
     @Override
     public void caught(Channel channel, Throwable cause) throws RemoteException {
         logger.error("" + channel, cause);
-        if (!(cause instanceof RemoteException)) {
+        if (cause instanceof io.netty.handler.codec.CodecException) {
+            cause = cause.getCause();
+        }
+
+        if (cause instanceof CodecException) {
+            CodecException exception = (CodecException) cause;
+            YrpcResponse response = new YrpcResponse();
+            response.setRequestId(exception.getRequestId());
+            StringWriter stringWriter = new StringWriter();
+            cause.printStackTrace(new PrintWriter(stringWriter));
+            response.setRequestId(exception.getRequestId());
+            response.setErrMsg(stringWriter.toString());
+//            channel.send(response);
+        } else if (cause instanceof RpcException) {
+            RpcException exception = (RpcException) cause;
+            YrpcResponse response = new YrpcResponse();
+            response.setRequestId(exception.getRequestId());
+            StringWriter stringWriter = new StringWriter();
+            cause.printStackTrace(new PrintWriter(stringWriter));
+            response.setRequestId(exception.getRequestId());
+            response.setErrMsg(stringWriter.toString());
+//            channel.send(response);
+        } else {
             try {
                 channel.close();
-            } catch (Exception e) {
+                return;
+            } catch (Throwable e) {
             }
         }
     }
 
     public void setServerConfig(ServerConfig config) {
         this.serverConfig = config;
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 }

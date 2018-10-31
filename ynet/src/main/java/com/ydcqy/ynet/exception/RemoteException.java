@@ -4,6 +4,8 @@ package com.ydcqy.ynet.exception;
  * @author xiaoyu
  */
 public class RemoteException extends YnetException {
+    private static final long serialVersionUID = 867807744701792205L;
+
     public RemoteException() {
     }
 

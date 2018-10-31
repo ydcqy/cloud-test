@@ -6,6 +6,8 @@ import com.ydcqy.ynet.handler.AbstractNettyClientHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.ExecutorService;
+
 /**
  * @author xiaoyu
  */
@@ -13,6 +15,11 @@ class YrpcClientHandler extends AbstractNettyClientHandler {
     private static final Logger logger = LoggerFactory.getLogger(YrpcClientHandler.class);
 
     public YrpcClientHandler() {
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return null;
     }
 
     @Override
