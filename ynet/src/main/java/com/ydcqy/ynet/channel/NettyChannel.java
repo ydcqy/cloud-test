@@ -1,8 +1,6 @@
 package com.ydcqy.ynet.channel;
 
 import io.netty.channel.ChannelFuture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -11,7 +9,6 @@ import java.net.InetSocketAddress;
  * @author xiaoyu
  */
 public final class NettyChannel implements Channel {
-    private static final Logger logger = LoggerFactory.getLogger(NettyChannel.class);
 
     private io.netty.channel.Channel channel;
 
@@ -34,7 +31,6 @@ public final class NettyChannel implements Channel {
         ChannelFuture future = channel.writeAndFlush(message);
         future.awaitUninterruptibly();
         if (!future.isSuccess()) {
-            logger.error(future.cause().getMessage(), future.cause());
             throw new IllegalStateException(future.cause().getMessage(), future.cause());
         }
     }
