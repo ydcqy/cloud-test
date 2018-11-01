@@ -46,7 +46,7 @@ class YrpcClientHandler extends AbstractNettyClientHandler {
             logger.debug("{} receive message: {}", channel, message);
         }
         YrpcResponse response = (YrpcResponse) message;
-        ResultSynchronizer.set(response.getRequestId(), response);
+        ResultSynchronizer.set(response.getRequestId(), response, 5000);
     }
 
     @Override

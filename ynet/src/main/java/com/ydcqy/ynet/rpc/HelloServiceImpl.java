@@ -13,7 +13,17 @@ public class HelloServiceImpl implements HelloService {
 
     @Override
     public StringValue sayHi(StringValue username, Int32Value age) {
-        logger.info("name: {}, age: {}", username.getValue(), age.getValue());
+//        logger.info("name: {}, age: {}", username.getValue(), age.getValue());
         return StringValue.newBuilder().setValue("hi").build();
+    }
+
+    @Override
+    public String sayHiJson(String username, Integer age) {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return "哈喽";
     }
 }

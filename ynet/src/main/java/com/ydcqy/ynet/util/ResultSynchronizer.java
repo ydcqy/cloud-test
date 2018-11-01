@@ -22,13 +22,15 @@ public class ResultSynchronizer {
 
     public static void set(String requestId, Request request) {
         reqMap.put(requestId, request);
+        respMap.putIfAbsent(requestId, new SynchronousQueue<>());
     }
 
-    public static void set(String requestId, Response response) throws RemoteException {
+    public static void set(String requestId, Response response, long timeoutMillis) throws RemoteException {
         SynchronousQueue<Response> queue = respMap.get(requestId);
+        System.out.println(queue);
         if (null != queue) {
             try {
-                queue.add(response);
+                queue.offer(response, timeoutMillis, TimeUnit.MILLISECONDS);
             } catch (Exception e) {
                 throw new RemoteException(e.getMessage(), e);
             }
@@ -42,8 +44,6 @@ public class ResultSynchronizer {
 
     public static Response get(String requestId, long timeoutMillis) throws RemoteException {
         try {
-            SynchronousQueue<Response> queue = new SynchronousQueue<>();
-            respMap.putIfAbsent(requestId, queue);
             Response response = respMap.get(requestId).poll(timeoutMillis, TimeUnit.MILLISECONDS);
             if (null == response) {
                 throw new TimeoutException("Wait result timeout, more than " + timeoutMillis + " ms");
@@ -52,6 +52,7 @@ public class ResultSynchronizer {
         } catch (Exception e) {
             throw new RemoteException(e.getMessage(), e);
         } finally {
+            reqMap.remove(requestId);
             respMap.remove(requestId);
         }
     }

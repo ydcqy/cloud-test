@@ -96,9 +96,9 @@ public abstract class AbstractNettyClient extends AbstractClient {
 
     @Override
     public <T extends Response> T send(Request<T> request) throws YnetException {
-        channel.send(request);
         ResultSynchronizer.set(request.getRequestId(), request);
-        return (T) ResultSynchronizer.get(request.getRequestId(), 5000000);
+        channel.send(request);
+        return (T) ResultSynchronizer.get(request.getRequestId(), 5000);
     }
 
     @Override

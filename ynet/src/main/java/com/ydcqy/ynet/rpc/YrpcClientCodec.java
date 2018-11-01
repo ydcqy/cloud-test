@@ -121,65 +121,68 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
                     if (in.readableBytes() >= encodeLength) {
                         ByteBuf byteBuf = in.readBytes(encodeLength);
                         YrpcResponse resp;
-                        switch (serializationType) {
-                            case PROTO:
-                                YrpcProtos.YrpcResponse resp1 = YrpcProtos.YrpcResponse.parseFrom(byteBuf.nioBuffer());
-                                resp = new YrpcResponse();
-                                YrpcRequest request = null;
-                                if (!StringUtil.isNullOrEmpty(resp1.getRequestId())) {
-                                    resp.setRequestId(resp1.getRequestId());
-                                    Request req = ResultSynchronizer.get(resp.getRequestId());
-                                    if (req instanceof YrpcRequest) {
-                                        request = (YrpcRequest) req;
+                        try {
+                            switch (serializationType) {
+                                case PROTO:
+                                    YrpcProtos.YrpcResponse resp1 = YrpcProtos.YrpcResponse.parseFrom(byteBuf.nioBuffer());
+                                    resp = new YrpcResponse();
+                                    YrpcRequest request = null;
+                                    if (!StringUtil.isNullOrEmpty(resp1.getRequestId())) {
+                                        resp.setRequestId(resp1.getRequestId());
+                                        Request req = ResultSynchronizer.get(resp.getRequestId());
+                                        if (req instanceof YrpcRequest) {
+                                            request = (YrpcRequest) req;
+                                        }
                                     }
-                                }
-                                if (!StringUtil.isNullOrEmpty(resp1.getErrMsg())) {
-                                    resp.setErrMsg(resp1.getErrMsg());
-                                }
-                                if (request != null) {
-                                    Class<?> aClass = Class.forName(request.getInterfaceName());
-                                    Class<?>[] paramsClass = null;
-                                    Object[] args = request.getParams();
-                                    if (args != null) {
-                                        paramsClass = new Class[args.length];
-                                        for (int i = 0; i < args.length; i++) {
-                                            paramsClass[i] = args[i].getClass();
+                                    if (!StringUtil.isNullOrEmpty(resp1.getErrMsg())) {
+                                        resp.setErrMsg(resp1.getErrMsg());
+                                    }
+                                    if (request != null && StringUtil.isNullOrEmpty(resp.getErrMsg())) {
+                                        Class<?> aClass = Class.forName(request.getInterfaceName());
+                                        Class<?>[] paramsClass = null;
+                                        Object[] args = request.getParams();
+                                        if (args != null) {
+                                            paramsClass = new Class[args.length];
+                                            for (int i = 0; i < args.length; i++) {
+                                                paramsClass[i] = args[i].getClass();
+                                            }
+                                        }
+
+                                        Method method = aClass.getMethod(request.getMethodName(), paramsClass);
+                                        Class<?> returnClass = method.getReturnType();
+                                        ByteString resultByte = resp1.getResult();
+                                        if (MessageLite.class.isAssignableFrom(returnClass)) {
+                                            resp.setResult(((MessageLiteOrBuilder) returnClass
+                                                    .getMethod("newBuilder").invoke(null))
+                                                    .getDefaultInstanceForType().getParserForType()
+                                                    .parseFrom(resultByte));
+                                        } else if (MessageLite.Builder.class.isAssignableFrom(returnClass)) {
+                                            Constructor<?> constructor = returnClass.getDeclaredConstructor();
+                                            constructor.setAccessible(true);
+                                            resp.setResult(((MessageLite.Builder) constructor.newInstance()).mergeFrom(resultByte));
                                         }
                                     }
 
-                                    Method method = aClass.getMethod(request.getMethodName(), paramsClass);
-                                    Class<?> returnClass = method.getReturnType();
-                                    ByteString resultByte = resp1.getResult();
-                                    if (MessageLite.class.isAssignableFrom(returnClass)) {
-                                        resp.setResult(((MessageLiteOrBuilder) returnClass
-                                                .getMethod("newBuilder").invoke(null))
-                                                .getDefaultInstanceForType().getParserForType()
-                                                .parseFrom(resultByte));
-                                    } else if (MessageLite.Builder.class.isAssignableFrom(returnClass)) {
-                                        Constructor<?> constructor = returnClass.getDeclaredConstructor();
-                                        constructor.setAccessible(true);
-                                        resp.setResult(((MessageLite.Builder) constructor.newInstance()).mergeFrom(resultByte));
-                                    }
-                                }
-
-                                break;
-                            case THRIFT:
-                                throw new UnsupportedOperationException();
-                            case JSON:
-                                resp = JSON.parseObject(byteBuf.toString(Charset.defaultCharset()), YrpcResponse.class);
-                                break;
-                            case JAVA:
-                                byte[] bytes = new byte[byteBuf.readableBytes()];
-                                byteBuf.readBytes(bytes);
-                                resp = (YrpcResponse) SerializationUtils.deserialize(bytes);
-                                break;
-                            default:
-                                throw new UnsupportedOperationException();
+                                    break;
+                                case THRIFT:
+                                    throw new UnsupportedOperationException();
+                                case JSON:
+                                    resp = JSON.parseObject(byteBuf.toString(Charset.defaultCharset()), YrpcResponse.class);
+                                    break;
+                                case JAVA:
+                                    byte[] bytes = new byte[byteBuf.readableBytes()];
+                                    byteBuf.readBytes(bytes);
+                                    resp = (YrpcResponse) SerializationUtils.deserialize(bytes);
+                                    break;
+                                default:
+                                    throw new UnsupportedOperationException();
+                            }
+                        } finally {
+                            serializationType = null;
+                            isEncode = false;
+                            encodeLength = 0;
+                            byteBuf.release();
                         }
-
-                        serializationType = null;
-                        isEncode = false;
-                        encodeLength = 0;
                         if (!StringUtil.isNullOrEmpty(resp.getRequestId())) {
                             out.add(resp);
                         }
@@ -227,18 +230,21 @@ final class YrpcClientCodec extends CombinedChannelDuplexHandler<ByteToMessageDe
                 throw new IllegalArgumentException("The message type must be Request.class");
             }
             ByteBuf buf = ctx.alloc().buffer();
-            byte[] bytes = codec.encode(msg);
-            int length = bytes.length;
-            buf.writeByte(serializationType.bitValue);
-            buf.writeByte((length >> 24) & 0xff);
-            buf.writeByte((length >> 16) & 0xff);
-            buf.writeByte((length >> 8) & 0xff);
-            buf.writeByte(length & 0xff);
-            out.writeBytes(buf.writeBytes(bytes));
+            try {
+                byte[] bytes = codec.encode(msg);
+                int length = bytes.length;
+                buf.writeByte(serializationType.bitValue);
+                buf.writeByte((length >> 24) & 0xff);
+                buf.writeByte((length >> 16) & 0xff);
+                buf.writeByte((length >> 8) & 0xff);
+                buf.writeByte(length & 0xff);
+                out.writeBytes(buf.writeBytes(bytes));
+            } finally {
+                buf.release();
+            }
             if (logger.isDebugEnabled()) {
                 logger.debug("-----encode after----- msg: {},out: {},msgObj: {},outObj: {}", msg, out, System.identityHashCode(msg), System.identityHashCode(out));
             }
-
         }
 
     }

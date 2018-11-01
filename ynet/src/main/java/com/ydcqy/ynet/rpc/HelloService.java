@@ -8,4 +8,6 @@ import com.google.protobuf.StringValue;
  */
 public interface HelloService {
     StringValue sayHi(StringValue username, Int32Value age);
+
+    String sayHiJson(String username, Integer age);
 }

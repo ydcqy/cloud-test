@@ -105,6 +105,7 @@ class YrpcServerHandler extends AbstractNettyServerHandler {
         YrpcResponse response = null;
         if (cause instanceof CodecException) {
             CodecException exception = (CodecException) cause;
+            response = new YrpcResponse();
             response.setRequestId(exception.getRequestId());
             StringWriter stringWriter = new StringWriter();
             cause.printStackTrace(new PrintWriter(stringWriter));
