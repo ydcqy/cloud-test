@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -25,11 +27,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author xiaoyu
  */
 public class PathNodeService {
-    private static Cache<String, String> guavaCache = CacheBuilder.newBuilder()
-            .expireAfterAccess(30, TimeUnit.SECONDS)
-            .expireAfterWrite(60, TimeUnit.SECONDS)
-            .maximumSize(10000)
-            .build();
+    private static Cache<String, String> guavaCache = CacheBuilder.newBuilder().expireAfterAccess(30, TimeUnit.SECONDS)
+            .expireAfterWrite(60, TimeUnit.SECONDS).maximumSize(10000).build();
     private static final int NODE_CONTENT_LIMIT_SIZE = 100 * 1024;
     private static final int QUERY_LIMIT_COUNT = 1000;
     private MongoCollection<Document> collection;
@@ -87,7 +86,8 @@ public class PathNodeService {
                         jsonObject.put("leaf", true);
                     }
                     Document document = Document.parse(jsonObject.toString());
-                    collection.insertOne(document);
+                    // collection.insertOne(document);
+                    insertOneWithLock(document);
 
                     parentId = document.getObjectId("_id").toString();
                 } else {
@@ -96,6 +96,8 @@ public class PathNodeService {
                             throw new RuntimeException("添加失败，节点已经存在");
                         }
                         throw new RuntimeException("路径中存在叶子节点");
+                    } else if (i == nodes.length - 1) {
+                        throw new RuntimeException("添加失败，节点已经存在");
                     }
                     parentId = d.getObjectId("_id").toString();
                 }
@@ -113,7 +115,8 @@ public class PathNodeService {
                     jsonObject.put("leaf", true);
                 }
                 Document document = Document.parse(jsonObject.toString());
-                collection.insertOne(document);
+                // collection.insertOne(document);
+                insertOneWithLock(document);
                 parentId = document.getObjectId("_id").toString();
             } else if (i == nodes.length - 1) {
                 throw new RuntimeException("添加失败，节点已经存在");
@@ -130,7 +133,6 @@ public class PathNodeService {
         delCache(path);
     }
 
-
     /**
      * 所传节点内容是json对象时，递归处理节点
      *
@@ -142,7 +144,7 @@ public class PathNodeService {
             JSONObject jsonObject = (JSONObject) json;
             Set<Map.Entry<String, Object>> entries = jsonObject.entrySet();
             for (Map.Entry<String, Object> entry : entries) {
-                Object key = entry.getKey();
+                String key = entry.getKey();
                 Object value = entry.getValue();
 
                 JSONObject obj = new JSONObject();
@@ -152,13 +154,15 @@ public class PathNodeService {
                 obj.put("leaf", false);
                 if (value instanceof JSON) {
                     Document document = Document.parse(obj.toString());
-                    collection.insertOne(document);
+                    // collection.insertOne(document);
+                    insertOneWithLock(document);
                     handleJsonToTreeNode((JSON) value, document.getObjectId("_id").toString());
                 } else {
                     obj.put("content", value);
                     obj.put("leaf", true);
                     Document document = Document.parse(obj.toString());
-                    collection.insertOne(document);
+                    // collection.insertOne(document);
+                    insertOneWithLock(document);
                 }
             }
         } else if (json instanceof JSONArray) {
@@ -172,14 +176,37 @@ public class PathNodeService {
                 obj.put("leaf", false);
                 if (objects[i] instanceof JSON) {
                     Document document = Document.parse(obj.toString());
-                    collection.insertOne(document);
+                    // collection.insertOne(document);
+                    insertOneWithLock(document);
                     handleJsonToTreeNode((JSON) objects[i], document.getObjectId("_id").toString());
                 } else {
                     obj.put("content", objects[i]);
                     obj.put("leaf", true);
                     Document document = Document.parse(obj.toString());
-                    collection.insertOne(document);
+                    // collection.insertOne(document);
+                    insertOneWithLock(document);
                 }
+            }
+        }
+    }
+
+    private static final ConcurrentMap<String, Object> LOCK_MAP = new ConcurrentHashMap();
+
+    private void insertOneWithLock(Document document) {
+        String name = document.getString("name");
+        String parent = document.getString("parent");
+        String lockKey = name + "#" + parent;
+        LOCK_MAP.putIfAbsent(lockKey, new Object());
+        synchronized (LOCK_MAP.get(lockKey)) {
+            try {
+                Document d = findPathNode(name, parent);
+                if (d == null) {
+                    collection.insertOne(document);
+                } else {
+                    document.put("_id", d.getObjectId("_id"));
+                }
+            } finally {
+                LOCK_MAP.remove(lockKey);
             }
         }
     }
@@ -192,7 +219,6 @@ public class PathNodeService {
             return false;
         }
     }
-
 
     /**
      * 本地缓存处理
@@ -217,7 +243,7 @@ public class PathNodeService {
             }
             return rs;
         } catch (Exception e) {
-            throw new RuntimeException(substringAfterLast(e.getMessage(), "Exception: "));
+            throw new RuntimeException(substringAfterLast(e.getMessage(), "Exception: "), e);
         }
     }
 
@@ -256,6 +282,8 @@ public class PathNodeService {
         return findContentByPathCacheProcess(path, levelNum, params);
     }
 
+    private static final ThreadLocal<Object> countThreadLoacl = new ThreadLocal<>();
+
     private String findContentByPath2(String path, int levelNum, Map<String, Object> params) {
 
         String[] split = path.split("/");
@@ -276,17 +304,27 @@ public class PathNodeService {
         Object jsonObject = null;
 
         checkQueryParams(params);
+
         AtomicInteger queryCount = new AtomicInteger(0);
-        if (params != null && "$key".equals(params.get("orderBy"))) {
-            jsonObject = findTreeNodes(c, levelNum, true, params, queryCount);
-        } else if (params != null && params.get("orderBy") != null && String.valueOf(params.get("orderBy")).contains("$child-")) {
-            jsonObject = findTreeNodes(c, levelNum, false, params, queryCount);
-        } else {
-            jsonObject = findTreeNodes(c, levelNum, false, null, queryCount);
+
+        try {
+            if (params != null && params.get("count") != null) {
+                countThreadLoacl.set(params.get("count"));
+            }
+
+            if (params != null && "$key".equals(params.get("orderBy"))) {
+                jsonObject = findTreeNodes(c, levelNum, true, params, queryCount);
+            } else if (params != null && params.get("orderBy") != null
+                    && String.valueOf(params.get("orderBy")).contains("$child-")) {
+                jsonObject = findTreeNodes(c, levelNum, false, params, queryCount);
+            } else {
+                jsonObject = findTreeNodes(c, levelNum, false, null, queryCount);
+            }
+        } finally {
+            countThreadLoacl.remove();
         }
         return JSON.toJSONString(jsonObject);
     }
-
 
     /**
      * 检查查询过滤条件参数
@@ -294,7 +332,8 @@ public class PathNodeService {
      * @param params
      */
     private void checkQueryParams(Map<String, Object> params) {
-        if (params != null && "$key".equals(params.get("orderBy")) || params != null && String.valueOf(params.get("orderBy")).contains("$child-")) {
+        if (params != null && "$key".equals(params.get("orderBy"))
+                || params != null && String.valueOf(params.get("orderBy")).contains("$child-")) {
             if (params.get("limitToFirst") != null && params.get("limitToLast") != null) {
                 throw new RuntimeException("limitToFirst 和 limitToLast 不能同时作为参数");
             }
@@ -354,7 +393,8 @@ public class PathNodeService {
         return collection.find(BsonDocument.parse("{'name':'" + name + "','parent':'" + parent + "'}")).first();
     }
 
-    private Object findTreeNodes(Document document, int levelNum, boolean isParams, Map<String, Object> params, AtomicInteger queryCount) {
+    private Object findTreeNodes(Document document, int levelNum, boolean isParams, Map<String, Object> params,
+                                 AtomicInteger queryCount) {
 
         if (document == null) {
             return null;
@@ -400,8 +440,7 @@ public class PathNodeService {
                         }
                     }
                     filter += "}";
-                    documents = collection
-                            .find(BsonDocument.parse(filter));
+                    documents = collection.find(BsonDocument.parse(filter));
 
                     if (params.get("limitToFirst") != null) {
                         documents.limit((Integer) params.get("limitToFirst"));
@@ -446,8 +485,7 @@ public class PathNodeService {
                         }
                     }
                     filter += "}";
-                    documents = collection
-                            .find(BsonDocument.parse(filter));
+                    documents = collection.find(BsonDocument.parse(filter));
                     if (params.get("limitToFirst") != null) {
                         documents.limit((Integer) params.get("limitToFirst"));
                         documents.sort(BsonDocument.parse("{'content':1}"));
@@ -473,8 +511,11 @@ public class PathNodeService {
             }
 
             if (isQueryAgain && documents.iterator().hasNext()) {
-                documents = collection
-                        .find(BsonDocument.parse("{'parent':'" + document.getObjectId("_id") + "'}"));
+                documents = collection.find(BsonDocument.parse("{'parent':'" + document.getObjectId("_id") + "'}"));
+            }
+
+            if (countThreadLoacl.get() != null && (Boolean) countThreadLoacl.get() == true) {
+                return currCount;
             }
 
             if (queryCount.addAndGet((int) currCount) > QUERY_LIMIT_COUNT) {
@@ -531,7 +572,8 @@ public class PathNodeService {
             jsonObject.put("parent", document.getString("parent"));
             jsonObject.put("content", jsonStr);
             jsonObject.put("leaf", true);
-            collection.insertOne(Document.parse(jsonObject.toString()));
+            // collection.insertOne(Document.parse(jsonObject.toString()));
+            insertOneWithLock(Document.parse(jsonObject.toString()));
             return;
         }
         Object json = JSON.parse(jsonStr);
@@ -544,7 +586,8 @@ public class PathNodeService {
                 jsonObject.put("content", null);
                 jsonObject.put("leaf", false);
                 document = Document.parse(jsonObject.toString());
-                collection.insertOne(document);
+                // collection.insertOne(document);
+                insertOneWithLock(document);
             }
             JSONObject jsonObject = (JSONObject) json;
             Set<Map.Entry<String, Object>> entries = jsonObject.entrySet();
@@ -568,7 +611,8 @@ public class PathNodeService {
             jsonObject.put("content", null);
             jsonObject.put("leaf", false);
             document = Document.parse(jsonObject.toString());
-            collection.insertOne(document);
+            // collection.insertOne(document);
+            insertOneWithLock(document);
 
             JSONArray jsonArray = (JSONArray) json;
             Object[] objects = jsonArray.toArray();
@@ -580,7 +624,8 @@ public class PathNodeService {
                     obj.put("parent", document.getObjectId("_id").toString());
                     obj.put("leaf", false);
                     Document tmp = Document.parse(obj.toString());
-                    collection.insertOne(tmp);
+                    // collection.insertOne(tmp);
+                    insertOneWithLock(tmp);
                     handleJsonToTreeNode((JSON) objects[i], tmp.getObjectId("_id").toString());
                 } else {
                     JSONObject obj = new JSONObject();
@@ -589,7 +634,8 @@ public class PathNodeService {
                     obj.put("parent", document.getObjectId("_id").toString());
                     obj.put("leaf", true);
                     Document tmp = Document.parse(obj.toString());
-                    collection.insertOne(tmp);
+                    // collection.insertOne(tmp);
+                    insertOneWithLock(tmp);
                 }
             }
         }
@@ -627,4 +673,24 @@ public class PathNodeService {
         return rs;
     }
 
+//    /**
+//     * 推送节点内容到节点订阅者
+//     */
+//    public void pushToNodeSubscriber(String nodePath, String nodeContent, ImStatus NodePathStatus) {
+//        JSONObject result = new JSONObject();
+//        result.put("success", true);
+//        result.put("code", "0");
+//        result.put("msg", "操作成功");
+//        result.put("nodePath", nodePath);
+//
+//        result.put("nodeContent", nodeContent);
+//
+//        RespBody respBody = new RespBody(Command.COMMAND_CHAT_REQ, NodePathStatus).setData(result);
+//        ImPacket chatPacket = new ImPacket(Command.COMMAND_CHAT_REQ, respBody.toByte());
+//
+//        Set<String> nodePaths = findParentNode(nodePath);
+//        for (String path : nodePaths) {
+//            ImAio.sendToGroup("yuanda/node" + path, chatPacket);
+//        }
+//    }
 }

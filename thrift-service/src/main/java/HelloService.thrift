@@ -1,8 +1,8 @@
 namespace c_glib com.ydcqy.thrift.service
 namespace java com.ydcqy.thrift.service
 namespace cpp com.ydcqy.thrift.service
-namespace js ThriftTest
-namespace py ThriftTest
+//namespace js thriftService
+//namespace py ThriftTest
 namespace go thrifttest
 namespace php ThriftTest
 
