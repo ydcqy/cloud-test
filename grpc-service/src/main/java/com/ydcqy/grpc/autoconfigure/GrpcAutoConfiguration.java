@@ -24,6 +24,7 @@ public class GrpcAutoConfiguration {
         this.properties = properties;
     }
 
+
     @Bean
     @ConditionalOnMissingBean
     public GrpcServiceContainer grpcServiceContainer() throws Exception {

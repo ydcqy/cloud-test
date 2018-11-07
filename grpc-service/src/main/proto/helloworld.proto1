@@ -1,0 +1,28 @@
+//syntax = "proto3";
+//package com.ydcqy.grpc;
+//option java_multiple_files = true;
+//option java_package = "com.ydcqy.grpc.rpc";
+//option java_outer_classname = "HelloStreamingProto";
+//option objc_class_prefix = "HLWS";
+//
+//
+//service HelloWorldService {
+//
+//    rpc SayHello (HelloRequest) returns (HelloReply) {
+//    }
+//}
+//
+//service UserService {
+//
+//    rpc get (stream HelloRequest) returns (stream HelloReply) {
+//    }
+//}
+//
+//message HelloRequest {
+//    string name = 1;
+//}
+//
+//
+//message HelloReply {
+//    string message = 1;
+//}
