@@ -21,6 +21,11 @@ public class KafkaMessage implements Message {
 
 
     @Override
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    @Override
     public byte[] getEncodeContent() {
         return ProtobufUtils.serialize(obj);
     }

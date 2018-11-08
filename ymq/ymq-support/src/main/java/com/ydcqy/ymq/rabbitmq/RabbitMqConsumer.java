@@ -6,6 +6,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import com.ydcqy.ymq.configuration.Configuration;
 import com.ydcqy.ymq.connection.ConnectionFactory;
 import com.ydcqy.ymq.consumer.AbstractConsumer;
 import com.ydcqy.ymq.exception.MqException;
@@ -26,8 +27,8 @@ import java.util.concurrent.Future;
  */
 @Slf4j
 public class RabbitMqConsumer extends AbstractConsumer {
-    private final String  exchangeType = "topic";
-    private final boolean autoAck      = false;
+    private final String exchangeType = "topic";
+    private final boolean autoAck = false;
 
     private Connection connection;
 
@@ -53,21 +54,25 @@ public class RabbitMqConsumer extends AbstractConsumer {
                         executor.setMessageListener(ml);
                     }
                     Channel channel = connection.createChannel();
-                    channel.basicQos(1);
+                    Integer prefetchCount = null;
+                    Configuration config = getConfiguration();
+                    if (config instanceof RabbitMqConfiguration) {
+                        prefetchCount = ((RabbitMqConfiguration) config).getConsumerListener().getPrefetchCount();
+                    }
+                    channel.basicQos(prefetchCount != null ? prefetchCount : 1);
                     //初始化交换器和队列
-//                    channel.exchangeDeclare(rabbitMqQueue.getExchangeName(), exchangeType, true);
-//                    channel.queueDeclare(rabbitMqQueue.getQueueName(), true, false, false, null);
-//                    channel.queueBind(rabbitMqQueue.getQueueName(), rabbitMqQueue.getExchangeName(), rabbitMqQueue.getQueueBindingKey(), null);
+                    channel.exchangeDeclare(rabbitMqQueue.getExchangeName(), exchangeType, true);
+                    channel.queueDeclare(rabbitMqQueue.getQueueName(), true, false, false, null);
+                    channel.queueBind(rabbitMqQueue.getQueueName(), rabbitMqQueue.getExchangeName(), rabbitMqQueue.getQueueBindingKey(), null);
+
                     channel.basicConsume(rabbitMqQueue.getQueueName(), autoAck, new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
-
-                            log.info(new String(body));
                             Future<?> future = executor.onMessage(new RabbitMqMessage(body));
                             try {
                                 future.get();
                             } catch (Throwable e) {
-//                                e.printStackTrace();
+                                e.printStackTrace();
                             } finally {
                                 getChannel().basicAck(envelope.getDeliveryTag(), false);
                             }

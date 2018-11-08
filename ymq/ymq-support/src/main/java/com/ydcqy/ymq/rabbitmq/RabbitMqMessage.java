@@ -9,7 +9,7 @@ import com.ydcqy.ymq.util.ProtobufUtils;
 public class RabbitMqMessage implements Message {
     private Object obj;
     private byte[] bytes;
-    private Long   delayMillis;
+    private Long delayMillis;
 
 
     public RabbitMqMessage(Object encodeObj) {
@@ -23,6 +23,11 @@ public class RabbitMqMessage implements Message {
     public RabbitMqMessage(Object encodeObj, Long delayMillis) {
         this.obj = encodeObj;
         this.delayMillis = delayMillis;
+    }
+
+    @Override
+    public byte[] getBytes() {
+        return bytes;
     }
 
     @Override

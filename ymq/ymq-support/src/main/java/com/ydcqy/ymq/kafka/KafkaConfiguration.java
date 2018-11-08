@@ -8,8 +8,8 @@ import lombok.Data;
  */
 @Data
 public class KafkaConfiguration implements Configuration {
-    private String           bootstrapServers;
-    private ProducerPool     producerPool;
+    private String bootstrapServers;
+    private ProducerPool producerPool;
     private ConsumerListener consumerListener;
 
     @Data

@@ -12,9 +12,9 @@ import com.ydcqy.ymq.pool.rabbitmq.RabbitMqPoolConfig;
  * @author xiaoyu
  */
 public class RabbitMqConnectionFactory extends AbstractConnectionFactory {
-    private PooledConnectionFactory               pooledCf;
+    private PooledConnectionFactory pooledCf;
     private com.rabbitmq.client.ConnectionFactory cf;
-    private RabbitMqConfiguration                 cfg;
+    private RabbitMqConfiguration cfg;
 
     public RabbitMqConnectionFactory(Configuration configuration) {
         super(configuration);
@@ -35,7 +35,7 @@ public class RabbitMqConnectionFactory extends AbstractConnectionFactory {
         if ((value = cfg.getPort()) != null) cf.setPort((Integer) value);
         if ((value = cfg.getUsername()) != null) cf.setUsername(String.valueOf(value));
         if ((value = cfg.getPassword()) != null) cf.setPassword(String.valueOf(value));
-        cf.setVirtualHost("/wechat");
+        if ((value = cfg.getVirtualHost()) != null) cf.setVirtualHost(String.valueOf(value));
     }
 
     @Override

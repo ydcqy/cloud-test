@@ -21,7 +21,7 @@ import java.util.Properties;
 @Slf4j
 public class KafkaProducer extends AbstractProducer {
     private KafkaConfiguration configuration;
-    private KafkaProducerPool  pool;
+    private KafkaProducerPool pool;
 
     public KafkaProducer(Configuration configuration) {
         this.configuration = (KafkaConfiguration) configuration;

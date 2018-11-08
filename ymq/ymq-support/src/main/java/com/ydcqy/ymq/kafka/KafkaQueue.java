@@ -8,7 +8,7 @@ import com.ydcqy.ymq.message.QueueType;
  */
 public class KafkaQueue implements Queue {
     private QueueType type;
-    private String    queueName;
+    private String queueName;
 
     public KafkaQueue(String queueName, QueueType type) {
         this.queueName = queueName;
@@ -20,15 +20,18 @@ public class KafkaQueue implements Queue {
         return queueName;
     }
 
+    @Override
     public QueueType getType() {
         return type;
     }
 
+    @Override
     public int hashCode() {
         int h;
         return (h = queueName.hashCode()) ^ (h >> 16) ^ type.hashCode();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (null == obj) return false;
         if (this == obj) return true;

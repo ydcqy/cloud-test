@@ -12,7 +12,7 @@ import java.util.Map;
  */
 @Slf4j
 public abstract class AbstractConfigurationFactory implements ConfigurationFactory {
-    public static String CONFIG_FILE = "mq.yml";
+    public static String CONFIG_FILE = "combinedmq.yml";
 
     protected abstract String getConfigPrefix();
 
@@ -29,7 +29,7 @@ public abstract class AbstractConfigurationFactory implements ConfigurationFacto
             }
             InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIG_FILE);
             if (null == is) {
-//            is = AbstractConfigurationFactory.class.getResourceAsStream(CONFIG_FILE);
+//                is = AbstractConfigurationFactory.class.getResourceAsStream(CONFIG_FILE);
             }
             if (null == is) {
                 throw new NullPointerException("The configuration file " + CONFIG_FILE + " does not exist");

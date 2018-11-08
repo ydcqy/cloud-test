@@ -7,8 +7,8 @@ import com.ydcqy.ymq.configuration.Configuration;
  * @author xiaoyu
  */
 public class KafkaConfigurationFactory extends AbstractConfigurationFactory {
-    private static final String                         CONFIG_PREFIX = "kafka";
-    private static final Class<? extends Configuration> CONFIG_CLASS  = KafkaConfiguration.class;
+    private static final String CONFIG_PREFIX = "kafka";
+    private static final Class<? extends Configuration> CONFIG_CLASS = KafkaConfiguration.class;
 
     @Override
     protected String getConfigPrefix() {

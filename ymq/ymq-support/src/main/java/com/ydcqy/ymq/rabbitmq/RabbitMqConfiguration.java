@@ -9,11 +9,12 @@ import lombok.Data;
 
 @Data
 public class RabbitMqConfiguration implements Configuration {
-    private String           host;
-    private Integer          port;
-    private String           username;
-    private String           password;
-    private ProducerPool     producerPool;
+    private String host;
+    private Integer port;
+    private String username;
+    private String password;
+    private String virtualHost;
+    private ProducerPool producerPool;
     private ConsumerListener consumerListener;
 
     @Data
@@ -32,6 +33,6 @@ public class RabbitMqConfiguration implements Configuration {
     @Data
     public static class ConsumerListener {
         private Integer concurrency = 1;
+        private Integer prefetchCount = 1;
     }
-
 }

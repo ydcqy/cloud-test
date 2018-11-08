@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
  */
 @Slf4j
 public class KafkaConsumer extends AbstractConsumer {
-    private Properties    props;
+    private Properties props;
     private Configuration configuration;
 
     public KafkaConsumer(Configuration configuration) {

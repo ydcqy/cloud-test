@@ -9,7 +9,7 @@ import com.ydcqy.ymq.util.ProtobufUtils;
 public class ActiveMqMessage implements Message {
     private Object obj;
     private byte[] bytes;
-    private Long   delayMillis;
+    private Long delayMillis;
 
 
     public ActiveMqMessage(Object encodeObj) {
@@ -25,6 +25,10 @@ public class ActiveMqMessage implements Message {
         this.delayMillis = delayMillis;
     }
 
+    @Override
+    public byte[] getBytes() {
+        return bytes;
+    }
 
     @Override
     public byte[] getEncodeContent() {
