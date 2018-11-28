@@ -1,25 +1,27 @@
 #!/usr/bin/bash
-downloadUrl="https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.22-1.el7.x86_64.rpm-bundle.tar";
-saveDir="/opt/downloadFile";
-saveFileName="mysql-5.7.22-1.el7.x86_64.rpm-bundle.tar";
-savePath=${saveDir}/${saveFileName};
-isDelAfterInstall=true;
+downloadUrl="https://cdn.mysql.com//Downloads/MySQL-5.7/mysql-5.7.24-1.el7.x86_64.rpm-bundle.tar";
+saveDir="/opt/downloadfile";
+saveFileName="mysql-5.7.24-1.el7.x86_64.rpm-bundle.tar";
+
+isDelAfterInstall=false;
 isReinstall=true;
 mysqlPort=13106
 sql_mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
 
-enableInstall=false;
-
+# 安装过程
 if [ x"`rpm -qa | grep -i mariadb`" != x ]
 then
     rpm -ev --nodeps `rpm -qa | grep -i mariadb`
 fi
+savePath=${saveDir}/${saveFileName};
+enableInstall=false;
 if [ x"`rpm -qa | grep -i mysql`" != x ]
 then
     if [ ${isReinstall} == true ]
     then
         echo 'Uninstall old mysql...'
         rpm -ev --nodeps `rpm -qa | grep -i mysql`
+        rm -fr `find / -iname mysql`
         echo 'Uninstall finished!'
         if [ -f ${savePath} ]
         then
