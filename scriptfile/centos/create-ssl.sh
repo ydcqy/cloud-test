@@ -14,6 +14,8 @@ openssl ca -cert ca.pem -keyfile ca.key -extensions v3_ca -in ca-sub.csr -out ca
 openssl genrsa -out app.key 2048
 openssl req -new -key app.key -out app.csr -subj "/C=CN/O=Yuanda Corporation/ST=beijing/L=beijing/CN=*.yuanda.com"
 openssl ca -cert ca-sub.pem -keyfile ca-sub.key -in app.csr -out app.pem -days 3650 -policy policy_anything
+#（使用证书请求文件，除了ca还可以用x509）
+openssl x509 -req -CA ca-sub.pem -CAkey ca-sub.key -CAcreateserial -in app.csr -out app.pem -days 3650
 
 ##########################################################
 # openssl转jks
