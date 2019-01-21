@@ -1,0 +1,10 @@
+apiVersion: settings.k8s.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: all-tz
+spec:
+  selector:
+    matchLabels:
+  env:
+  - name: TZ
+    value: Asia/Shanghai

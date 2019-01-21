@@ -44,4 +44,10 @@ public abstract class AbstractConfigurationFactory implements ConfigurationFacto
         init();
         return this.configuration;
     }
+
+    public static void main(String[] args) {
+        Yaml yaml = new Yaml();
+        Object o = yaml.load(AbstractConfigurationFactory.class.getResourceAsStream("abc.yml"));
+        System.out.println(o);
+    }
 }

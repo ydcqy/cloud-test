@@ -14,3 +14,4 @@ eureka:
 #    enable-self-preservation: false
 
 
+eureka.server.en=false
