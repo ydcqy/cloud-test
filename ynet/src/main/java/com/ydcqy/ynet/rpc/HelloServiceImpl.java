@@ -19,11 +19,7 @@ public class HelloServiceImpl implements HelloService {
 
     @Override
     public String sayHiJson(String username, Integer age) {
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        logger.info("name: {}, age: {}", username, age);
         return "哈喽";
     }
 }
