@@ -6,6 +6,9 @@ spring:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5Dialect
     show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   datasource:
     news:
       driver-class-name: com.mysql.jdbc.Driver
@@ -36,3 +39,7 @@ spring:
       test-on-borrow: true
       test-on-return: false
       filters: stat,wall,log4j
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+    time-zone: GMT+8

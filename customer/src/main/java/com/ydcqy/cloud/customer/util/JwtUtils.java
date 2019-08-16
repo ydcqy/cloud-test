@@ -7,11 +7,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 public class JwtUtils {
-    private static final String SIGN           = "sdkgli1o24puKDHGkij1glk32x323pi2";
-    private static final long   DEFAULT_EXPIRE = 30 * 60 * 1000;
+    private static final String SIGN = "sdkgli1o24puKDHGkij1glk32x323pi2";
+    private static final long DEFAULT_EXPIRE = 30 * 60 * 1000;
 
     public static String createJwt(Map<String, Object> params) {
         return createJwt(params, DEFAULT_EXPIRE);
@@ -34,4 +35,10 @@ public class JwtUtils {
         return new SecretKeySpec(SIGN.getBytes(), "AES");
     }
 
+    public static void main(String[] args) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("user", "张三");
+        map.put("pwd", "1234");
+        System.out.println(JwtUtils.createJwt(map));
+    }
 }

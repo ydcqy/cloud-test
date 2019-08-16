@@ -9,7 +9,9 @@ import java.util.Date;
  */
 @Data
 public class UserOperationLogPo {
-
+    /**
+     * 多少个
+     */
     private Long id;
     private Long user;
     private String ip;

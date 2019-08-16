@@ -17,7 +17,6 @@ public class ControllerLogger {
     @Around("controllerPoincut()")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
         Class withinType = pjp.getSourceLocation().getWithinType();
-
         log.info("进入Logger\t{} ", withinType.getName());
         Object result = pjp.proceed();
         return result;

@@ -5,11 +5,7 @@
         <result property="id" column="id"/>
         <result property="username" column="user_name"/>
     </resultMap>
-    <select id="getUserById" resultMap="UserPoMap">
-        SELECT *
-        FROM user
-        WHERE id = #{id}
-    </select>
+    <select id="getUserById" resultMap="UserPoMap">SELECT  * from USER </select>
     <select id="findByPage" resultMap="UserPoMap">
         SELECT *
         FROM user
